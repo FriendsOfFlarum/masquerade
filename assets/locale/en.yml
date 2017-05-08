@@ -1,0 +1,16 @@
+flagrow-bian-lian:
+    admin:
+        permissions:
+            view-profile: View Biàn Liǎn profile
+        menu:
+            description: >
+                Configure the user profile fields.
+        fields:
+            add: Add field
+            name: Field name
+            description: Field description
+            required: Obligate field
+            validation: Validation
+            validation-help: >
+                Check the supported <a>Laravel validation rules</a>. Eg:
+                "string,min:5" or "url".
