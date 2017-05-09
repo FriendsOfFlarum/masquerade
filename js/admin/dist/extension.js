@@ -123,7 +123,9 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                 }, {
                     key: "addField",
                     value: function addField(field) {
-                        var exists = field.name() != '';
+                        var _this3 = this;
+
+                        var exists = field.id();
 
                         return FieldSet.component({
                             label: app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
@@ -132,7 +134,9 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             children: [m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {
                                 className: 'FormControl',
                                 value: field.name(),
-                                oninput: m.withAttr('value', field.name)
+                                oninput: m.withAttr('value', function (value) {
+                                    return _this3.updateExistingField(field, 'name', value);
+                                })
                             }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
                                 className: 'FormControl',
                                 value: field.description(),
@@ -176,11 +180,16 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     value: function submitAddField(e) {
                         e.preventDefault();
 
-                        app.store.this.existing.push(this.new());
+                        // @todo xhr call app.request
 
                         this.resetNew();
 
                         m.redraw();
+                    }
+                }, {
+                    key: "updateExistingField",
+                    value: function updateExistingField(field, setting, value) {
+                        field[setting](value);
                     }
                 }, {
                     key: "updateExistingFields",
@@ -188,7 +197,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                 }, {
                     key: "loadExisting",
                     value: function loadExisting() {
-                        var _this3 = this;
+                        var _this4 = this;
 
                         this.loading = true;
 
@@ -196,9 +205,15 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             method: 'GET',
                             url: app.forum.attribute('apiUrl') + '/masquerade/fields'
                         }).then(function (result) {
-                            app.store.pushPayload(result);
-                            _this3.existing = app.store.all('masquerade-field');
-                            _this3.loading = false;
+                            // app.store.pushPayload(result);
+                            result.data.map(function (data) {
+                                data.type = 'masquerade-field';
+                                app.store.pushObject(data);
+                            });
+
+                            _this4.existing = app.store.all('masquerade-field');
+
+                            _this4.loading = false;
                             m.redraw();
                         });
                     }
@@ -206,7 +221,6 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     key: "resetNew",
                     value: function resetNew() {
                         this.new = app.store.createRecord('masquerade-field', {
-                            type: 'masquerade-field',
                             attributes: {
                                 'name': '',
                                 'description': '',

@@ -30,7 +30,7 @@ export default class ProfileConfigurePane extends Component {
     }
 
     addField(field) {
-        let exists = field.name() != '';
+        let exists = field.id();
 
         return FieldSet.component({
             label: app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
@@ -42,7 +42,7 @@ export default class ProfileConfigurePane extends Component {
                     m('input', {
                         className: 'FormControl',
                         value: field.name(),
-                        oninput: m.withAttr('value', field.name)
+                        oninput: m.withAttr('value', value => this.updateExistingField(field, 'name', value))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
                 ]),
@@ -121,12 +121,15 @@ export default class ProfileConfigurePane extends Component {
     submitAddField(e) {
         e.preventDefault();
 
-        app.store.
-        this.existing.push(this.new());
+        // @todo xhr call app.request
 
         this.resetNew();
 
         m.redraw();
+    }
+
+    updateExistingField(field, setting, value) {
+        field[setting](value);
     }
 
     updateExistingFields(e) {
@@ -140,8 +143,14 @@ export default class ProfileConfigurePane extends Component {
             method: 'GET',
             url: app.forum.attribute('apiUrl') + '/masquerade/fields'
         }).then(result => {
-            app.store.pushPayload(result);
+            // app.store.pushPayload(result);
+            result.data.map(data => {
+                data.type = 'masquerade-field';
+                app.store.pushObject(data);
+            })
+
             this.existing = app.store.all('masquerade-field');
+
             this.loading = false;
             m.redraw()
         });
@@ -149,7 +158,6 @@ export default class ProfileConfigurePane extends Component {
 
     resetNew() {
         this.new = app.store.createRecord('masquerade-field', {
-            type: 'masquerade-field',
             attributes: {
                 'name': '',
                 'description': '',
