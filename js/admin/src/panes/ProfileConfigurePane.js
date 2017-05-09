@@ -13,14 +13,17 @@ export default class ProfileConfigurePane extends Component {
     }
 
     view() {
+        let fields = [];
+        this.existing.forEach(field => {
+            fields.push(this.addField(field))
+        });
+
         return m('div', {
             className: 'ProfileConfigurePane'
         }, [
             m('div', {className: 'container'}, [
                 m('form', {onsubmit: this.updateExistingFields.bind(this)},
-                    this.existing.forEach(field => {
-                        return this.addField(field)
-                    })
+                    fields
                 ),
                 m('form', {onsubmit: this.submitAddField.bind(this)}, [
                     this.addField(this.new)
@@ -42,7 +45,7 @@ export default class ProfileConfigurePane extends Component {
                     m('input', {
                         className: 'FormControl',
                         value: field.name(),
-                        oninput: m.withAttr('value', value => this.updateExistingField(field, 'name', value))
+                        oninput: m.withAttr('value', field.name)
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
                 ]),
@@ -121,7 +124,16 @@ export default class ProfileConfigurePane extends Component {
     submitAddField(e) {
         e.preventDefault();
 
+        var data = this.new;
+
         // @todo xhr call app.request
+        app.request({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/masquerade/fields',
+            data
+        }).then(
+            this.requestSuccess.bind(this)
+        );
 
         this.resetNew();
 
@@ -136,37 +148,35 @@ export default class ProfileConfigurePane extends Component {
 
     }
 
+    requestSuccess(result) {
+        app.store.pushPayload(result);
+
+        this.existing = app.store.all('masquerade-field');
+
+        this.loading = false;
+        m.redraw()
+    }
     loadExisting() {
         this.loading = true;
 
         return app.request({
             method: 'GET',
             url: app.forum.attribute('apiUrl') + '/masquerade/fields'
-        }).then(result => {
-            // app.store.pushPayload(result);
-            result.data.map(data => {
-                data.type = 'masquerade-field';
-                app.store.pushObject(data);
-            })
-
-            this.existing = app.store.all('masquerade-field');
-
-            this.loading = false;
-            m.redraw()
-        });
+        }).then(
+            this.requestSuccess.bind(this)
+        );
     }
 
     resetNew() {
-        this.new = app.store.createRecord('masquerade-field', {
-            attributes: {
-                'name': '',
-                'description': '',
-                'prefix': '',
-                'icon': '',
-                'required': false,
-                'validation': ''
-            }
-        });
+        this.new = {
+            'id': m.prop(),
+            'name': m.prop(''),
+            'description': m.prop(''),
+            'prefix': m.prop(''),
+            'icon': m.prop(''),
+            'required': m.prop(false),
+            'validation': m.prop('')
+        };
     }
 
     /**

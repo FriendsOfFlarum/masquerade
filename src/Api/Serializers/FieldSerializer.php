@@ -18,4 +18,9 @@ class FieldSerializer extends AbstractSerializer
     {
         return $model->toArray();
     }
+
+    public function getType($model)
+    {
+        return 'masquerade-field';
+    }
 }

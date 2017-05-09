@@ -76,6 +76,47 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flar
         }
     };
 });;
+'use strict';
+
+System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/utils/mixin'], function (_export, _context) {
+    "use strict";
+
+    var Model, mixin, Field;
+    return {
+        setters: [function (_flarumModel) {
+            Model = _flarumModel.default;
+        }, function (_flarumUtilsMixin) {
+            mixin = _flarumUtilsMixin.default;
+        }],
+        execute: function () {
+            Field = function (_mixin) {
+                babelHelpers.inherits(Field, _mixin);
+
+                function Field() {
+                    babelHelpers.classCallCheck(this, Field);
+                    return babelHelpers.possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(Field, [{
+                    key: 'apiEndpoint',
+                    value: function apiEndpoint() {
+                        return '/masquerade/fields' + (this.exists ? '/' + this.data.id : '');
+                    }
+                }]);
+                return Field;
+            }(mixin(Model, {
+                name: Model.attribute('name'),
+                description: Model.attribute('description'),
+                validation: Model.attribute('validation'),
+                required: Model.attribute('required'),
+                prefix: Model.attribute('prefix'),
+                icon: Model.attribute('icon')
+            }));
+
+            _export('default', Field);
+        }
+    };
+});;
 "use strict";
 
 System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/FieldSet", "flarum/components/Button"], function (_export, _context) {
@@ -114,17 +155,18 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     value: function view() {
                         var _this2 = this;
 
+                        var fields = [];
+                        this.existing.forEach(function (field) {
+                            fields.push(_this2.addField(field));
+                        });
+
                         return m('div', {
                             className: 'ProfileConfigurePane'
-                        }, [m('div', { className: 'container' }, [m('form', { onsubmit: this.updateExistingFields.bind(this) }, this.existing.forEach(function (field) {
-                            return _this2.addField(field);
-                        })), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
+                        }, [m('div', { className: 'container' }, [m('form', { onsubmit: this.updateExistingFields.bind(this) }, fields), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
                     }
                 }, {
                     key: "addField",
                     value: function addField(field) {
-                        var _this3 = this;
-
                         var exists = field.id();
 
                         return FieldSet.component({
@@ -134,9 +176,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             children: [m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {
                                 className: 'FormControl',
                                 value: field.name(),
-                                oninput: m.withAttr('value', function (value) {
-                                    return _this3.updateExistingField(field, 'name', value);
-                                })
+                                oninput: m.withAttr('value', field.name)
                             }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
                                 className: 'FormControl',
                                 value: field.description(),
@@ -180,7 +220,14 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     value: function submitAddField(e) {
                         e.preventDefault();
 
+                        var data = this.new;
+
                         // @todo xhr call app.request
+                        app.request({
+                            method: 'POST',
+                            url: app.forum.attribute('apiUrl') + '/masquerade/fields',
+                            data: data
+                        }).then(this.requestSuccess.bind(this));
 
                         this.resetNew();
 
@@ -195,41 +242,37 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     key: "updateExistingFields",
                     value: function updateExistingFields(e) {}
                 }, {
+                    key: "requestSuccess",
+                    value: function requestSuccess(result) {
+                        app.store.pushPayload(result);
+
+                        this.existing = app.store.all('masquerade-field');
+
+                        this.loading = false;
+                        m.redraw();
+                    }
+                }, {
                     key: "loadExisting",
                     value: function loadExisting() {
-                        var _this4 = this;
-
                         this.loading = true;
 
                         return app.request({
                             method: 'GET',
                             url: app.forum.attribute('apiUrl') + '/masquerade/fields'
-                        }).then(function (result) {
-                            // app.store.pushPayload(result);
-                            result.data.map(function (data) {
-                                data.type = 'masquerade-field';
-                                app.store.pushObject(data);
-                            });
-
-                            _this4.existing = app.store.all('masquerade-field');
-
-                            _this4.loading = false;
-                            m.redraw();
-                        });
+                        }).then(this.requestSuccess.bind(this));
                     }
                 }, {
                     key: "resetNew",
                     value: function resetNew() {
-                        this.new = app.store.createRecord('masquerade-field', {
-                            attributes: {
-                                'name': '',
-                                'description': '',
-                                'prefix': '',
-                                'icon': '',
-                                'required': false,
-                                'validation': ''
-                            }
-                        });
+                        this.new = {
+                            'id': m.prop(),
+                            'name': m.prop(''),
+                            'description': m.prop(''),
+                            'prefix': m.prop(''),
+                            'icon': m.prop(''),
+                            'required': m.prop(false),
+                            'validation': m.prop('')
+                        };
                     }
                 }, {
                     key: "readyToAdd",
@@ -245,47 +288,6 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
             }(Component);
 
             _export("default", ProfileConfigurePane);
-        }
-    };
-});;
-'use strict';
-
-System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/utils/mixin'], function (_export, _context) {
-    "use strict";
-
-    var Model, mixin, Field;
-    return {
-        setters: [function (_flarumModel) {
-            Model = _flarumModel.default;
-        }, function (_flarumUtilsMixin) {
-            mixin = _flarumUtilsMixin.default;
-        }],
-        execute: function () {
-            Field = function (_mixin) {
-                babelHelpers.inherits(Field, _mixin);
-
-                function Field() {
-                    babelHelpers.classCallCheck(this, Field);
-                    return babelHelpers.possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).apply(this, arguments));
-                }
-
-                babelHelpers.createClass(Field, [{
-                    key: 'apiEndpoint',
-                    value: function apiEndpoint() {
-                        return '/masquerade/fields' + (this.exists ? '/' + this.data.id : '');
-                    }
-                }]);
-                return Field;
-            }(mixin(Model, {
-                name: Model.attribute('name'),
-                description: Model.attribute('description'),
-                validation: Model.attribute('validation'),
-                required: Model.attribute('required'),
-                prefix: Model.attribute('prefix'),
-                icon: Model.attribute('icon')
-            }));
-
-            _export('default', Field);
         }
     };
 });

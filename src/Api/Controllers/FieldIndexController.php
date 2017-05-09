@@ -26,6 +26,6 @@ class FieldIndexController extends AbstractCollectionController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        return Field::all();
+        return Field::orderBy('sort', 'desc')->get();
     }
 }
