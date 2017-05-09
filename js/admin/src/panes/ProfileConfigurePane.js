@@ -36,9 +36,25 @@ export default class ProfileConfigurePane extends Component {
         let exists = field.id();
 
         return FieldSet.component({
-            label: app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                field: field.name()
-            }),
+            label: [
+                m('div', {className: 'ButtonGroup'}, [
+                    Button.component({
+                        className: 'Button Button--icon',
+                        icon: "bars"
+                    }),
+                    Button.component({
+                        className: 'Button Button--icon Button--danger',
+                        icon: "danger"
+                    }),
+                    Button.component({
+                        className: 'Button Button--icon Button--info',
+                        icon: "eye"
+                    })
+                ]),
+                m('span', app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                    field: field.name()
+                }))
+            ],
             children: [
                 m('div', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')),
@@ -156,6 +172,7 @@ export default class ProfileConfigurePane extends Component {
         this.loading = false;
         m.redraw()
     }
+
     loadExisting() {
         this.loading = true;
 

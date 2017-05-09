@@ -170,9 +170,18 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         var exists = field.id();
 
                         return FieldSet.component({
-                            label: app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                            label: [m('div', { className: 'ButtonGroup' }, [Button.component({
+                                className: 'Button Button--icon',
+                                icon: "bars"
+                            }), Button.component({
+                                className: 'Button Button--icon Button--danger',
+                                icon: "danger"
+                            }), Button.component({
+                                className: 'Button Button--icon Button--info',
+                                icon: "eye"
+                            })]), m('span', app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
                                 field: field.name()
-                            }),
+                            }))],
                             children: [m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {
                                 className: 'FormControl',
                                 value: field.name(),
