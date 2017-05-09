@@ -1,26 +1,26 @@
 "use strict";
 
-System.register("flagrow/bian-lian/addProfileConfigurePane", ["flarum/extend", "flarum/components/AdminNav", "flarum/components/AdminLinkButton", "flagrow/bian-lian/panes/ProfileConfigurePane"], function (_export, _context) {
+System.register("flagrow/masquerade/addProfileConfigurePane", ["flarum/extend", "flarum/components/AdminNav", "flarum/components/AdminLinkButton", "flagrow/masquerade/panes/ProfileConfigurePane"], function (_export, _context) {
     "use strict";
 
     var extend, AdminNav, AdminLinkButton, ProfileConfigurePane;
 
     _export("default", function () {
         // create the route
-        app.routes['flagrow-bian-lian-configure-profile'] = { path: '/flagrow/bian-lian/configure', component: ProfileConfigurePane.component() };
+        app.routes['flagrow-masquerade-configure-profile'] = { path: '/flagrow/masquerade/configure', component: ProfileConfigurePane.component() };
 
         // bind the route we created to the three dots settings button
-        app.extensionSettings['flagrow-bian-lian'] = function () {
-            return m.route(app.route('flagrow-bian-lian-configure-profile'));
+        app.extensionSettings['flagrow-masquerade'] = function () {
+            return m.route(app.route('flagrow-masquerade-configure-profile'));
         };
 
         extend(AdminNav.prototype, 'items', function (items) {
             // add the Image Upload tab to the admin navigation menu
-            items.add('flagrow-bian-lian-configure-profile', AdminLinkButton.component({
-                href: app.route('flagrow-bian-lian-configure-profile'),
+            items.add('flagrow-masquerade-configure-profile', AdminLinkButton.component({
+                href: app.route('flagrow-masquerade-configure-profile'),
                 icon: 'id-card',
-                children: 'Biàn Liǎn',
-                description: app.translator.trans('flagrow-bian-lian.admin.menu.description')
+                children: 'Masquerade',
+                description: app.translator.trans('flagrow-masquerade.admin.menu.description')
             }));
         });
     });
@@ -32,18 +32,18 @@ System.register("flagrow/bian-lian/addProfileConfigurePane", ["flarum/extend", "
             AdminNav = _flarumComponentsAdminNav.default;
         }, function (_flarumComponentsAdminLinkButton) {
             AdminLinkButton = _flarumComponentsAdminLinkButton.default;
-        }, function (_flagrowBianLianPanesProfileConfigurePane) {
-            ProfileConfigurePane = _flagrowBianLianPanesProfileConfigurePane.default;
+        }, function (_flagrowMasqueradePanesProfileConfigurePane) {
+            ProfileConfigurePane = _flagrowMasqueradePanesProfileConfigurePane.default;
         }],
         execute: function () {}
     };
 });;
 "use strict";
 
-System.register("flagrow/bian-lian/main", ["flarum/extend", "flarum/app", "flarum/components/PermissionGrid", "flagrow/bian-lian/addProfileConfigurePane"], function (_export, _context) {
+System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flarum/components/PermissionGrid", "flagrow/masquerade/models/Field", "flagrow/masquerade/addProfileConfigurePane"], function (_export, _context) {
     "use strict";
 
-    var extend, app, PermissionGrid, addProfileConfigurePane;
+    var extend, app, PermissionGrid, Field, addProfileConfigurePane;
     return {
         setters: [function (_flarumExtend) {
             extend = _flarumExtend.extend;
@@ -51,18 +51,22 @@ System.register("flagrow/bian-lian/main", ["flarum/extend", "flarum/app", "flaru
             app = _flarumApp.default;
         }, function (_flarumComponentsPermissionGrid) {
             PermissionGrid = _flarumComponentsPermissionGrid.default;
-        }, function (_flagrowBianLianAddProfileConfigurePane) {
-            addProfileConfigurePane = _flagrowBianLianAddProfileConfigurePane.default;
+        }, function (_flagrowMasqueradeModelsField) {
+            Field = _flagrowMasqueradeModelsField.default;
+        }, function (_flagrowMasqueradeAddProfileConfigurePane) {
+            addProfileConfigurePane = _flagrowMasqueradeAddProfileConfigurePane.default;
         }],
         execute: function () {
 
-            app.initializers.add('flagrow-bian-lian', function (app) {
+            app.initializers.add('flagrow-masquerade', function (app) {
+                app.store.models['masquerade-field'] = Field;
+
                 // add the permission option to the relative pane
                 extend(PermissionGrid.prototype, 'viewItems', function (items) {
-                    items.add('bian-lian-view-profile', {
+                    items.add('masquerade-view-profile', {
                         icon: 'id-card',
-                        label: app.translator.trans('flagrow-bian-lian.admin.permissions.view-profile'),
-                        permission: 'flagrow.bian-lian.view-profile',
+                        label: app.translator.trans('flagrow-masquerade.admin.permissions.view-profile'),
+                        permission: 'flagrow.masquerade.view-profile',
                         allowGuest: true
                     });
                 });
@@ -74,21 +78,19 @@ System.register("flagrow/bian-lian/main", ["flarum/extend", "flarum/app", "flaru
 });;
 "use strict";
 
-System.register("flagrow/bian-lian/panes/ProfileConfigurePane", ["flarum/Component", "flarum/utils/saveSettings", "flarum/components/Alert", "flarum/components/Switch", "flarum/components/FieldSet"], function (_export, _context) {
+System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/FieldSet", "flarum/components/Button"], function (_export, _context) {
     "use strict";
 
-    var Component, saveSettings, Alert, Switch, FieldSet, ProfileConfigurePane;
+    var Component, Switch, FieldSet, Button, ProfileConfigurePane;
     return {
         setters: [function (_flarumComponent) {
             Component = _flarumComponent.default;
-        }, function (_flarumUtilsSaveSettings) {
-            saveSettings = _flarumUtilsSaveSettings.default;
-        }, function (_flarumComponentsAlert) {
-            Alert = _flarumComponentsAlert.default;
         }, function (_flarumComponentsSwitch) {
             Switch = _flarumComponentsSwitch.default;
         }, function (_flarumComponentsFieldSet) {
             FieldSet = _flarumComponentsFieldSet.default;
+        }, function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
         }],
         execute: function () {
             ProfileConfigurePane = function (_Component) {
@@ -102,50 +104,174 @@ System.register("flagrow/bian-lian/panes/ProfileConfigurePane", ["flarum/Compone
                 babelHelpers.createClass(ProfileConfigurePane, [{
                     key: "init",
                     value: function init() {
-                        this.new = {
-                            'name': m.prop(''),
-                            'required': m.prop(false),
-                            'description': m.prop(''),
-                            'validation': m.prop('')
-                        };
+                        this.resetNew();
+                        this.loading = false;
+                        this.existing = [];
+                        this.loadExisting();
                     }
                 }, {
                     key: "view",
                     value: function view() {
+                        var _this2 = this;
+
                         return m('div', {
                             className: 'ProfileConfigurePane'
-                        }, [m('div', { className: 'container' }, [m('form', { onsubmit: this.onsubmit.bind(this) }, [this.addField()])])]);
+                        }, [m('div', { className: 'container' }, [m('form', { onsubmit: this.updateExistingFields.bind(this) }, this.existing.forEach(function (field) {
+                            return _this2.addField(field);
+                        })), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
                     }
                 }, {
                     key: "addField",
-                    value: function addField() {
+                    value: function addField(field) {
+                        var exists = field.name() != '';
+
                         return FieldSet.component({
-                            label: app.translator.trans('flagrow-bian-lian.admin.fields.add'),
-                            children: [m('div', [m('label', app.translator.trans('flagrow-bian-lian.admin.fields.name')), m('input', {
+                            label: app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                                field: field.name()
+                            }),
+                            children: [m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {
                                 className: 'FormControl',
-                                oninput: m.withAttr('value', this.new.name)
-                            })]), m('div', [m('label', app.translator.trans('flagrow-bian-lian.admin.fields.description')), m('input', {
+                                value: field.name(),
+                                oninput: m.withAttr('value', field.name)
+                            }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
                                 className: 'FormControl',
-                                oninput: m.withAttr('value', this.new.description)
-                            })]), m('div', [m('label', app.translator.trans('flagrow-bian-lian.admin.fields.required')), Switch.component({
-                                state: this.new.required(),
-                                onchange: this.new.required
-                            })]), m('div', [m('label', app.translator.trans('flagrow-bian-lian.admin.fields.validation')), m('input', {
+                                value: field.description(),
+                                oninput: m.withAttr('value', field.description)
+                            }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.description-help'))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')), m('input', {
                                 className: 'FormControl',
-                                oninput: m.withAttr('value', this.new.validation)
-                            }), m('span', app.translator.trans('flagrow-bian-lian.admin.fields.validation-help', {
-                                a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules", target: "_blank" })
-                            }))])]
+                                value: field.icon(),
+                                oninput: m.withAttr('value', field.icon)
+                            }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
+                                a: m("a", { href: "http://fontawesome.io/icons/", target: "_blank" })
+                            }))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')), m('input', {
+                                className: 'FormControl',
+                                value: field.prefix(),
+                                oninput: m.withAttr('value', field.prefix)
+                            }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), Switch.component({
+                                state: field.required(),
+                                onchange: field.required
+                            })]), m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
+                                className: 'FormControl',
+                                value: field.validation(),
+                                oninput: m.withAttr('value', field.validation)
+                            }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
+                                a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
+                                    target: "_blank" })
+                            }))]), m('div', { className: 'ButtonGroup' }, [Button.component({
+                                type: 'submit',
+                                className: 'Button Button--primary',
+                                children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
+                                loading: this.loading,
+                                disabled: !this.readyToAdd(field)
+                            }), exists ? Button.component({
+                                type: 'submit',
+                                className: 'Button Button--danger',
+                                children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
+                                loading: this.loading
+                            }) : ''])]
                         });
                     }
                 }, {
-                    key: "onsubmit",
-                    value: function onsubmit(e) {}
+                    key: "submitAddField",
+                    value: function submitAddField(e) {
+                        e.preventDefault();
+
+                        app.store.this.existing.push(this.new());
+
+                        this.resetNew();
+
+                        m.redraw();
+                    }
+                }, {
+                    key: "updateExistingFields",
+                    value: function updateExistingFields(e) {}
+                }, {
+                    key: "loadExisting",
+                    value: function loadExisting() {
+                        var _this3 = this;
+
+                        this.loading = true;
+
+                        return app.request({
+                            method: 'GET',
+                            url: app.forum.attribute('apiUrl') + '/masquerade/fields'
+                        }).then(function (result) {
+                            app.store.pushPayload(result);
+                            _this3.existing = app.store.all('masquerade-field');
+                            _this3.loading = false;
+                            m.redraw();
+                        });
+                    }
+                }, {
+                    key: "resetNew",
+                    value: function resetNew() {
+                        this.new = app.store.createRecord('masquerade-field', {
+                            type: 'masquerade-field',
+                            attributes: {
+                                'name': '',
+                                'description': '',
+                                'prefix': '',
+                                'icon': '',
+                                'required': false,
+                                'validation': ''
+                            }
+                        });
+                    }
+                }, {
+                    key: "readyToAdd",
+                    value: function readyToAdd(field) {
+                        if (field.name()) {
+                            return true;
+                        }
+
+                        return false;
+                    }
                 }]);
                 return ProfileConfigurePane;
             }(Component);
 
             _export("default", ProfileConfigurePane);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/utils/mixin'], function (_export, _context) {
+    "use strict";
+
+    var Model, mixin, Field;
+    return {
+        setters: [function (_flarumModel) {
+            Model = _flarumModel.default;
+        }, function (_flarumUtilsMixin) {
+            mixin = _flarumUtilsMixin.default;
+        }],
+        execute: function () {
+            Field = function (_mixin) {
+                babelHelpers.inherits(Field, _mixin);
+
+                function Field() {
+                    babelHelpers.classCallCheck(this, Field);
+                    return babelHelpers.possibleConstructorReturn(this, (Field.__proto__ || Object.getPrototypeOf(Field)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(Field, [{
+                    key: 'apiEndpoint',
+                    value: function apiEndpoint() {
+                        return '/masquerade/fields' + (this.exists ? '/' + this.data.id : '');
+                    }
+                }]);
+                return Field;
+            }(mixin(Model, {
+                name: Model.attribute('name'),
+                description: Model.attribute('description'),
+                validation: Model.attribute('validation'),
+                required: Model.attribute('required'),
+                prefix: Model.attribute('prefix'),
+                icon: Model.attribute('icon')
+            }));
+
+            _export('default', Field);
         }
     };
 });

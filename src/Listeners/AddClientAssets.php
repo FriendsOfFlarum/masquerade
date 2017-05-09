@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\BianLian\Listeners;
+namespace Flagrow\Masquerade\Listeners;
 
 use DirectoryIterator;
 use Flarum\Event\ConfigureLocales;
@@ -25,7 +25,7 @@ class AddClientAssets
                 __DIR__ . '/../../js/admin/dist/extension.js',
                 __DIR__ . '/../../assets/less/admin.less'
             ]);
-            $app->addBootstrapper('flagrow/bian-lian/main');
+            $app->addBootstrapper('flagrow/masquerade/main');
         }
     }
 

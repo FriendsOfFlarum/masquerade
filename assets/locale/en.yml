@@ -1,16 +1,32 @@
-flagrow-bian-lian:
+flagrow-masquerade:
     admin:
+        buttons:
+            add-field: Add field
+            edit-field: Edit field
+            delete-field: Delete field
         permissions:
-            view-profile: View Biàn Liǎn profile
+            view-profile: View Masquerade profile
         menu:
             description: >
                 Configure the user profile fields.
         fields:
-            add: Add field
+            add: Add field {field}
+            edit: Edit field {field}
             name: Field name
+            name-help: >
+                The publicly visible (non-translatable) field label.
             description: Field description
+            description-help: >
+                An optional description to explain the use/need of this field.
             required: Obligate field
             validation: Validation
             validation-help: >
                 Check the supported <a>Laravel validation rules</a>. Eg:
                 "string,min:5" or "url".
+            prefix: Field prefix
+            prefix-help: >
+                Shows your prefix in front of values entered by the user for this field.
+            icon: Icon
+            icon-help: >
+                Shows an icon in front of values entered by the user. For a reference of
+                available icons, check the <a>FontAwesome website</a>.

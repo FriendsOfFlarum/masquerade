@@ -1,5 +1,5 @@
 {
-    "name": "flagrow/bian-lian",
+    "name": "flagrow/masquerade",
     "description": "User profile builder extension for your Flarum forum.",
     "keywords": [
         "extension",
@@ -23,7 +23,7 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "Flagrow Biàn Liǎn",
+            "title": "Flagrow Masquerade",
             "icon": {
                 "name": "id-card",
                 "backgroundColor": "#f4f4f4",
@@ -33,7 +33,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Flagrow\\BianLian\\": "src/"
+            "Flagrow\\Masquerade\\": "src/"
         }
     }
 }

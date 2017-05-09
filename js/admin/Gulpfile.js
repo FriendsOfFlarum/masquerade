@@ -2,7 +2,7 @@ var gulp = require('flarum-gulp');
 
 gulp({
     modules: {
-        'flagrow/bian-lian': [
+        'flagrow/masquerade': [
             '../lib/**/*.js',
             'src/**/*.js'
         ]
