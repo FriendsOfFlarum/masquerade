@@ -18,6 +18,12 @@ export default class ProfileConfigurePane extends Component {
             fields.push(this.addField(field))
         });
 
+        this.$('fieldset.Field').on('click', '.title', function(e) {
+            e.preventDefault();
+
+            $(this).parents('.Field').toggleClass('active');
+        });
+
         return m('div', {
             className: 'ProfileConfigurePane'
         }, [
@@ -36,22 +42,19 @@ export default class ProfileConfigurePane extends Component {
         let exists = field.id();
 
         return FieldSet.component({
+            className: 'Field',
             label: [
-                m('div', {className: 'ButtonGroup'}, [
+                exists ? m('div', {className: 'ButtonGroup pull-right'}, [
                     Button.component({
                         className: 'Button Button--icon',
                         icon: "bars"
                     }),
                     Button.component({
                         className: 'Button Button--icon Button--danger',
-                        icon: "danger"
-                    }),
-                    Button.component({
-                        className: 'Button Button--icon Button--info',
-                        icon: "eye"
+                        icon: "trash"
                     })
-                ]),
-                m('span', app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                ]) : null,
+                m('span', {className: 'title'}, app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
                     field: field.name()
                 }))
             ],

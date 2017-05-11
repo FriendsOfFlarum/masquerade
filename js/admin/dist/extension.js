@@ -160,6 +160,12 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             fields.push(_this2.addField(field));
                         });
 
+                        this.$('fieldset.Field').on('click', '.title', function (e) {
+                            e.preventDefault();
+
+                            $(this).parents('.Field').toggleClass('active');
+                        });
+
                         return m('div', {
                             className: 'ProfileConfigurePane'
                         }, [m('div', { className: 'container' }, [m('form', { onsubmit: this.updateExistingFields.bind(this) }, fields), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
@@ -170,16 +176,14 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         var exists = field.id();
 
                         return FieldSet.component({
-                            label: [m('div', { className: 'ButtonGroup' }, [Button.component({
+                            className: 'Field',
+                            label: [exists ? m('div', { className: 'ButtonGroup pull-right' }, [Button.component({
                                 className: 'Button Button--icon',
                                 icon: "bars"
                             }), Button.component({
                                 className: 'Button Button--icon Button--danger',
-                                icon: "danger"
-                            }), Button.component({
-                                className: 'Button Button--icon Button--info',
-                                icon: "eye"
-                            })]), m('span', app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                                icon: "trash"
+                            })]) : null, m('span', { className: 'title' }, app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
                                 field: field.name()
                             }))],
                             children: [m('div', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')), m('input', {

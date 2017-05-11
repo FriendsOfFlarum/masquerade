@@ -1,25 +1,34 @@
 .ProfileConfigurePane {
     padding: 20px 0;
 
+    fieldset.Field {
+        padding: 5px;
+        border-radius: @border-radius;
+        .box-shadow(0 7px 15px @shadow-color);
+        background: @control-bg;
+        legend {
+            margin: 10px;
+            width: 100%;
+            > span {
+                cursor: pointer;
+            }
+        }
+        > ul {
+            margin-bottom: 30px;
+            display: none;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        &.new > ul, &.active > ul {
+            display: block;
+        }
+    }
+
     @media @desktop-up {
         .container {
             max-width: 600px;
             margin: 0;
-        }
-
-        fieldset {
-            margin-bottom: 30px;
-
-            > ul {
-                display: none;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-
-                &.active {
-                    display: block;
-                }
-            }
         }
     }
 }
