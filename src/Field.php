@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
+ * @property \Illuminate\Database\Eloquent\Collection|Answer[] $answers
  */
 class Field extends AbstractModel
 {
@@ -26,4 +27,12 @@ class Field extends AbstractModel
     protected $table = 'flagrow_masquerade_fields';
 
     protected $casts = ['required' => 'boolean'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 }

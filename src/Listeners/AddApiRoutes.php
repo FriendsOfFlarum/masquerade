@@ -6,6 +6,7 @@ use Flagrow\Masquerade\Api\Controllers\DeleteFieldController;
 use Flagrow\Masquerade\Api\Controllers\FieldIndexController;
 use Flagrow\Masquerade\Api\Controllers\OrderFieldController;
 use Flagrow\Masquerade\Api\Controllers\SaveFieldController;
+use Flagrow\Masquerade\Api\Controllers\UserConfigureController;
 use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -36,6 +37,7 @@ class AddApiRoutes
         /**
          * Forum side
          */
-        $routes->get('/masquerade/user', 'masquerade.user', UserController::class);
+        $routes->get('/masquerade/configure', 'masquerade.configure', UserConfigureController::class);
+        $routes->post('/masquerade/configure', 'masquerade.configure.save', UserConfigureController::class);
     }
 }

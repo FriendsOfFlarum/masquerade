@@ -30,7 +30,7 @@ class AddClientAssets
         if ($app->isForum()) {
             $app->addAssets([
                 __DIR__ . '/../../js/forum/dist/extension.js',
-//                __DIR__ . '/../../assets/less/forum.less'
+                __DIR__ . '/../../assets/less/forum.less'
             ]);
         }
 
