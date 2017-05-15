@@ -1,10 +1,12 @@
 import Component from "flarum/Component";
 import Switch from "flarum/components/Switch";
-import FieldSet from "flarum/components/FieldSet";
 import Button from "flarum/components/Button";
 
 export default class ProfileConfigurePane extends Component {
 
+    /**
+     * Sets up the component.
+     */
     init() {
         this.resetNew();
         this.loading = false;
@@ -12,23 +14,47 @@ export default class ProfileConfigurePane extends Component {
         this.loadExisting();
     }
 
+    /**
+     * Configures the component.
+     */
+    config() {
+        this.$('.Existing--Fields')
+            .sortable({
+                cancel: ''
+            })
+            .on('sortupdate', (e, ui) => {
+                const sorting = this.$('.Existing--Fields > .Field')
+                    .map(function () {
+                        return $(this).data('id');
+                    })
+                    .get();
+
+                this.updateSort(sorting);
+            });
+    }
+
+    /**
+     * Generates the component view.
+     *
+     * @returns {*}
+     */
     view() {
         let fields = [];
-        this.existing.forEach(field => {
+
+        this.existing
+            .sort((a, b) => a.sort() - b.sort())
+            .forEach(field => {
+            // Build array of fields to show.
             fields.push(this.addField(field))
-        });
-
-        this.$('fieldset.Field').on('click', '.title', function(e) {
-            e.preventDefault();
-
-            $(this).parents('.Field').toggleClass('active');
         });
 
         return m('div', {
             className: 'ProfileConfigurePane'
         }, [
             m('div', {className: 'container'}, [
-                m('form', {onsubmit: this.updateExistingFields.bind(this)},
+                m('form', {
+                        className: 'Existing--Fields'
+                    },
                     fields
                 ),
                 m('form', {onsubmit: this.submitAddField.bind(this)}, [
@@ -38,91 +64,103 @@ export default class ProfileConfigurePane extends Component {
         ])
     }
 
+    /**
+     * Creates a field in the DOM.
+     *
+     * @param field
+     * @returns {*}
+     */
     addField(field) {
         let exists = field.id();
 
-        return FieldSet.component({
+        return m('fieldset', {
             className: 'Field',
-            label: [
+            'data-id': field.id()
+        }, [
+            m('legend', [
                 exists ? m('div', {className: 'ButtonGroup pull-right'}, [
                     Button.component({
-                        className: 'Button Button--icon',
-                        icon: "bars"
-                    }),
-                    Button.component({
                         className: 'Button Button--icon Button--danger',
-                        icon: "trash"
+                        icon: "trash",
+                        onclick: this.deleteField.bind(this, field)
                     })
                 ]) : null,
-                m('span', {className: 'title'}, app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                    field: field.name()
-                }))
-            ],
-            children: [
-                m('div', [
+                m(
+                    'span', {
+                        className: 'title',
+                        onclick: (e) => this.toggleField(e)
+                    },
+                    app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                        field: field.name()
+                    })
+                )
+            ]),
+            m('ul', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')),
                     m('input', {
                         className: 'FormControl',
                         value: field.name(),
-                        oninput: m.withAttr('value', field.name)
+                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
                 ]),
-                m('div', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')),
                     m('input', {
                         className: 'FormControl',
                         value: field.description(),
-                        oninput: m.withAttr('value', field.description)
+                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.description-help'))
                 ]),
-                m('div', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')),
                     m('input', {
                         className: 'FormControl',
                         value: field.icon(),
-                        oninput: m.withAttr('value', field.icon)
+                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
                         a: <a href="http://fontawesome.io/icons/" target="_blank"/>
                     }))
                 ]),
-                m('div', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
                     m('input', {
                         className: 'FormControl',
                         value: field.prefix(),
-                        oninput: m.withAttr('value', field.prefix)
+                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
                 ]),
-                m('div', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')),
                     Switch.component({
                         state: field.required(),
-                        onchange: field.required
+                        onchange: this.updateExistingFieldInput.bind(this, 'required', field)
                     })
                 ]),
-                m('div', [
+                m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')),
                     m('input', {
                         className: 'FormControl',
                         value: field.validation(),
-                        oninput: m.withAttr('value', field.validation)
+                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
                     }),
                     m('span', app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
                         a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules"
                               target="_blank"/>
                     }))
                 ]),
-                m('div', {className: 'ButtonGroup'}, [
+                m('li', {className: 'ButtonGroup'}, [
                     Button.component({
                         type: 'submit',
                         className: 'Button Button--primary',
                         children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
                         loading: this.loading,
-                        disabled: !this.readyToAdd(field)
+                        disabled: !this.readyToAdd(field),
+                        onclick: this.updateExistingField.bind(this, field)
                     }),
                     (exists ? Button.component({
                         type: 'submit',
@@ -131,8 +169,61 @@ export default class ProfileConfigurePane extends Component {
                         loading: this.loading
                     }) : '')
                 ])
-            ]
-        })
+            ])
+        ]);
+    }
+
+    updateExistingFieldInput(what, field, value)
+    {
+        let exists = field.id();
+
+        if (exists) {
+            field.pushAttributes({
+                [what]: value
+            })
+        } else {
+            field[what](value);
+        }
+    }
+
+    /**
+     * Sorts the fields.
+     *
+     * @param Array sort
+     */
+    updateSort(sorting) {
+        let data = {
+            sort: sorting
+        };
+
+        app.request({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
+            data
+        });
+    }
+
+    /**
+     * Opens and closes field configuration sets.
+     *
+     * @param e
+     */
+    toggleField(e) {
+        $(e.target).parents('.Field').toggleClass('active');
+    }
+
+    /**
+     * Deletes a field configuration set.
+     *
+     * @param field
+     */
+    deleteField(field) {
+        app.request({
+            method: 'DELETE',
+            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
+        }).then(
+            this.requestSuccess.bind(this)
+        );
     }
 
     /**
@@ -143,7 +234,7 @@ export default class ProfileConfigurePane extends Component {
     submitAddField(e) {
         e.preventDefault();
 
-        var data = this.new;
+        let data = this.new;
 
         // @todo xhr call app.request
         app.request({
@@ -159,16 +250,39 @@ export default class ProfileConfigurePane extends Component {
         m.redraw();
     }
 
-    updateExistingField(field, setting, value) {
-        field[setting](value);
+    /**
+     * Updates the value of one field.
+     *
+     * @param label
+     * @param field
+     * @param value
+     */
+    updateExistingField(field) {
+        if (!field.id()) return;
+
+        let data = field.data;
+
+        app.request({
+            method: 'POST',
+            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
+            data
+        }).then(
+            this.requestSuccess.bind(this)
+        );
     }
 
-    updateExistingFields(e) {
-
-    }
-
+    /**
+     * Parses result to update DOM.
+     *
+     * @param result
+     */
     requestSuccess(result) {
-        app.store.pushPayload(result);
+        let model = app.store.pushPayload(result);
+
+        // In case we've updated/deleted one instance delete it if necessary.
+        if (!(model instanceof Array) && model.deleted_at()) {
+            app.store.remove(model);
+        }
 
         this.existing = app.store.all('masquerade-field');
 
@@ -176,6 +290,9 @@ export default class ProfileConfigurePane extends Component {
         m.redraw()
     }
 
+    /**
+     * Retrieves list of fields.
+     */
     loadExisting() {
         this.loading = true;
 
@@ -187,6 +304,9 @@ export default class ProfileConfigurePane extends Component {
         );
     }
 
+    /**
+     * Resets the new field.
+     */
     resetNew() {
         this.new = {
             'id': m.prop(),

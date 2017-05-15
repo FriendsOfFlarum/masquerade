@@ -11,7 +11,7 @@ use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class SaveFieldController extends AbstractResourceController
+class DeleteFieldController extends AbstractResourceController
 {
     use AssertPermissionTrait;
 
@@ -39,36 +39,13 @@ class SaveFieldController extends AbstractResourceController
 
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        if ($id) {
-            $attributes = Arr::get($request->getParsedBody(), 'attributes', []);
-        } else {
-            $attributes = $request->getParsedBody();
+        /** @var Field $field */
+        $field = Field::findOrFail($id);
+
+        if ($field->delete()) {
+            return $field;
         }
 
-        $this->validator->assertValid($attributes);
-
-        if ($id) {
-            $field = Field::findOrFail($id);
-        } else {
-            $field = new Field();
-            $field->sort = $this->highestSort();
-        }
-
-        foreach (Arr::except($attributes, ['id', 'sort']) as $attribute => $value) {
-            $field->{$attribute} = $value;
-        }
-
-        $field->save();
-
-        return $field;
-    }
-
-    /**
-     * @return int
-     */
-    protected function highestSort() {
-        $max = Field::orderBy('sort', 'desc')->first();
-
-        return $max ? $max->sort + 1: 0;
+        abort(500, "Could not delete Field");
     }
 }

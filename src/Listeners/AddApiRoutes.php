@@ -2,7 +2,9 @@
 
 namespace Flagrow\Masquerade\Listeners;
 
+use Flagrow\Masquerade\Api\Controllers\DeleteFieldController;
 use Flagrow\Masquerade\Api\Controllers\FieldIndexController;
+use Flagrow\Masquerade\Api\Controllers\OrderFieldController;
 use Flagrow\Masquerade\Api\Controllers\SaveFieldController;
 use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -22,7 +24,18 @@ class AddApiRoutes
      */
     public function routes(ConfigureApiRoutes $routes)
     {
+        /**
+         * Admin side
+         */
         $routes->get('/masquerade/fields', 'masquerade.fields.index', FieldIndexController::class);
-        $routes->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.save', SaveFieldController::class);
+        $routes->post('/masquerade/fields/order', 'masquerade.fields.order', OrderFieldController::class);
+        $routes->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.create', SaveFieldController::class);
+        $routes->patch('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.update', SaveFieldController::class);
+        $routes->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.delete', DeleteFieldController::class);
+
+        /**
+         * Forum side
+         */
+        $routes->get('/masquerade/user', 'masquerade.user', UserController::class);
     }
 }

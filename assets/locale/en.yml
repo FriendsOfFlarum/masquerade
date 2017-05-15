@@ -1,4 +1,7 @@
 flagrow-masquerade:
+    forum:
+        buttons:
+            configure-profile: Configure profile
     admin:
         buttons:
             add-field: Add field

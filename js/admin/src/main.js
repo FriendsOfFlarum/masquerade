@@ -10,7 +10,7 @@ app.initializers.add('flagrow-masquerade', app => {
     // add the permission option to the relative pane
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('masquerade-view-profile', {
-            icon: 'id-card',
+            icon: 'id-card-o',
             label: app.translator.trans('flagrow-masquerade.admin.permissions.view-profile'),
             permission: 'flagrow.masquerade.view-profile',
             allowGuest: true

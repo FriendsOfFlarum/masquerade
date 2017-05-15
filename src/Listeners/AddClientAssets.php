@@ -25,8 +25,16 @@ class AddClientAssets
                 __DIR__ . '/../../js/admin/dist/extension.js',
                 __DIR__ . '/../../assets/less/admin.less'
             ]);
-            $app->addBootstrapper('flagrow/masquerade/main');
         }
+
+        if ($app->isForum()) {
+            $app->addAssets([
+                __DIR__ . '/../../js/forum/dist/extension.js',
+//                __DIR__ . '/../../assets/less/forum.less'
+            ]);
+        }
+
+        $app->addBootstrapper('flagrow/masquerade/main');
     }
 
     /**

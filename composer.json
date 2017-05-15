@@ -25,7 +25,7 @@
         "flarum-extension": {
             "title": "Flagrow Masquerade",
             "icon": {
-                "name": "id-card",
+                "name": "id-card-o",
                 "backgroundColor": "#f4f4f4",
                 "color": "#5f4bb6"
             }
