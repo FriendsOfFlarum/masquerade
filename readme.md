@@ -1,4 +1,4 @@
-# User directory by ![flagrow logo](https://avatars0.githubusercontent.com/u/16413865?v=3&s=15) [flagrow](https://discuss.flarum.org/d/1832-flagrow-extension-developer-group)
+# Masquerade by ![flagrow logo](https://avatars0.githubusercontent.com/u/16413865?v=3&s=15) [flagrow](https://discuss.flarum.org/d/1832-flagrow-extension-developer-group)
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/flagrow/masquerade/license.md) [![Latest Stable Version](https://img.shields.io/packagist/v/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade) [![Total Downloads](https://img.shields.io/packagist/dt/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade)
 
@@ -11,7 +11,7 @@ The user profile generator. Includes:
 - Permission who can view a masquerade profile.
 - Allowing you to configure forced redirection to make a (email verified) user complete the required fields.
 
-![](https://discuss.hyn.me/assets/files/2017-05-04/1493936911-0-user-directory-demo.gif)
+![](https://discuss.hyn.me/assets/files/2017-05-16/1494967236-0-masquerade-demo.gif)
 
 ### installation
 
