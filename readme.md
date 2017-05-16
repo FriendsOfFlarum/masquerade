@@ -11,7 +11,7 @@ The user profile generator. Includes:
 - Permission who can view a masquerade profile.
 - Allowing you to configure forced redirection to make a (email verified) user complete the required fields.
 
-![](https://discuss.hyn.me/assets/files/2017-05-16/1494967236-0-masquerade-demo.gif)
+![](https://discuss.hyn.me/assets/files/2017-05-16/1494967396-0-masquerade-demo.gif)
 
 ### installation
 
