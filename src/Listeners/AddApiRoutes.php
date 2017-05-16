@@ -28,16 +28,17 @@ class AddApiRoutes
         /**
          * Admin side
          */
-        $routes->get('/masquerade/fields', 'masquerade.fields.index', FieldIndexController::class);
-        $routes->post('/masquerade/fields/order', 'masquerade.fields.order', OrderFieldController::class);
-        $routes->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.create', SaveFieldController::class);
-        $routes->patch('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.update', SaveFieldController::class);
-        $routes->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.fields.delete', DeleteFieldController::class);
+        $routes->get('/masquerade/fields', 'masquerade.api.fields.index', FieldIndexController::class);
+        $routes->post('/masquerade/fields/order', 'masquerade.api.fields.order', OrderFieldController::class);
+        $routes->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.create', SaveFieldController::class);
+        $routes->patch('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.update', SaveFieldController::class);
+        $routes->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.delete', DeleteFieldController::class);
 
         /**
          * Forum side
          */
-        $routes->get('/masquerade/configure', 'masquerade.configure', UserConfigureController::class);
-        $routes->post('/masquerade/configure', 'masquerade.configure.save', UserConfigureController::class);
+        $routes->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', UserConfigureController::class);
+        $routes->get('/masquerade/configure', 'masquerade.api.configure', UserConfigureController::class);
+        $routes->post('/masquerade/configure', 'masquerade.api.configure.save', UserConfigureController::class);
     }
 }

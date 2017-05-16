@@ -24,10 +24,15 @@ class UserConfigureController extends AbstractCollectionController
      * @var AnswerValidator
      */
     protected $validator;
+    /**
+     * @var \Illuminate\Database\Eloquent\Collection
+     */
+    protected $fields;
 
     function __construct(AnswerValidator $validator)
     {
         $this->validator = $validator;
+        $this->fields = Field::orderBy('sort', 'desc')->get();
     }
 
     /**
@@ -44,7 +49,11 @@ class UserConfigureController extends AbstractCollectionController
         $this->assertRegistered($actor);
 
         /** @var \Illuminate\Database\Eloquent\Collection $fields */
-        $fields = Field::orderBy('sort', 'desc')->get();
+        $fields = $this->fields->each(function ($field) use ($request) {
+            if ($request->getMethod() == 'GET' && $request->getAttribute('id')) {
+                $field->for = $request->getAttribute('id');
+            }
+        });
 
         if ($request->getMethod() == 'POST') {
             $this->processUpdate($actor, $request->getParsedBody(), $fields);

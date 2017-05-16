@@ -44,9 +44,9 @@ export default class ProfileConfigurePane extends Component {
         this.existing
             .sort((a, b) => a.sort() - b.sort())
             .forEach(field => {
-            // Build array of fields to show.
-            fields.push(this.addField(field))
-        });
+                // Build array of fields to show.
+                fields.push(this.addField(field))
+            });
 
         return m('div', {
             className: 'ProfileConfigurePane'
@@ -103,7 +103,7 @@ export default class ProfileConfigurePane extends Component {
                         value: field.name(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
                     }),
-                    m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
+                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
                 ]),
                 m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')),
@@ -112,7 +112,7 @@ export default class ProfileConfigurePane extends Component {
                         value: field.description(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
                     }),
-                    m('span', app.translator.trans('flagrow-masquerade.admin.fields.description-help'))
+                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.description-help'))
                 ]),
                 m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')),
@@ -121,25 +121,27 @@ export default class ProfileConfigurePane extends Component {
                         value: field.icon(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
                     }),
-                    m('span', app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
+                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
                         a: <a href="http://fontawesome.io/icons/" target="_blank"/>
                     }))
                 ]),
+                // m('li', [
+                //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
+                //     m('input', {
+                //         className: 'FormControl',
+                //         value: field.prefix(),
+                //         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
+                //     }),
+                //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
+                // ]),
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
-                    m('input', {
-                        className: 'FormControl',
-                        value: field.prefix(),
-                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
-                    }),
-                    m('span', app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
-                ]),
-                m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')),
-                    Switch.component({
-                        state: field.required(),
-                        onchange: this.updateExistingFieldInput.bind(this, 'required', field)
-                    })
+                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), [
+                        Switch.component({
+                            state: field.required(),
+                            onchange: this.updateExistingFieldInput.bind(this, 'required', field)
+                        }),
+                        m('br')
+                    ]
                 ]),
                 m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')),
@@ -148,7 +150,7 @@ export default class ProfileConfigurePane extends Component {
                         value: field.validation(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
                     }),
-                    m('span', app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
+                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
                         a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules"
                               target="_blank"/>
                     }))
@@ -173,8 +175,7 @@ export default class ProfileConfigurePane extends Component {
         ]);
     }
 
-    updateExistingFieldInput(what, field, value)
-    {
+    updateExistingFieldInput(what, field, value) {
         let exists = field.id();
 
         if (exists) {

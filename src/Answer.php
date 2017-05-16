@@ -19,6 +19,7 @@ use Flarum\Database\AbstractModel;
 class Answer extends AbstractModel
 {
     protected $table = 'flagrow_masquerade_answers';
+    protected $fillable = ['*'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

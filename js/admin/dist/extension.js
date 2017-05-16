@@ -61,7 +61,7 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flar
             app.initializers.add('flagrow-masquerade', function (app) {
                 app.store.models['masquerade-field'] = Field;
 
-                // add the permission option to the relative pane
+                // add the permission option for viewing a masquerade profile
                 extend(PermissionGrid.prototype, 'viewItems', function (items) {
                     items.add('masquerade-view-profile', {
                         icon: 'id-card-o',
@@ -70,9 +70,54 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flar
                         allowGuest: true
                     });
                 });
+                // add the permission option for creating a masquerade profile
+                extend(PermissionGrid.prototype, 'startItems', function (items) {
+                    items.add('masquerade-have-profile', {
+                        icon: 'id-card-o',
+                        label: app.translator.trans('flagrow-masquerade.admin.permissions.have-profile'),
+                        permission: 'flagrow.masquerade.have-profile'
+                    });
+                });
 
                 addProfileConfigurePane();
             });
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/models/Answer', ['flarum/Model', 'flarum/utils/mixin'], function (_export, _context) {
+    "use strict";
+
+    var Model, mixin, Answer;
+    return {
+        setters: [function (_flarumModel) {
+            Model = _flarumModel.default;
+        }, function (_flarumUtilsMixin) {
+            mixin = _flarumUtilsMixin.default;
+        }],
+        execute: function () {
+            Answer = function (_mixin) {
+                babelHelpers.inherits(Answer, _mixin);
+
+                function Answer() {
+                    babelHelpers.classCallCheck(this, Answer);
+                    return babelHelpers.possibleConstructorReturn(this, (Answer.__proto__ || Object.getPrototypeOf(Answer)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(Answer, [{
+                    key: 'apiEndpoint',
+                    value: function apiEndpoint() {
+                        return '/masquerade/configure' + (this.exists ? '/' + this.data.id : '');
+                    }
+                }]);
+                return Answer;
+            }(mixin(Model, {
+                content: Model.attribute('content'),
+                field: Model.hasOne('field')
+            }));
+
+            _export('default', Answer);
         }
     };
 });;
@@ -112,7 +157,8 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
                 prefix: Model.attribute('prefix'),
                 icon: Model.attribute('icon'),
                 sort: Model.attribute('sort'),
-                deleted_at: Model.attribute('deleted_at', Model.transformDate)
+                deleted_at: Model.attribute('deleted_at', Model.transformDate),
+                answer: Model.hasOne('answer')
             }));
 
             _export('default', Field);
@@ -210,28 +256,34 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             className: 'FormControl',
                             value: field.name(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
-                        }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
+                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.name-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')), m('input', {
                             className: 'FormControl',
                             value: field.description(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
-                        }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.description-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')), m('input', {
+                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.description-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')), m('input', {
                             className: 'FormControl',
                             value: field.icon(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
-                        }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
+                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
                             a: m("a", { href: "http://fontawesome.io/icons/", target: "_blank" })
-                        }))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')), m('input', {
-                            className: 'FormControl',
-                            value: field.prefix(),
-                            oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
-                        }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), Switch.component({
+                        }))]),
+                        // m('li', [
+                        //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
+                        //     m('input', {
+                        //         className: 'FormControl',
+                        //         value: field.prefix(),
+                        //         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
+                        //     }),
+                        //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
+                        // ]),
+                        m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), [Switch.component({
                             state: field.required(),
                             onchange: this.updateExistingFieldInput.bind(this, 'required', field)
-                        })]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
+                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
                             className: 'FormControl',
                             value: field.validation(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
-                        }), m('span', app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
+                        }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
                             a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
                                 target: "_blank" })
                         }))]), m('li', { className: 'ButtonGroup' }, [Button.component({

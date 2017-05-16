@@ -2,8 +2,9 @@
 
 namespace Flagrow\Masquerade\Listeners;
 
+use Flagrow\Masquerade\Http\Controllers\ManageProfileController;
+use Flagrow\Masquerade\Http\Controllers\ViewProfileController;
 use Flarum\Event\ConfigureForumRoutes;
-use Flarum\Forum\Controller\AuthorizedWebAppController;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class AddWebRoutes
@@ -23,8 +24,13 @@ class AddWebRoutes
     {
         $routes->get(
             '/masquerade/configure',
-            'settings',
-            AuthorizedWebAppController::class
+            'masquerade.profile.configure',
+            ManageProfileController::class
+        );
+        $routes->get(
+            '/masquerade/{username}',
+            'masquerade.profile.view',
+            ViewProfileController::class
         );
     }
 }

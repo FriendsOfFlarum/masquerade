@@ -7,13 +7,21 @@ import addProfileConfigurePane from 'flagrow/masquerade/addProfileConfigurePane'
 app.initializers.add('flagrow-masquerade', app => {
     app.store.models['masquerade-field'] = Field;
 
-    // add the permission option to the relative pane
+    // add the permission option for viewing a masquerade profile
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('masquerade-view-profile', {
             icon: 'id-card-o',
             label: app.translator.trans('flagrow-masquerade.admin.permissions.view-profile'),
             permission: 'flagrow.masquerade.view-profile',
             allowGuest: true
+        });
+    });
+    // add the permission option for creating a masquerade profile
+    extend(PermissionGrid.prototype, 'startItems', items => {
+        items.add('masquerade-have-profile', {
+            icon: 'id-card-o',
+            label: app.translator.trans('flagrow-masquerade.admin.permissions.have-profile'),
+            permission: 'flagrow.masquerade.have-profile'
         });
     });
 

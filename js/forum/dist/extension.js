@@ -7,12 +7,12 @@ System.register('flagrow/masquerade/addProfileConfigurePane', ['flarum/extend', 
 
     _export('default', function () {
         // create the route
-        app.routes['flagrow-masquerade-configure-profile'] = { path: '/masquerade/configure', component: ProfileConfigurePane.component() };
+        app.routes['masquerade-configure-profile'] = { path: '/masquerade/configure', component: ProfileConfigurePane.component() };
 
         extend(UserPage.prototype, 'navItems', function (items) {
-            if (app.session.user === this.user) {
-                items.add('masquerade', LinkButton.component({
-                    href: app.route('flagrow-masquerade-configure-profile'),
+            if (app.forum.attribute('canHaveMasquerade') && app.session.user === this.user) {
+                items.add('masquerade-configure', LinkButton.component({
+                    href: app.route('masquerade-configure-profile'),
                     children: app.translator.trans('flagrow-masquerade.forum.buttons.configure-profile'),
                     icon: 'id-card-o'
                 }), -100);
@@ -35,10 +35,10 @@ System.register('flagrow/masquerade/addProfileConfigurePane', ['flarum/extend', 
 });;
 "use strict";
 
-System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane"], function (_export, _context) {
+System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane", "flagrow/masquerade/addProfilePane"], function (_export, _context) {
     "use strict";
 
-    var extend, app, Field, Answer, addProfileConfigurePane;
+    var extend, app, Field, Answer, addProfileConfigurePane, addProfilePane;
     return {
         setters: [function (_flarumExtend) {
             extend = _flarumExtend.extend;
@@ -50,6 +50,8 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
             Answer = _flagrowMasqueradeModelsAnswer.default;
         }, function (_flagrowMasqueradeAddProfileConfigurePane) {
             addProfileConfigurePane = _flagrowMasqueradeAddProfileConfigurePane.default;
+        }, function (_flagrowMasqueradeAddProfilePane) {
+            addProfilePane = _flagrowMasqueradeAddProfilePane.default;
         }],
         execute: function () {
 
@@ -58,6 +60,7 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
                 app.store.models['masquerade-answer'] = Answer;
 
                 addProfileConfigurePane();
+                addProfilePane();
             });
         }
     };
@@ -203,11 +206,11 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/compon
                 }, {
                     key: "field",
                     value: function field(_field) {
-                        return m('fieldset', { className: 'Field' }, [m('legend', [_field.icon() ? icon(_field.icon()) : '', _field.name()]), m('div', { className: 'FormField' }, [_field.prefix() ? m('span', { className: 'prefix' }, _field.prefix()) : '', m('input', {
+                        return m('fieldset', { className: 'Field' }, [m('legend', [_field.icon() ? icon(_field.icon()) : '', _field.name()]), m('div', { className: 'FormField' }, [_field.prefix() ? m('div', { className: 'prefix' }, _field.prefix()) : '', m('input', {
                             className: 'FormControl',
                             oninput: m.withAttr('value', this.set.bind(this, _field)),
                             value: this.answers[_field.id()]()
-                        }), _field.description() ? m('span', { className: 'help-block' }, _field.description()) : ''])]);
+                        }), _field.description() ? m('span', { className: 'helpText' }, _field.description()) : ''])]);
                     }
                 }, {
                     key: "load",
@@ -251,6 +254,122 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/compon
             }(UserPage);
 
             _export("default", ProfileConfigurePane);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/addProfilePane', ['flarum/extend', 'flagrow/masquerade/panes/ProfilePane', 'flarum/components/UserPage', 'flarum/components/LinkButton'], function (_export, _context) {
+    "use strict";
+
+    var extend, ProfilePane, UserPage, LinkButton;
+
+    _export('default', function () {
+        // create the route
+        app.routes['flagrow-masquerade-view-profile'] = { path: '/masquerade/:username', component: ProfilePane.component() };
+
+        extend(UserPage.prototype, 'navItems', function (items) {
+            if (app.forum.attribute('canViewMasquerade')) {
+                var user = this.user;
+                items.add('masquerade', LinkButton.component({
+                    href: app.route('flagrow-masquerade-view-profile', { username: user.username() }),
+                    children: app.translator.trans('flagrow-masquerade.forum.buttons.view-profile'),
+                    icon: 'id-card-o'
+                }), 200);
+            }
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            extend = _flarumExtend.extend;
+        }, function (_flagrowMasqueradePanesProfilePane) {
+            ProfilePane = _flagrowMasqueradePanesProfilePane.default;
+        }, function (_flarumComponentsUserPage) {
+            UserPage = _flarumComponentsUserPage.default;
+        }, function (_flarumComponentsLinkButton) {
+            LinkButton = _flarumComponentsLinkButton.default;
+        }],
+        execute: function () {}
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/UserPage', 'flarum/helpers/icon'], function (_export, _context) {
+    "use strict";
+
+    var UserPage, icon, ProfileConfigurePane;
+    return {
+        setters: [function (_flarumComponentsUserPage) {
+            UserPage = _flarumComponentsUserPage.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }],
+        execute: function () {
+            ProfileConfigurePane = function (_UserPage) {
+                babelHelpers.inherits(ProfileConfigurePane, _UserPage);
+
+                function ProfileConfigurePane() {
+                    babelHelpers.classCallCheck(this, ProfileConfigurePane);
+                    return babelHelpers.possibleConstructorReturn(this, (ProfileConfigurePane.__proto__ || Object.getPrototypeOf(ProfileConfigurePane)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(ProfileConfigurePane, [{
+                    key: 'init',
+                    value: function init() {
+                        babelHelpers.get(ProfileConfigurePane.prototype.__proto__ || Object.getPrototypeOf(ProfileConfigurePane.prototype), 'init', this).call(this);
+                        this.loading = true;
+
+                        this.fields = [];
+                        this.answers = {};
+
+                        this.loadUser(m.route.param('username'));
+
+                        this.load();
+                    }
+                }, {
+                    key: 'content',
+                    value: function content() {
+                        var _this2 = this;
+
+                        return m('div', {
+                            className: 'ProfilePane'
+                        }, [m('div', { className: 'Fields' }, this.fields.sort(function (a, b) {
+                            return a.sort() - b.sort();
+                        }).map(function (field) {
+                            if (!(field.id() in _this2.answers)) {
+                                _this2.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
+                            }
+                            return _this2.field(field);
+                        }))]);
+                    }
+                }, {
+                    key: 'field',
+                    value: function field(_field) {
+                        return m('fieldset', { className: 'Field' }, [m('legend', [_field.icon() ? icon(_field.icon()) : '', _field.name()]), m('div', { className: 'FormField' }, [_field.prefix() ? m('div', { className: 'prefix' }, _field.prefix()) : '', m('div', {
+                            className: 'FormControl'
+                        }, this.answers[_field.id()]())])]);
+                    }
+                }, {
+                    key: 'load',
+                    value: function load() {
+                        app.request({
+                            method: 'GET',
+                            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + this.user.id()
+                        }).then(this.parseResponse.bind(this));
+                    }
+                }, {
+                    key: 'parseResponse',
+                    value: function parseResponse(response) {
+                        this.fields = app.store.pushPayload(response);
+                        this.loading = false;
+                        m.redraw();
+                    }
+                }]);
+                return ProfileConfigurePane;
+            }(UserPage);
+
+            _export('default', ProfileConfigurePane);
         }
     };
 });

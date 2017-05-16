@@ -39,7 +39,9 @@ class FieldSerializer extends AbstractSerializer
             return null;
         }
 
-        if ($answer = $model->answers()->where('user_id', $this->getActor()->id)->first()) {
+        $for = $model->for ? $model->for : $this->getActor()->id;
+
+        if ($answer = $model->answers()->where('user_id', $for)->first()) {
             return new Relationship(new Resource(
                 $answer,
                 new AnswerSerializer

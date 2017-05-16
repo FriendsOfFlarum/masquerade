@@ -1,4 +1,4 @@
-.ProfileConfigurePane {
+.ProfileConfigurePane, .ProfilePane {
     min-height: 100vh;
     padding: 20px 0;
 
@@ -16,15 +16,23 @@
                     cursor: pointer;
                 }
             }
-            > ul {
-                margin-bottom: 30px;
-                display: none;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
-            &.new > ul, &.active > ul {
-                display: block;
+
+            .FormField {
+                .prefix {
+                    float: left;
+                    width: 30%;
+
+                    display: block;
+                    height: 36px;
+                    padding: 8px 13px;
+                    font-size: 13px;
+                    line-height: 1.5;
+                    color: @muted-color;
+                    background-color: @control-bg;
+                    border: 2px solid transparent;
+                    border-radius: @border-radius;
+                    -webkit-appearance: none;
+                }
             }
         }
     }

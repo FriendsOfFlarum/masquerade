@@ -1,23 +1,22 @@
 import UserPage from 'flarum/components/UserPage';
 import icon from "flarum/helpers/icon";
-import Button from "flarum/components/Button";
 
 export default class ProfileConfigurePane extends UserPage {
     init() {
         super.init();
         this.loading = true;
 
-        this.loadUser(app.session.user.username());
         this.fields = [];
         this.answers = {};
+
+        this.loadUser(m.route.param('username'));
 
         this.load();
     }
 
     content() {
-        return m('form', {
-                className: 'ProfileConfigurePane',
-                onsubmit: this.update.bind(this)
+        return m('div', {
+                className: 'ProfilePane'
             }, [
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
@@ -27,13 +26,7 @@ export default class ProfileConfigurePane extends UserPage {
                         }
                         return this.field(field);
                     })
-                ),
-                Button.component({
-                    type: 'submit',
-                    className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-masquerade.forum.buttons.save-profile'),
-                    loading: this.loading
-                })
+                )
             ]
         );
     }
@@ -46,12 +39,9 @@ export default class ProfileConfigurePane extends UserPage {
             ]),
             m('div', {className: 'FormField'}, [
                 field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
-                m('input', {
-                    className: 'FormControl',
-                    oninput: m.withAttr('value', this.set.bind(this, field)),
-                    value: this.answers[field.id()]()
-                }),
-                field.description() ? m('span', {className: 'helpText'}, field.description()) : ''
+                m('div', {
+                    className: 'FormControl'
+                }, this.answers[field.id()]())
             ])
         ]);
     }
@@ -59,32 +49,10 @@ export default class ProfileConfigurePane extends UserPage {
     load() {
         app.request({
             method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/masquerade/configure',
+            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + this.user.id(),
         }).then(
             this.parseResponse.bind(this)
         );
-    }
-
-    set(field, value) {
-        if (!(field.id() in this.answers)) {
-            this.answers[field.id()] = m.prop(value);
-        } else {
-            this.answers[field.id()](value);
-        }
-    }
-
-    update(e) {
-        e.preventDefault();
-
-        let data = this.answers;
-
-        app.request({
-            method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/masquerade/configure',
-            data
-        }).then(
-            this.parseResponse.bind(this)
-        )
     }
 
     parseResponse(response) {
