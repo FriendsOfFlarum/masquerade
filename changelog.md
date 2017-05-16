@@ -1,0 +1,7 @@
+- 0.1.0-beta.1
+  - Admin configuration of fields. Add, updating, deleting and re-ordering.
+  - User entry of answers to fields.
+  - Permission to view profile.
+  - Permission to create/have a profile.
+  - Add link to user profile frontend for editing profile.
+  - Add link to user profile frontend to view profile.
