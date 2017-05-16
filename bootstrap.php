@@ -11,4 +11,5 @@ return function (Dispatcher $events) {
     $events->subscribe(Listeners\InjectPermissions::class);
     $events->subscribe(Listeners\InjectSettings::class);
     $events->subscribe(Listeners\DemandProfileCompletion::class);
+    $events->subscribe(Listeners\AddUserGambits::class);
 };
