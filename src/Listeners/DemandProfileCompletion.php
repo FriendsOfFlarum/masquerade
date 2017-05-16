@@ -16,7 +16,7 @@ class DemandProfileCompletion
 
     public function __construct(SettingsRepositoryInterface $settings)
     {
-        $this->enforce = $settings->get('masquerade.force-profile-completion', false);
+        $this->enforce = (bool) $settings->get('masquerade.force-profile-completion', false);
     }
     /**
      * @param Dispatcher $events

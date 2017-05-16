@@ -216,7 +216,6 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/compon
                         this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
                         this.fields = [];
                         this.answers = {};
-                        console.log(this.enforceProfileCompletion, this.profileCompleted);
                         this.load();
                     }
                 }, {
@@ -326,10 +325,8 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
 
                         this.fields = [];
                         this.answers = {};
-
+                        console.log(m.route.param('username'));
                         this.loadUser(m.route.param('username'));
-
-                        this.load();
                     }
                 }, {
                     key: 'content',
@@ -356,11 +353,18 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
                     }
                 }, {
                     key: 'load',
-                    value: function load() {
+                    value: function load(user) {
                         app.request({
                             method: 'GET',
-                            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + this.user.id()
+                            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + user.id()
                         }).then(this.parseResponse.bind(this));
+                    }
+                }, {
+                    key: 'show',
+                    value: function show(user) {
+                        this.load(user);
+
+                        babelHelpers.get(ProfileConfigurePane.prototype.__proto__ || Object.getPrototypeOf(ProfileConfigurePane.prototype), 'show', this).call(this, user);
                     }
                 }, {
                     key: 'parseResponse',
