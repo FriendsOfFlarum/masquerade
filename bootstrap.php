@@ -9,4 +9,6 @@ return function (Dispatcher $events) {
     $events->subscribe(Listeners\AddApiRoutes::class);
     $events->subscribe(Listeners\AddWebRoutes::class);
     $events->subscribe(Listeners\InjectPermissions::class);
+    $events->subscribe(Listeners\InjectSettings::class);
+    $events->subscribe(Listeners\DemandProfileCompletion::class);
 };

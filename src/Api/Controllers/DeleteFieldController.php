@@ -3,7 +3,7 @@
 namespace Flagrow\Masquerade\Api\Controllers;
 
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
-use Flagrow\Masquerade\Field;
+use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\FieldValidator;
 use Flarum\Api\Controller\AbstractResourceController;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -19,11 +19,16 @@ class DeleteFieldController extends AbstractResourceController
     /**
      * @var FieldValidator
      */
-    private $validator;
+    protected $validator;
+    /**
+     * @var FieldRepository
+     */
+    protected $fields;
 
-    public function __construct(FieldValidator $validator)
+    public function __construct(FieldValidator $validator, FieldRepository $fields)
     {
         $this->validator = $validator;
+        $this->fields = $fields;
     }
 
     /**
@@ -39,11 +44,8 @@ class DeleteFieldController extends AbstractResourceController
 
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        /** @var Field $field */
-        $field = Field::findOrFail($id);
-
-        if ($field->delete()) {
-            return $field;
+        if ($deleted = $this->fields->delete($id)) {
+            return $deleted;
         }
 
         abort(500, "Could not delete Field");

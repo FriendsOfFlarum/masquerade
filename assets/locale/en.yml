@@ -1,5 +1,8 @@
 flagrow-masquerade:
     forum:
+        alerts:
+            profile-completion-required: >
+                Please complete the necessary profile fields below.
         buttons:
             view-profile: View profile
             configure-profile: Configure profile
@@ -36,3 +39,4 @@ flagrow-masquerade:
             icon-help: >
                 Shows an icon in front of values entered by the user. For a reference of
                 available icons, check the <a>FontAwesome website</a>.
+            force-user-to-completion: Force user to complete profile

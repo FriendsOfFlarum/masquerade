@@ -7,6 +7,7 @@ use Flagrow\Masquerade\Api\Controllers\FieldIndexController;
 use Flagrow\Masquerade\Api\Controllers\OrderFieldController;
 use Flagrow\Masquerade\Api\Controllers\SaveFieldController;
 use Flagrow\Masquerade\Api\Controllers\UserConfigureController;
+use Flagrow\Masquerade\Api\Controllers\UserProfileController;
 use Flarum\Event\ConfigureApiRoutes;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -37,7 +38,7 @@ class AddApiRoutes
         /**
          * Forum side
          */
-        $routes->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', UserConfigureController::class);
+        $routes->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', UserProfileController::class);
         $routes->get('/masquerade/configure', 'masquerade.api.configure', UserConfigureController::class);
         $routes->post('/masquerade/configure', 'masquerade.api.configure.save', UserConfigureController::class);
     }

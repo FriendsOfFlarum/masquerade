@@ -4,6 +4,7 @@ namespace Flagrow\Masquerade\Api\Controllers;
 
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
+use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\FieldValidator;
 use Flarum\Api\Controller\AbstractResourceController;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -19,11 +20,16 @@ class SaveFieldController extends AbstractResourceController
     /**
      * @var FieldValidator
      */
-    private $validator;
+    protected $validator;
+    /**
+     * @var FieldRepository
+     */
+    protected $fields;
 
-    public function __construct(FieldValidator $validator)
+    public function __construct(FieldValidator $validator, FieldRepository $fields)
     {
         $this->validator = $validator;
+        $this->fields = $fields;
     }
 
     /**
@@ -47,28 +53,8 @@ class SaveFieldController extends AbstractResourceController
 
         $this->validator->assertValid($attributes);
 
-        if ($id) {
-            $field = Field::findOrFail($id);
-        } else {
-            $field = new Field();
-            $field->sort = $this->highestSort();
-        }
-
-        foreach (Arr::except($attributes, ['id', 'sort']) as $attribute => $value) {
-            $field->{$attribute} = $value;
-        }
-
-        $field->save();
+        $field = $this->fields->findOrNew($attributes);
 
         return $field;
-    }
-
-    /**
-     * @return int
-     */
-    protected function highestSort() {
-        $max = Field::orderBy('sort', 'desc')->first();
-
-        return $max ? $max->sort + 1: 0;
     }
 }

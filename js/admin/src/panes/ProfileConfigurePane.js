@@ -1,6 +1,7 @@
 import Component from "flarum/Component";
 import Switch from "flarum/components/Switch";
 import Button from "flarum/components/Button";
+import saveSettings from "flarum/utils/saveSettings";
 
 export default class ProfileConfigurePane extends Component {
 
@@ -12,6 +13,7 @@ export default class ProfileConfigurePane extends Component {
         this.loading = false;
         this.existing = [];
         this.loadExisting();
+        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] || false);
     }
 
     /**
@@ -53,6 +55,18 @@ export default class ProfileConfigurePane extends Component {
         }, [
             m('div', {className: 'container'}, [
                 m('form', {
+                    className: 'Configuration'
+                }, [
+                    m('label', ''), [
+                        Switch.component({
+                            state: this.enforceProfileCompletion(),
+                            onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.force-user-to-completion')
+                        }),
+                        m('br')
+                    ]
+                ]),
+                m('form', {
                         className: 'Existing--Fields'
                     },
                     fields
@@ -62,6 +76,21 @@ export default class ProfileConfigurePane extends Component {
                 ])
             ])
         ])
+    }
+
+    /**
+     * Updates setting in database.
+     * @param prop
+     * @param setting
+     * @param value
+     */
+    updateSetting(prop, setting, value)
+    {
+        saveSettings({
+            [setting]: value
+        }).then(() => {
+            prop(value);
+        })
     }
 
     /**
@@ -125,6 +154,7 @@ export default class ProfileConfigurePane extends Component {
                         a: <a href="http://fontawesome.io/icons/" target="_blank"/>
                     }))
                 ]),
+                // @todo Disabled for now, wasn't really showing up nicely.
                 // m('li', [
                 //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
                 //     m('input', {
@@ -135,10 +165,11 @@ export default class ProfileConfigurePane extends Component {
                 //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
                 // ]),
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), [
+                    m('label', ''), [
                         Switch.component({
                             state: field.required(),
-                            onchange: this.updateExistingFieldInput.bind(this, 'required', field)
+                            onchange: this.updateExistingFieldInput.bind(this, 'required', field),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.required')
                         }),
                         m('br')
                     ]

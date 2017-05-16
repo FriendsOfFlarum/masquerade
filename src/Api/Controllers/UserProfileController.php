@@ -2,19 +2,17 @@
 
 namespace Flagrow\Masquerade\Api\Controllers;
 
-use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
 use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractCollectionController;
 use Flarum\Core\Access\AssertPermissionTrait;
-use Flarum\Core\User;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class UserConfigureController extends AbstractCollectionController
+class UserProfileController extends AbstractCollectionController
 {
     use AssertPermissionTrait;
 
@@ -26,14 +24,14 @@ class UserConfigureController extends AbstractCollectionController
      */
     protected $validator;
     /**
-     * @var FieldRepository
+     * @var \Illuminate\Database\Eloquent\Collection
      */
     protected $fields;
 
     function __construct(AnswerValidator $validator, FieldRepository $fields)
     {
         $this->validator = $validator;
-        $this->fields = $fields;
+        $this->fields = $fields->all();
     }
 
     /**
@@ -47,38 +45,19 @@ class UserConfigureController extends AbstractCollectionController
     {
         $actor = $request->getAttribute('actor');
 
-        $this->assertRegistered($actor);
+        $this->assertCan($actor, 'flagrow.masquerade.view-profile');
 
-        /** @var \Illuminate\Database\Eloquent\Collection $fields */
-        $fields = $this->fields->all();
+        $id = array_get($request->getQueryParams(), 'id');
 
-        if ($request->getMethod() == 'POST') {
-            $this->processUpdate($actor, $request->getParsedBody(), $fields);
+        if (!$id) {
+            throw new ModelNotFoundException();
         }
 
-        return $fields;
-    }
-
-    /**
-     * @param User $actor
-     * @param $answers
-     * @param \Illuminate\Database\Eloquent\Collection $fields
-     */
-    protected function processUpdate(User $actor, $answers, &$fields)
-    {
-        $fields->each(function (Field $field) use ($answers, $actor) {
-            $content = Arr::get($answers, $field->id);
-
-            $this->validator->setField($field);
-            $this->validator->assertValid([
-                $field->name => $content
-            ]);
-
-            $this->fields->addOrUpdateAnswer(
-                $field,
-                $content,
-                $actor
-            );
+        /** @var \Illuminate\Database\Eloquent\Collection $fields */
+        $fields = $this->fields->each(function ($field) use ($id) {
+            $field->for = $id;
         });
+
+        return $fields;
     }
 }

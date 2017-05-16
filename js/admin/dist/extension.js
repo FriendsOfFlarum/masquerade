@@ -167,10 +167,10 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 });;
 "use strict";
 
-System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/Button"], function (_export, _context) {
+System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings"], function (_export, _context) {
     "use strict";
 
-    var Component, Switch, Button, ProfileConfigurePane;
+    var Component, Switch, Button, saveSettings, ProfileConfigurePane;
     return {
         setters: [function (_flarumComponent) {
             Component = _flarumComponent.default;
@@ -178,6 +178,8 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
             Switch = _flarumComponentsSwitch.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
+        }, function (_flarumUtilsSaveSettings) {
+            saveSettings = _flarumUtilsSaveSettings.default;
         }],
         execute: function () {
             ProfileConfigurePane = function (_Component) {
@@ -195,6 +197,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         this.loading = false;
                         this.existing = [];
                         this.loadExisting();
+                        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] || false);
                     }
                 }, {
                     key: "config",
@@ -228,8 +231,21 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         return m('div', {
                             className: 'ProfileConfigurePane'
                         }, [m('div', { className: 'container' }, [m('form', {
+                            className: 'Configuration'
+                        }, [m('label', ''), [Switch.component({
+                            state: this.enforceProfileCompletion(),
+                            onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.force-user-to-completion')
+                        }), m('br')]]), m('form', {
                             className: 'Existing--Fields'
                         }, fields), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
+                    }
+                }, {
+                    key: "updateSetting",
+                    value: function updateSetting(prop, setting, value) {
+                        saveSettings(babelHelpers.defineProperty({}, setting, value)).then(function () {
+                            prop(value);
+                        });
                     }
                 }, {
                     key: "addField",
@@ -267,6 +283,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
                             a: m("a", { href: "http://fontawesome.io/icons/", target: "_blank" })
                         }))]),
+                        // @todo Disabled for now, wasn't really showing up nicely.
                         // m('li', [
                         //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
                         //     m('input', {
@@ -276,9 +293,10 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         //     }),
                         //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
                         // ]),
-                        m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.required')), [Switch.component({
+                        m('li', [m('label', ''), [Switch.component({
                             state: field.required(),
-                            onchange: this.updateExistingFieldInput.bind(this, 'required', field)
+                            onchange: this.updateExistingFieldInput.bind(this, 'required', field),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.required')
                         }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
                             className: 'FormControl',
                             value: field.validation(),

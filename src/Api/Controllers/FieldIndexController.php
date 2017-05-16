@@ -4,6 +4,7 @@ namespace Flagrow\Masquerade\Api\Controllers;
 
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
+use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractCollectionController;
 use Flarum\Core\Access\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,6 +15,15 @@ class FieldIndexController extends AbstractCollectionController
     use AssertPermissionTrait;
 
     public $serializer = FieldSerializer::class;
+    /**
+     * @var FieldRepository
+     */
+    protected $fields;
+
+    public function __construct(FieldRepository $fields)
+    {
+        $this->fields = $fields;
+    }
 
     /**
      * Get the data to be serialized and assigned to the response document.
@@ -26,6 +36,6 @@ class FieldIndexController extends AbstractCollectionController
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        return Field::orderBy('sort', 'desc')->get();
+        return $this->fields->all();
     }
 }

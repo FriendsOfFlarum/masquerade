@@ -8,9 +8,11 @@ export default class ProfileConfigurePane extends UserPage {
         this.loading = true;
 
         this.loadUser(app.session.user.username());
+        this.enforceProfileCompletion = app.forum.attribute('masquerade.force-profile-completion') || false;
+        this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
         this.fields = [];
         this.answers = {};
-
+console.log(this.enforceProfileCompletion, this.profileCompleted);
         this.load();
     }
 
@@ -19,6 +21,9 @@ export default class ProfileConfigurePane extends UserPage {
                 className: 'ProfileConfigurePane',
                 onsubmit: this.update.bind(this)
             }, [
+                (this.enforceProfileCompletion && !this.profileCompleted) ?
+                    m('div', {className: 'Alert Alert--Error'}, app.translator.trans('flagrow-masquerade.forum.alerts.profile-completion-required')) :
+                    '',
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
                     .map(field => {
@@ -42,14 +47,16 @@ export default class ProfileConfigurePane extends UserPage {
         return m('fieldset', {className: 'Field'}, [
             m('legend', [
                 field.icon() ? icon(field.icon()) : '',
-                field.name()
+                field.name(),
+                field.required() ? ' *' : ''
             ]),
             m('div', {className: 'FormField'}, [
                 field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
                 m('input', {
                     className: 'FormControl',
                     oninput: m.withAttr('value', this.set.bind(this, field)),
-                    value: this.answers[field.id()]()
+                    value: this.answers[field.id()](),
+                    required: field.required()
                 }),
                 field.description() ? m('span', {className: 'helpText'}, field.description()) : ''
             ])
@@ -76,6 +83,7 @@ export default class ProfileConfigurePane extends UserPage {
     update(e) {
         e.preventDefault();
 
+        this.loading = true;
         let data = this.answers;
 
         app.request({

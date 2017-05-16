@@ -4,6 +4,7 @@ namespace Flagrow\Masquerade\Api\Controllers;
 
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
+use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\OrderFieldValidator;
 use Flarum\Api\Controller\AbstractResourceController;
 use Flarum\Core\Access\AssertPermissionTrait;
@@ -19,11 +20,16 @@ class OrderFieldController extends AbstractResourceController
     /**
      * @var OrderFieldValidator
      */
-    private $validator;
+    protected $validator;
+    /**
+     * @var FieldRepository
+     */
+    protected $fields;
 
-    public function __construct(OrderFieldValidator $validator)
+    public function __construct(OrderFieldValidator $validator, FieldRepository $fields)
     {
         $this->validator = $validator;
+        $this->fields = $fields;
     }
 
     /**
@@ -43,8 +49,6 @@ class OrderFieldController extends AbstractResourceController
 
         $order = Arr::get($attributes, 'sort');
 
-        foreach ($order as $i => $fieldId) {
-            Field::where('id', $fieldId)->update(['sort' => $i]);
-        }
+        $this->fields->sorting($order);
     }
 }
