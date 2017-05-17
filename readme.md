@@ -1,6 +1,6 @@
 # Masquerade by ![flagrow logo](https://avatars0.githubusercontent.com/u/16413865?v=3&s=15) [flagrow](https://discuss.flarum.org/d/1832-flagrow-extension-developer-group)
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/flagrow/masquerade/license.md) [![Latest Stable Version](https://img.shields.io/packagist/v/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade) [![Total Downloads](https://img.shields.io/packagist/dt/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade)
+[![Support on patreon](https://img.shields.io/badge/support%20on-patreon-orange.svg)](https://patreon.com/flagrow) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/flagrow/masquerade/license.md) [![Latest Stable Version](https://img.shields.io/packagist/v/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade) [![Total Downloads](https://img.shields.io/packagist/dt/flagrow/masquerade.svg)](https://github.com/flagrow/masquerade)
 
 The user profile generator. Includes:
 
