@@ -1,3 +1,5 @@
+- 0.1.0-beta.3
+  - Fixed issue on systems where user->id would be a string instead of an integer.
 - 0.1.0-beta.2
   - Fixed not saving forced profile completion.
   - Fixed error when showing profile of user not in app.store.
