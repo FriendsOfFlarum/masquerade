@@ -130,7 +130,7 @@ class FieldRepository
      * @param string $content
      * @param User $actor
      */
-    public function addOrUpdateAnswer(Field $field, string $content, User $actor)
+    public function addOrUpdateAnswer(Field $field, $content, User $actor)
     {
         /** @var Answer $answer */
         $answer = $field->answers()->firstOrNew([
