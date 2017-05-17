@@ -109,7 +109,7 @@ class FieldRepository
      * @return bool
      * @todo we can't flush the cache because it uses a dynamic id
      */
-    public function completed(int $userId)
+    public function completed($userId)
     {
 //        return $this->cache->rememberForever(sprintf(
 //            static::CACHE_KEY_UNCOMPLETED,
