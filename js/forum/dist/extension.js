@@ -71,10 +71,10 @@ System.register('flagrow/masquerade/addProfilePane', ['flarum/extend', 'flagrow/
 });;
 "use strict";
 
-System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane", "flagrow/masquerade/addProfilePane"], function (_export, _context) {
+System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane", "flagrow/masquerade/addProfilePane", "flagrow/masquerade/overrideUsersSearchSource"], function (_export, _context) {
     "use strict";
 
-    var extend, app, Field, Answer, addProfileConfigurePane, addProfilePane;
+    var extend, app, Field, Answer, addProfileConfigurePane, addProfilePane, overrideUsersSearchSource;
     return {
         setters: [function (_flarumExtend) {
             extend = _flarumExtend.extend;
@@ -88,6 +88,8 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
             addProfileConfigurePane = _flagrowMasqueradeAddProfileConfigurePane.default;
         }, function (_flagrowMasqueradeAddProfilePane) {
             addProfilePane = _flagrowMasqueradeAddProfilePane.default;
+        }, function (_flagrowMasqueradeOverrideUsersSearchSource) {
+            overrideUsersSearchSource = _flagrowMasqueradeOverrideUsersSearchSource.default;
         }],
         execute: function () {
 
@@ -97,6 +99,8 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
 
                 addProfileConfigurePane();
                 addProfilePane();
+
+                overrideUsersSearchSource();
             });
         }
     };
@@ -180,6 +184,67 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 
             _export('default', Field);
         }
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/overrideUsersSearchSource', ['flarum/extend', 'flarum/components/UsersSearchSource', 'flarum/components/LinkButton'], function (_export, _context) {
+    "use strict";
+
+    var override, UsersSearchSource, LinkButton;
+
+    _export('default', function () {
+        override(UsersSearchSource.prototype, 'view', function (view, query) {
+            query = query.toLowerCase();
+
+            var results = this.search(query);
+
+            if (!results.length) return '';
+
+            var searchUserOnPage = '';
+            if (app.routes['flagrow_user_directory']) {
+                searchUserOnPage = m(
+                    'li',
+                    null,
+                    LinkButton.component({
+                        icon: 'search',
+                        children: app.translator.trans('flagrow-user-directory.forum.search.users_heading', { query: query }),
+                        href: app.route('flagrow_user_directory', { q: query })
+                    })
+                );
+            }
+
+            return [m(
+                'li',
+                { className: 'Dropdown-header' },
+                app.translator.trans('core.forum.search.users_heading')
+            ), results.map(function (user) {
+                var name = username(user);
+                name.children[0] = highlight(name.children[0], query);
+
+                return m(
+                    'li',
+                    { className: 'UserSearchResult', 'data-index': 'users' + user.id() },
+                    m(
+                        'a',
+                        { href: app.route.user(user), config: m.route },
+                        avatar(user),
+                        name
+                    )
+                );
+            }), searchUserOnPage];
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            override = _flarumExtend.override;
+        }, function (_flarumComponentsUsersSearchSource) {
+            UsersSearchSource = _flarumComponentsUsersSearchSource.default;
+        }, function (_flarumComponentsLinkButton) {
+            LinkButton = _flarumComponentsLinkButton.default;
+        }],
+        execute: function () {}
     };
 });;
 "use strict";
@@ -325,7 +390,7 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
 
                         this.fields = [];
                         this.answers = {};
-                        console.log(m.route.param('username'));
+
                         this.loadUser(m.route.param('username'));
                     }
                 }, {
