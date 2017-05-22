@@ -107,13 +107,14 @@ class FieldRepository
      *
      * @param int $userId
      * @return bool
+     * @todo we can't flush the cache because it uses a dynamic id
      */
-    public function completed(int $userId)
+    public function completed($userId)
     {
-        return $this->cache->rememberForever(sprintf(
-            static::CACHE_KEY_UNCOMPLETED,
-            $userId
-        ), function () use ($userId) {
+//        return $this->cache->rememberForever(sprintf(
+//            static::CACHE_KEY_UNCOMPLETED,
+//            $userId
+//        ), function () use ($userId) {
             return $this->field
                     ->where('required', true)
                     ->whereDoesntHave('answers', function ($q) use ($userId) {
@@ -121,7 +122,7 @@ class FieldRepository
                     })
                     ->count() == 0;
 
-        });
+//        });
     }
 
     /**
@@ -129,7 +130,7 @@ class FieldRepository
      * @param string $content
      * @param User $actor
      */
-    public function addOrUpdateAnswer(Field $field, string $content, User $actor)
+    public function addOrUpdateAnswer(Field $field, $content, User $actor)
     {
         /** @var Answer $answer */
         $answer = $field->answers()->firstOrNew([

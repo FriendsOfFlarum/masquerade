@@ -8,10 +8,8 @@ export default class ProfileConfigurePane extends UserPage {
 
         this.fields = [];
         this.answers = {};
-
+console.log(m.route.param('username'));
         this.loadUser(m.route.param('username'));
-
-        this.load();
     }
 
     content() {
@@ -46,13 +44,19 @@ export default class ProfileConfigurePane extends UserPage {
         ]);
     }
 
-    load() {
+    load(user) {
         app.request({
             method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + this.user.id(),
+            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + user.id(),
         }).then(
             this.parseResponse.bind(this)
         );
+    }
+
+    show(user) {
+        this.load(user);
+
+        super.show(user);
     }
 
     parseResponse(response) {

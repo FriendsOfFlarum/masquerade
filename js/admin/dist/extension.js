@@ -197,7 +197,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         this.loading = false;
                         this.existing = [];
                         this.loadExisting();
-                        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] || false);
+                        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
                     }
                 }, {
                     key: "config",
@@ -243,9 +243,9 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                 }, {
                     key: "updateSetting",
                     value: function updateSetting(prop, setting, value) {
-                        saveSettings(babelHelpers.defineProperty({}, setting, value)).then(function () {
-                            prop(value);
-                        });
+                        saveSettings(babelHelpers.defineProperty({}, setting, value));
+
+                        prop(value);
                     }
                 }, {
                     key: "addField",

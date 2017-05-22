@@ -13,7 +13,7 @@ export default class ProfileConfigurePane extends Component {
         this.loading = false;
         this.existing = [];
         this.loadExisting();
-        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] || false);
+        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
     }
 
     /**
@@ -88,9 +88,9 @@ export default class ProfileConfigurePane extends Component {
     {
         saveSettings({
             [setting]: value
-        }).then(() => {
-            prop(value);
-        })
+        });
+
+        prop(value)
     }
 
     /**

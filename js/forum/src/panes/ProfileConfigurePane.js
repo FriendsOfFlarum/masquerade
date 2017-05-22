@@ -12,7 +12,6 @@ export default class ProfileConfigurePane extends UserPage {
         this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
         this.fields = [];
         this.answers = {};
-console.log(this.enforceProfileCompletion, this.profileCompleted);
         this.load();
     }
 
