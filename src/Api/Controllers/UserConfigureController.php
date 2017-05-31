@@ -2,7 +2,6 @@
 
 namespace Flagrow\Masquerade\Api\Controllers;
 
-use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
 use Flagrow\Masquerade\Repositories\FieldRepository;
@@ -70,6 +69,7 @@ class UserConfigureController extends AbstractCollectionController
             $content = Arr::get($answers, $field->id);
 
             $this->validator->setField($field);
+
             $this->validator->assertValid([
                 $field->name => $content
             ]);

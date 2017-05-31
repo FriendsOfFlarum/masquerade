@@ -38,5 +38,6 @@ flagrow-masquerade:
             icon: Icon
             icon-help: >
                 Shows an icon in front of values entered by the user. For a reference of
-                available icons, check the <a>FontAwesome website</a>.
+                available icons, check the <a>FontAwesome website</a>. Use "info" without
+                the "fa-" prefix.
             force-user-to-completion: Force user to complete profile
