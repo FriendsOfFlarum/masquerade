@@ -28,6 +28,7 @@ flagrow-masquerade:
             description-help: >
                 An optional description to explain the use/need of this field.
             required: Mark field obligatory
+            on_bio: Show answer to this field in user bio
             validation: Validation
             validation-help: >
                 Check the supported <a>Laravel validation rules</a>. Eg:

@@ -198,6 +198,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         this.existing = [];
                         this.loadExisting();
                         this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
+                        this.disableUserBio = m.prop(app.data.settings['masquerade.disable-user-bio'] == 1);
                     }
                 }, {
                     key: "config",
@@ -236,6 +237,10 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             state: this.enforceProfileCompletion(),
                             onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
                             children: app.translator.trans('flagrow-masquerade.admin.fields.force-user-to-completion')
+                        }), m('br')], m('label', ''), [Switch.component({
+                            state: this.disableUserBio(),
+                            onchange: this.updateSetting.bind(this, this.disableUserBio, 'masquerade.disable-user-bio'),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.disable-user-bio')
                         }), m('br')]]), m('form', {
                             className: 'Existing--Fields'
                         }, fields), m('form', { onsubmit: this.submitAddField.bind(this) }, [this.addField(this.new)])])]);
@@ -294,6 +299,10 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
                         // ]),
                         m('li', [m('label', ''), [Switch.component({
+                            state: field.on_bio(),
+                            onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
+                            children: app.translator.trans('flagrow-masquerade.admin.fields.on_bio')
+                        }), m('br')]]), m('li', [m('label', ''), [Switch.component({
                             state: field.required(),
                             onchange: this.updateExistingFieldInput.bind(this, 'required', field),
                             children: app.translator.trans('flagrow-masquerade.admin.fields.required')
@@ -421,6 +430,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             'prefix': m.prop(''),
                             'icon': m.prop(''),
                             'required': m.prop(false),
+                            'on_bio': m.prop(false),
                             'validation': m.prop('')
                         };
                     }

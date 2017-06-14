@@ -71,10 +71,10 @@ System.register('flagrow/masquerade/addProfilePane', ['flarum/extend', 'flagrow/
 });;
 "use strict";
 
-System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane", "flagrow/masquerade/addProfilePane"], function (_export, _context) {
+System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flagrow/masquerade/models/Field", "flagrow/masquerade/models/Answer", "flagrow/masquerade/addProfileConfigurePane", "flagrow/masquerade/addProfilePane", "flagrow/masquerade/mutateUserBio"], function (_export, _context) {
     "use strict";
 
-    var extend, app, Field, Answer, addProfileConfigurePane, addProfilePane;
+    var extend, app, Field, Answer, addProfileConfigurePane, addProfilePane, mutateUserBio;
     return {
         setters: [function (_flarumExtend) {
             extend = _flarumExtend.extend;
@@ -88,6 +88,8 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
             addProfileConfigurePane = _flagrowMasqueradeAddProfileConfigurePane.default;
         }, function (_flagrowMasqueradeAddProfilePane) {
             addProfilePane = _flagrowMasqueradeAddProfilePane.default;
+        }, function (_flagrowMasqueradeMutateUserBio) {
+            mutateUserBio = _flagrowMasqueradeMutateUserBio.default;
         }],
         execute: function () {
 
@@ -97,6 +99,8 @@ System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flag
 
                 addProfileConfigurePane();
                 addProfilePane();
+
+                mutateUserBio();
             });
         }
     };
@@ -325,7 +329,7 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
 
                         this.fields = [];
                         this.answers = {};
-                        console.log(m.route.param('username'));
+
                         this.loadUser(m.route.param('username'));
                     }
                 }, {
@@ -379,5 +383,31 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
 
             _export('default', ProfileConfigurePane);
         }
+    };
+});;
+"use strict";
+
+System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/components/UserBio"], function (_export, _context) {
+    "use strict";
+
+    var override, UserBio;
+
+    _export("default", function () {
+        override(UserBio.prototype, 'view', function (view) {
+            console.log(this.props.user);
+            // Load the old user bio.
+            var original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
+
+            return m('div', { className: 'Masquerade-Bio' }, [original, m('div')]);
+        });
+    });
+
+    return {
+        setters: [function (_flarumExtend) {
+            override = _flarumExtend.override;
+        }, function (_flarumComponentsUserBio) {
+            UserBio = _flarumComponentsUserBio.default;
+        }],
+        execute: function () {}
     };
 });
