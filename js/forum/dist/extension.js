@@ -202,7 +202,7 @@ System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/co
 
     _export("default", function () {
         override(UserBio.prototype, 'view', function (view) {
-            console.log(this.props.user.bioFields(), app.session.user.bioFields());
+            console.log(this.props.user, this.props.user.bioFields());
 
             // Load the old user bio.
             var original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();

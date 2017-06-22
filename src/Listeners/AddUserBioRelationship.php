@@ -4,13 +4,10 @@ namespace Flagrow\Masquerade\Listeners;
 
 use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Api\Serializers\AnswerSerializer;
-use Flarum\Api\Controller\ShowUserController;
-use Flarum\Api\Serializer\CurrentUserSerializer;
-use Flarum\Api\Serializer\UserSerializer;
 use Flarum\Core\User;
-use Flarum\Event\ConfigureApiController;
 use Flarum\Event\GetApiRelationship;
 use Flarum\Event\GetModelRelationship;
+use Flarum\Event\PrepareApiAttributes;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class AddUserBioRelationship
@@ -19,7 +16,7 @@ class AddUserBioRelationship
     {
         $events->listen(GetModelRelationship::class, [$this, 'addUserBioRelationship']);
         $events->listen(GetApiRelationship::class, [$this, 'addUserBioToApi']);
-        $events->listen(ConfigureApiController::class, [$this, 'includeUserBioRelationship']);
+        $events->listen(PrepareApiAttributes::class, [$this, 'addUserBioApiAttributes']);
     }
 
     public function addUserBioRelationship(GetModelRelationship $event)
@@ -34,16 +31,19 @@ class AddUserBioRelationship
 
     public function addUserBioToApi(GetApiRelationship $event)
     {
-        if ($event->isRelationship(UserSerializer::class, 'bioFields') ||
-            $event->isRelationship(CurrentUserSerializer::class, 'bioFields')) {
-            return $event->serializer->hasMany(Answer::class, AnswerSerializer::class);
+        if ($event->model instanceof User && $event->relationship == 'bioFields') {
+            return $event->serializer->hasMany($event->model, AnswerSerializer::class, 'bioFields');
         }
     }
 
-    public function includeUserBioRelationship(ConfigureApiController $event)
+    public function addUserBioApiAttributes(PrepareApiAttributes $event)
     {
-        if ($event->isController(ShowUserController::class)) {
-            $event->addInclude('bioFields');
+        if ($event->model instanceof User) {
+            if ($event->actor->cannot('flagrow.masquerade.view-profile')) {
+                $event->model->setRelation('bioFields', null);
+            }
+
+            $event->model->load('bioFields');
         }
     }
 }
