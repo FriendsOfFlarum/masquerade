@@ -158,7 +158,8 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
                 icon: Model.attribute('icon'),
                 sort: Model.attribute('sort'),
                 deleted_at: Model.attribute('deleted_at', Model.transformDate),
-                answer: Model.hasOne('answer')
+                answer: Model.hasOne('answer'),
+                on_bio: Model.attribute('on_bio')
             }));
 
             _export('default', Field);

@@ -42,3 +42,4 @@ flagrow-masquerade:
                 available icons, check the <a>FontAwesome website</a>. Use "info" without
                 the "fa-" prefix.
             force-user-to-completion: Force user to complete profile
+            disable-user-bio: Disable user bio field

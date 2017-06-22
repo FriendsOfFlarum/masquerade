@@ -5,7 +5,9 @@ namespace Flagrow\Masquerade\Listeners;
 use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Api\Serializers\AnswerSerializer;
 use Flarum\Api\Controller\ShowUserController;
+use Flarum\Api\Serializer\CurrentUserSerializer;
 use Flarum\Api\Serializer\UserSerializer;
+use Flarum\Core\User;
 use Flarum\Event\ConfigureApiController;
 use Flarum\Event\GetApiRelationship;
 use Flarum\Event\GetModelRelationship;
@@ -22,14 +24,18 @@ class AddUserBioRelationship
 
     public function addUserBioRelationship(GetModelRelationship $event)
     {
-        if ($event->isRelationship(UserSerializer::class, 'bioFields')) {
-            return $event->model->hasMany(Answer::class)->where('on_bio', true);
+        if ($event->isRelationship(User::class, 'bioFields')) {
+            return $event->model->hasMany(Answer::class)
+                ->whereHas('field', function ($q) {
+                    $q->where('on_bio', true);
+                });
         }
     }
 
     public function addUserBioToApi(GetApiRelationship $event)
     {
-        if ($event->isRelationship(UserSerializer::class, 'bioFields')) {
+        if ($event->isRelationship(UserSerializer::class, 'bioFields') ||
+            $event->isRelationship(CurrentUserSerializer::class, 'bioFields')) {
             return $event->serializer->hasMany(Answer::class, AnswerSerializer::class);
         }
     }
