@@ -1,6 +1,7 @@
-- 0.1.0-beta.4
+- 0.1.1
   - Now allowing masquerade fields to show up under the Bio.
   - Allows removing the Flarum native Bio field.
+- 0.1.0
 - 0.1.0-beta.3
   - Fixed issue on systems where user->id would be a string instead of an integer.
 - 0.1.0-beta.2
