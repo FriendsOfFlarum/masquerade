@@ -195,19 +195,22 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 });;
 "use strict";
 
-System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/components/UserBio"], function (_export, _context) {
+System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/components/UserBio", "flarum/helpers/icon"], function (_export, _context) {
     "use strict";
 
-    var override, UserBio;
+    var override, UserBio, icon;
 
     _export("default", function () {
         override(UserBio.prototype, 'view', function (view) {
-            console.log(this.props.user, this.props.user.bioFields());
-
             // Load the old user bio.
             var original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
+            var answers = app.forum.attribute('canViewMasquerade') ? this.props.user.bioFields() || [] : [];
 
-            return m('div', { className: 'Masquerade-Bio' }, [original, m('div')]);
+            return m('div', { className: 'Masquerade-Bio' }, [original, m('div', answers.map(function (answer) {
+                var field = answer.attribute('field');
+
+                return m('div', { className: 'Masquerade-Bio-Set' }, [m('span', { className: 'Masquerade-Bio-Field' }, [field.icon ? icon(field.icon) : '', field.name + ':']), m('span', { className: 'Masquerade-Bio-Answer' }, answer.content())]);
+            }))]);
         });
     });
 
@@ -216,6 +219,8 @@ System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/co
             override = _flarumExtend.override;
         }, function (_flarumComponentsUserBio) {
             UserBio = _flarumComponentsUserBio.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
         }],
         execute: function () {}
     };
