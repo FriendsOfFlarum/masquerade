@@ -8,7 +8,7 @@ export default class ProfileConfigurePane extends UserPage {
 
         this.fields = [];
         this.answers = {};
-console.log(m.route.param('username'));
+
         this.loadUser(m.route.param('username'));
     }
 
