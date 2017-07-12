@@ -141,7 +141,8 @@ System.register('flagrow/masquerade/models/Answer', ['flarum/Model', 'flarum/uti
                 return Answer;
             }(mixin(Model, {
                 content: Model.attribute('content'),
-                field: Model.hasOne('field')
+                field: Model.hasOne('field'),
+                userId: Model.attribute('user_id')
             }));
 
             _export('default', Answer);
@@ -381,9 +382,8 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
                         }, [m('div', { className: 'Fields' }, this.fields.sort(function (a, b) {
                             return a.sort() - b.sort();
                         }).map(function (field) {
-                            if (!(field.id() in _this2.answers)) {
-                                _this2.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
-                            }
+                            _this2.answers[field.id()] = field.answer() && field.answer().userId() == _this2.user.id() ? field.answer().content() : null;
+
                             return _this2.field(field);
                         }))]);
                     }
@@ -392,7 +392,7 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
                     value: function field(_field) {
                         return m('fieldset', { className: 'Field' }, [m('legend', [_field.icon() ? icon(_field.icon()) : '', _field.name()]), m('div', { className: 'FormField' }, [_field.prefix() ? m('div', { className: 'prefix' }, _field.prefix()) : '', m('div', {
                             className: 'FormControl'
-                        }, this.answers[_field.id()]())])]);
+                        }, this.answers[_field.id()])])]);
                     }
                 }, {
                     key: 'load',
@@ -412,7 +412,9 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
                 }, {
                     key: 'parseResponse',
                     value: function parseResponse(response) {
+                        this.answers = {};
                         this.fields = app.store.pushPayload(response);
+
                         this.loading = false;
                         m.redraw();
                     }

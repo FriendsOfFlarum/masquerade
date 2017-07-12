@@ -19,9 +19,8 @@ export default class ProfileConfigurePane extends UserPage {
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
                     .map(field => {
-                        if (!(field.id() in this.answers)) {
-                            this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('')
-                        }
+                        this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
+
                         return this.field(field);
                     })
                 )
@@ -39,7 +38,7 @@ export default class ProfileConfigurePane extends UserPage {
                 field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
                 m('div', {
                     className: 'FormControl'
-                }, this.answers[field.id()]())
+                }, this.answers[field.id()])
             ])
         ]);
     }
@@ -60,7 +59,9 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     parseResponse(response) {
+        this.answers = {};
         this.fields = app.store.pushPayload(response);
+
         this.loading = false;
         m.redraw()
     }
