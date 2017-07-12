@@ -1,3 +1,5 @@
+- 0.1.2
+  - Fixed an issue where user profile answers where populating unanswered fields of other profiles.
 - 0.1.1
   - Now allowing masquerade fields to show up under the Bio.
   - Allows removing the Flarum native Bio field.
