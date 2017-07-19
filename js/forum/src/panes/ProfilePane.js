@@ -1,5 +1,6 @@
 import UserPage from 'flarum/components/UserPage';
 import icon from "flarum/helpers/icon";
+import Mutate from "flagrow/masquerade/utils/Mutate";
 
 export default class ProfileConfigurePane extends UserPage {
     init() {
@@ -14,7 +15,7 @@ export default class ProfileConfigurePane extends UserPage {
 
     content() {
         return m('div', {
-                className: 'ProfilePane'
+                className: 'Masquerade-Bio'
             }, [
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
@@ -29,18 +30,16 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     field(field) {
-        return m('fieldset', {className: 'Field'}, [
-            m('legend', [
+        console.log(field.validation())
+        const mutate = new Mutate(field.validation(), this.answers[field.id()]);
+
+        return m('div', {className: 'Masquerade-Bio-Set'}, [
+            m('span', {className: 'Masquerade-Bio-Field'}, [
                 field.icon() ? icon(field.icon()) : '',
-                field.name()
+                field.name() + ':'
             ]),
-            m('div', {className: 'FormField'}, [
-                field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
-                m('div', {
-                    className: 'FormControl'
-                }, this.answers[field.id()])
-            ])
-        ]);
+            m('span', {className: 'Masquerade-Bio-Answer'}, mutate.parse())
+        ])
     }
 
     load(user) {
