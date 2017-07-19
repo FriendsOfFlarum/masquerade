@@ -1,3 +1,5 @@
+- 0.1.3
+  - Changed how fields are displayed based on the validation rules.
 - 0.1.2
   - Fixed an issue where user profile answers where populating unanswered fields of other profiles.
 - 0.1.1
