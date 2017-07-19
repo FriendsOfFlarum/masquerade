@@ -395,7 +395,6 @@ System.register("flagrow/masquerade/panes/ProfilePane", ["flarum/components/User
                 }, {
                     key: "field",
                     value: function field(_field) {
-                        console.log(_field.validation());
                         var mutate = new Mutate(_field.validation(), this.answers[_field.id()]);
 
                         return m('div', { className: 'Masquerade-Bio-Set' }, [m('span', { className: 'Masquerade-Bio-Field' }, [_field.icon() ? icon(_field.icon()) : '', _field.name() + ':']), m('span', { className: 'Masquerade-Bio-Answer' }, mutate.parse())]);
@@ -461,6 +460,10 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
                 babelHelpers.createClass(Mutate, [{
                     key: "parse",
                     value: function parse() {
+                        if (!this.content || this.content.length == 0) {
+                            return this.content;
+                        }
+
                         var type = this.identify();
 
                         if (type) {

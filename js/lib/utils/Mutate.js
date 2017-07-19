@@ -11,6 +11,10 @@ export default class Mutate {
      * Parses the field value.
      */
     parse() {
+        if (!this.content || this.content.length == 0) {
+            return this.content;
+        }
+
         const type = this.identify();
 
         if (type) {

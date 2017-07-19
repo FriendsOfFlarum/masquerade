@@ -30,7 +30,6 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     field(field) {
-        console.log(field.validation())
         const mutate = new Mutate(field.validation(), this.answers[field.id()]);
 
         return m('div', {className: 'Masquerade-Bio-Set'}, [

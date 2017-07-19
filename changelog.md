@@ -1,3 +1,5 @@
+- 0.1.4
+  - Fixed some debug logging and an issue with empty answers.
 - 0.1.3
   - Changed how fields are displayed based on the validation rules.
 - 0.1.2
