@@ -18,6 +18,7 @@ use Flarum\Database\AbstractModel;
  */
 class Answer extends AbstractModel
 {
+    public $timestamps = true;
     protected $table = 'flagrow_masquerade_answers';
     protected $fillable = ['*'];
 
