@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Field extends AbstractModel
 {
     use SoftDeletes;
+    
+    public $timestamps = true;
 
     protected $table = 'flagrow_masquerade_fields';
 
