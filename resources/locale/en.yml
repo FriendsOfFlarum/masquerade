@@ -50,6 +50,8 @@ flagrow-masquerade:
                 the "fa-" prefix.
             force-user-to-completion: Force user to complete profile
             disable-user-bio: Disable user bio field
+            options: Options
+            option-new: New option
         types:
             advanced: Advanced
             boolean: Checkbox

@@ -3,6 +3,7 @@ import Select from "flarum/components/Select";
 import Switch from "flarum/components/Switch";
 import Button from "flarum/components/Button";
 import saveSettings from "flarum/utils/saveSettings";
+import SelectFieldOptionEditor from 'flagrow/masquerade/components/SelectFieldOptionEditor';
 
 export default class ProfileConfigurePane extends Component {
 
@@ -208,6 +209,12 @@ export default class ProfileConfigurePane extends Component {
                         value: field.type(),
                     }),
                 ]),
+                (field.type() === 'select' ? SelectFieldOptionEditor.component({
+                    onchange: value => {
+                        this.updateExistingFieldInput('validation', field, value);
+                    },
+                    value: field.validation(),
+                }) : null),
                 (field.type() === null ? m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')),
                     m('input', {

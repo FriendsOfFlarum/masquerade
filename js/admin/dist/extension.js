@@ -38,6 +38,160 @@ System.register("flagrow/masquerade/addProfileConfigurePane", ["flarum/extend", 
         execute: function () {}
     };
 });;
+'use strict';
+
+System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flarum/Component', 'flarum/helpers/icon'], function (_export, _context) {
+    "use strict";
+
+    var Component, icon, SelectFieldOptionEditor;
+    return {
+        setters: [function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }],
+        execute: function () {
+            SelectFieldOptionEditor = function (_Component) {
+                babelHelpers.inherits(SelectFieldOptionEditor, _Component);
+
+                function SelectFieldOptionEditor() {
+                    babelHelpers.classCallCheck(this, SelectFieldOptionEditor);
+                    return babelHelpers.possibleConstructorReturn(this, (SelectFieldOptionEditor.__proto__ || Object.getPrototypeOf(SelectFieldOptionEditor)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(SelectFieldOptionEditor, [{
+                    key: 'init',
+                    value: function init() {
+                        this.newOption = m.prop('');
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        return m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.options')), m('table', m('tbody', this.options().map(function (option, optionIndex) {
+                            return m('tr', [m('td', m('input[type=text].FormControl', {
+                                oninput: m.withAttr('value', function (value) {
+                                    _this2.updateOption(optionIndex, value);
+                                }),
+                                value: option
+                            })), m('td', m('button.Button', {
+                                onclick: function onclick() {
+                                    _this2.moveOption(optionIndex, -1);
+                                }
+                            }, icon('chevron-up'))), m('td', m('button.Button', {
+                                onclick: function onclick() {
+                                    _this2.moveOption(optionIndex, 1);
+                                }
+                            }, icon('chevron-down'))), m('td', m('button.Button.Button--danger', {
+                                onclick: function onclick() {
+                                    _this2.deleteOption(optionIndex);
+                                }
+                            }, icon('close')))]);
+                        }))), m('table', m('tbody'), m('tr', [m('td', m('input[type=text].FormControl', {
+                            onchange: m.withAttr('value', this.newOption),
+                            value: this.newOption(),
+                            placeholder: app.translator.trans('flagrow-masquerade.admin.fields.option-new')
+                        })), m('td', m('button.Button.Button--primary', {
+                            onclick: function onclick() {
+                                _this2.addOption();
+                            }
+                        }, icon('plus')))]))]);
+                    }
+                }, {
+                    key: 'updateRules',
+                    value: function updateRules(options) {
+                        var newRules = [];
+
+                        var rules = this.props.value.split('|');
+
+                        rules.forEach(function (rule) {
+                            var parts = rule.split(':', 2);
+
+                            if (parts[0] === 'in') {
+                                newRules.push('in:' + options.join(','));
+                            } else {
+                                newRules.push(rule);
+                            }
+                        });
+
+                        this.props.onchange(newRules.join('|'));
+                    }
+                }, {
+                    key: 'options',
+                    value: function options() {
+                        var rules = this.props.value.split('|');
+
+                        var options = [];
+
+                        rules.forEach(function (rule) {
+                            var parts = rule.split(':', 2);
+
+                            if (parts[0] === 'in') {
+                                options = parts[1].split(',');
+                            }
+                        });
+
+                        return options;
+                    }
+                }, {
+                    key: 'updateOption',
+                    value: function updateOption(index, value) {
+                        var options = this.options();
+
+                        options[index] = value;
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'moveOption',
+                    value: function moveOption(index, moveIndex) {
+                        var options = this.options();
+
+                        var newIndex = index + moveIndex;
+
+                        if (newIndex < 0 || newIndex > options.length - 1) {
+                            return;
+                        }
+
+                        var move = options.splice(index, 1);
+
+                        options.splice(newIndex, 0, move[0]);
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'deleteOption',
+                    value: function deleteOption(index) {
+                        var options = this.options();
+
+                        options.splice(index, 1);
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'addOption',
+                    value: function addOption() {
+                        if (this.newOption() === '') {
+                            return;
+                        }
+
+                        var options = this.options();
+
+                        options.push(this.newOption());
+
+                        this.newOption('');
+
+                        this.updateRules(options);
+                    }
+                }]);
+                return SelectFieldOptionEditor;
+            }(Component);
+
+            _export('default', SelectFieldOptionEditor);
+        }
+    };
+});;
 "use strict";
 
 System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flarum/components/PermissionGrid", "flagrow/masquerade/models/Field", "flagrow/masquerade/addProfileConfigurePane"], function (_export, _context) {
@@ -170,10 +324,10 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 });;
 "use strict";
 
-System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Select", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings"], function (_export, _context) {
+System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Select", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings", "flagrow/masquerade/components/SelectFieldOptionEditor"], function (_export, _context) {
     "use strict";
 
-    var Component, Select, Switch, Button, saveSettings, ProfileConfigurePane;
+    var Component, Select, Switch, Button, saveSettings, SelectFieldOptionEditor, ProfileConfigurePane;
     return {
         setters: [function (_flarumComponent) {
             Component = _flarumComponent.default;
@@ -185,6 +339,8 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
             Button = _flarumComponentsButton.default;
         }, function (_flarumUtilsSaveSettings) {
             saveSettings = _flarumUtilsSaveSettings.default;
+        }, function (_flagrowMasqueradeComponentsSelectFieldOptionEditor) {
+            SelectFieldOptionEditor = _flagrowMasqueradeComponentsSelectFieldOptionEditor.default;
         }],
         execute: function () {
             ProfileConfigurePane = function (_Component) {
@@ -321,7 +477,12 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             },
                             options: this.availableTypes(),
                             value: field.type()
-                        })]), field.type() === null ? m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
+                        })]), field.type() === 'select' ? SelectFieldOptionEditor.component({
+                            onchange: function onchange(value) {
+                                _this4.updateExistingFieldInput('validation', field, value);
+                            },
+                            value: field.validation()
+                        }) : null, field.type() === null ? m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
                             className: 'FormControl',
                             value: field.validation(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
@@ -476,126 +637,6 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
             }(Component);
 
             _export("default", ProfileConfigurePane);
-        }
-    };
-});;
-"use strict";
-
-System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", "flarum/helpers/icon"], function (_export, _context) {
-    "use strict";
-
-    var Button, icon, Mutate;
-    return {
-        setters: [function (_flarumComponentsButton) {
-            Button = _flarumComponentsButton.default;
-        }, function (_flarumHelpersIcon) {
-            icon = _flarumHelpersIcon.default;
-        }],
-        execute: function () {
-            Mutate = function () {
-                function Mutate(validation, content) {
-                    babelHelpers.classCallCheck(this, Mutate);
-
-                    this.validation = validation || '';
-                    this.content = content;
-                }
-
-                /**
-                 * Parses the field value.
-                 */
-
-
-                babelHelpers.createClass(Mutate, [{
-                    key: "parse",
-                    value: function parse() {
-                        if (!this.content || this.content.length == 0) {
-                            return this.content;
-                        }
-
-                        var type = this.identify();
-
-                        if (type) {
-                            return this[type]();
-                        }
-
-                        return this.content;
-                    }
-                }, {
-                    key: "identify",
-                    value: function identify() {
-                        var _this = this;
-
-                        var validation = this.validation.split(',');
-                        var identified = null;
-
-                        validation.forEach(function (rule) {
-                            rule = rule.trim();
-
-                            if (_this.filtered().indexOf(rule) >= 0) {
-                                identified = rule;
-                            }
-                        });
-
-                        return identified;
-                    }
-                }, {
-                    key: "filtered",
-                    value: function filtered() {
-                        return ['url', 'boolean', 'email'];
-                    }
-                }, {
-                    key: "url",
-                    value: function url() {
-                        var _this2 = this;
-
-                        return Button.component({
-                            onclick: function onclick() {
-                                return _this2.to();
-                            },
-                            className: 'Button Button--text',
-                            icon: 'link',
-                            children: this.content.replace(/^https?:\/\//, '')
-                        });
-                    }
-                }, {
-                    key: "to",
-                    value: function to() {
-                        var popup = window.open();
-                        popup.location = this.content;
-                    }
-                }, {
-                    key: "boolean",
-                    value: function boolean() {
-                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
-                    }
-                }, {
-                    key: "email",
-                    value: function email() {
-                        var _this3 = this;
-
-                        var email = this.content.split(/@|\./).map(function (segment) {
-                            return segment.replace(/(.{2})./g, '$1*');
-                        }).join('*');
-
-                        return Button.component({
-                            onclick: function onclick() {
-                                return _this3.mailTo();
-                            },
-                            className: 'Button Button--text',
-                            icon: 'envelope-o',
-                            children: email
-                        });
-                    }
-                }, {
-                    key: "mailTo",
-                    value: function mailTo() {
-                        window.location = 'mailto:' + this.content;
-                    }
-                }]);
-                return Mutate;
-            }();
-
-            _export("default", Mutate);
         }
     };
 });
