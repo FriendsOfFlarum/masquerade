@@ -114,7 +114,8 @@ System.register('flagrow/masquerade/models/Answer', ['flarum/Model', 'flarum/uti
                 return Answer;
             }(mixin(Model, {
                 content: Model.attribute('content'),
-                field: Model.hasOne('field')
+                field: Model.hasOne('field'),
+                userId: Model.attribute('user_id')
             }));
 
             _export('default', Answer);
@@ -152,6 +153,7 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
             }(mixin(Model, {
                 name: Model.attribute('name'),
                 description: Model.attribute('description'),
+                type: Model.attribute('type'),
                 validation: Model.attribute('validation'),
                 required: Model.attribute('required'),
                 prefix: Model.attribute('prefix'),
@@ -168,13 +170,15 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 });;
 "use strict";
 
-System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings"], function (_export, _context) {
+System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Select", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings"], function (_export, _context) {
     "use strict";
 
-    var Component, Switch, Button, saveSettings, ProfileConfigurePane;
+    var Component, Select, Switch, Button, saveSettings, ProfileConfigurePane;
     return {
         setters: [function (_flarumComponent) {
             Component = _flarumComponent.default;
+        }, function (_flarumComponentsSelect) {
+            Select = _flarumComponentsSelect.default;
         }, function (_flarumComponentsSwitch) {
             Switch = _flarumComponentsSwitch.default;
         }, function (_flarumComponentsButton) {
@@ -307,14 +311,24 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             state: field.required(),
                             onchange: this.updateExistingFieldInput.bind(this, 'required', field),
                             children: app.translator.trans('flagrow-masquerade.admin.fields.required')
-                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
+                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.type')), Select.component({
+                            onchange: function onchange(value) {
+                                if (value === 'null') {
+                                    value = null;
+                                }
+
+                                _this4.updateExistingFieldInput('type', field, value);
+                            },
+                            options: this.availableTypes(),
+                            value: field.type()
+                        })]), field.type() === null ? m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
                             className: 'FormControl',
                             value: field.validation(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
                         }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
                             a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
                                 target: "_blank" })
-                        }))]), m('li', { className: 'ButtonGroup' }, [Button.component({
+                        }))]) : null, m('li', { className: 'ButtonGroup' }, [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
                             children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
@@ -325,7 +339,8 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             type: 'submit',
                             className: 'Button Button--danger',
                             children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
-                            loading: this.loading
+                            loading: this.loading,
+                            onclick: this.deleteField.bind(this, field)
                         }) : ''])])]);
                     }
                 }, {
@@ -432,6 +447,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             'icon': m.prop(''),
                             'required': m.prop(false),
                             'on_bio': m.prop(false),
+                            'type': m.prop(null),
                             'validation': m.prop('')
                         };
                     }
@@ -444,11 +460,152 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
 
                         return false;
                     }
+                }, {
+                    key: "availableTypes",
+                    value: function availableTypes() {
+                        return {
+                            url: app.translator.trans('flagrow-masquerade.admin.types.url'),
+                            null: app.translator.trans('flagrow-masquerade.admin.types.advanced')
+                        };
+                    }
                 }]);
                 return ProfileConfigurePane;
             }(Component);
 
             _export("default", ProfileConfigurePane);
+        }
+    };
+});;
+"use strict";
+
+System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", "flarum/helpers/icon"], function (_export, _context) {
+    "use strict";
+
+    var Button, icon, Mutate;
+    return {
+        setters: [function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }],
+        execute: function () {
+            Mutate = function () {
+                /**
+                 * @param field Field is either an instance of the models/Field object or a plain object of the serialized field
+                 * @param content Value of the field
+                 */
+                function Mutate(field, content) {
+                    babelHelpers.classCallCheck(this, Mutate);
+
+                    this.validation = this.fieldAttribute(field.validation);
+                    this.type = this.fieldAttribute(field.type);
+                    this.content = content;
+                }
+
+                babelHelpers.createClass(Mutate, [{
+                    key: "parse",
+                    value: function parse() {
+                        if (!this.content || this.content.length == 0) {
+                            return this.content;
+                        }
+
+                        var type = this.identify();
+
+                        if (type) {
+                            return this[type]();
+                        }
+
+                        return this.content;
+                    }
+                }, {
+                    key: "identify",
+                    value: function identify() {
+                        var validation = this.validation.split(',');
+                        var identified = null;
+
+                        // If the field has a type we use it
+                        if (this.type) {
+                            return this.type;
+                        }
+
+                        // If it's an advanced field with no type we then guess the best type
+                        validation.forEach(function (rule) {
+                            rule = rule.trim();
+
+                            if (Mutate.filtered().indexOf(rule) !== -1) {
+                                identified = rule;
+                            }
+                        });
+
+                        return identified;
+                    }
+                }, {
+                    key: "url",
+                    value: function url() {
+                        var _this = this;
+
+                        return Button.component({
+                            onclick: function onclick() {
+                                return _this.to();
+                            },
+                            className: 'Button Button--text',
+                            icon: 'link',
+                            children: this.content.replace(/^https?:\/\//, '')
+                        });
+                    }
+                }, {
+                    key: "to",
+                    value: function to() {
+                        var popup = window.open();
+                        popup.location = this.content;
+                    }
+                }, {
+                    key: "boolean",
+                    value: function boolean() {
+                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
+                    }
+                }, {
+                    key: "email",
+                    value: function email() {
+                        var _this2 = this;
+
+                        var email = this.content.split(/@|\./).map(function (segment) {
+                            return segment.replace(/(.{2})./g, '$1*');
+                        }).join('*');
+
+                        return Button.component({
+                            onclick: function onclick() {
+                                return _this2.mailTo();
+                            },
+                            className: 'Button Button--text',
+                            icon: 'envelope-o',
+                            children: email
+                        });
+                    }
+                }, {
+                    key: "mailTo",
+                    value: function mailTo() {
+                        window.location = 'mailto:' + this.content;
+                    }
+                }], [{
+                    key: "fieldAttribute",
+                    value: function fieldAttribute(attribute) {
+                        if (typeof attribute === 'function') {
+                            return attribute();
+                        }
+
+                        return attribute;
+                    }
+                }, {
+                    key: "filtered",
+                    value: function filtered() {
+                        return ['url', 'boolean', 'email'];
+                    }
+                }]);
+                return Mutate;
+            }();
+
+            _export("default", Mutate);
         }
     };
 });

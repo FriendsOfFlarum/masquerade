@@ -1,6 +1,6 @@
 import UserPage from 'flarum/components/UserPage';
-import icon from "flarum/helpers/icon";
 import Button from "flarum/components/Button";
+import TypeFactory from 'flagrow/masquerade/types/TypeFactory';
 
 export default class ProfileConfigurePane extends UserPage {
     init() {
@@ -43,23 +43,13 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     field(field) {
-        return m('fieldset', {className: 'Field'}, [
-            m('legend', [
-                field.icon() ? icon(field.icon()) : '',
-                field.name(),
-                field.required() ? ' *' : ''
-            ]),
-            m('div', {className: 'FormField'}, [
-                field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
-                m('input', {
-                    className: 'FormControl',
-                    oninput: m.withAttr('value', this.set.bind(this, field)),
-                    value: this.answers[field.id()](),
-                    required: field.required()
-                }),
-                field.description() ? m('span', {className: 'helpText'}, field.description()) : ''
-            ])
-        ]);
+        const type = TypeFactory.typeForField({
+            field,
+            set: this.set.bind(this, field),
+            value: this.answers[field.id()],
+        });
+
+        return type.editorField();
     }
 
     load() {

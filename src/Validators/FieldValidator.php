@@ -2,6 +2,7 @@
 
 namespace Flagrow\Masquerade\Validators;
 
+use Flagrow\Masquerade\FieldType\TypeFactory;
 use Flarum\Core\Validator\AbstractValidator;
 
 class FieldValidator extends AbstractValidator
@@ -12,6 +13,7 @@ class FieldValidator extends AbstractValidator
             'name' => ['required', 'string'],
             'description' => ['string'],
             'required' => ['boolean'],
+            'type' => ['in:' . implode(',', TypeFactory::validTypes())],
             'validation' => ['string'],
             'icon' => ['string'],
             'prefix' => ['string'],

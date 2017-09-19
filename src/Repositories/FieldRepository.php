@@ -4,6 +4,7 @@ namespace Flagrow\Masquerade\Repositories;
 
 use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Field;
+use Flagrow\Masquerade\FieldType\TypeFactory;
 use Flarum\Core\User;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;
@@ -49,6 +50,10 @@ class FieldRepository
      */
     public function findOrNew(array $attributes)
     {
+        $type = TypeFactory::typeForField($attributes);
+
+        $attributes = array_merge($attributes, $type->overrideAttributes());
+
         $id = Arr::get($attributes, 'id');
 
         if ($id) {
