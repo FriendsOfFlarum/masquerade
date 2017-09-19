@@ -8,7 +8,11 @@ flagrow-masquerade:
             configure-profile: Configure profile
             save-profile: Save
         fields:
-            select-none: No option selected
+            select:
+                none: No option selected
+            boolean:
+                yes: Yes
+                no: No
     admin:
         buttons:
             add-field: Add field

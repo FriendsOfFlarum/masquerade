@@ -20,7 +20,7 @@ export default class EmailField extends BaseField {
         let options = {};
 
         if (!this.readAttribute(this.field, 'required')) {
-            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select-none');
+            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select.none');
         }
 
         const validationIn = this.validationRule('in');

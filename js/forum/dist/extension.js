@@ -549,9 +549,57 @@ System.register('flagrow/masquerade/types/BooleanField', ['flarum/helpers/icon',
                 }
 
                 babelHelpers.createClass(BooleanField, [{
+                    key: 'editorInput',
+                    value: function editorInput() {
+                        var _this2 = this;
+
+                        return this.options().map(function (option) {
+                            return m('div', m('label', [m('input[type=radio]', {
+                                checked: _this2.value() === option.key || option.other_keys && option.other_keys.indexOf(_this2.value()) !== -1,
+                                onclick: function onclick() {
+                                    _this2.set(option.key);
+                                }
+                            }), ' ' + option.label]));
+                        });
+                    }
+                }, {
+                    key: 'options',
+                    value: function options() {
+                        var options = [];
+
+                        if (!this.readAttribute(this.field, 'required')) {
+                            options.push({
+                                key: null,
+                                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none')
+                            });
+                        }
+
+                        options.push({
+                            key: 'true',
+                            other_keys: ['1', 1, true, 'yes'],
+                            label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes')
+                        });
+
+                        options.push({
+                            key: 'false',
+                            other_keys: ['0', 0, false, 'no'],
+                            label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.no')
+                        });
+
+                        // This is probably overkill because it looks like the backend casts the value anyway
+                        if ([null, 'true', '1', 1, true, 'yes', 'false', '0', 0, false, 'no'].indexOf(this.value()) === -1) {
+                            options.push({
+                                key: this.value(),
+                                label: '(invalid) ' + this.value()
+                            });
+                        }
+
+                        return options;
+                    }
+                }, {
                     key: 'answerContent',
                     value: function answerContent() {
-                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
+                        return [1, '1', true, 'true', 'yes'].indexOf(this.value()) !== -1 ? icon('check-square-o') : icon('square-o');
                     }
                 }]);
                 return BooleanField;
@@ -667,7 +715,7 @@ System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Sele
                         var options = {};
 
                         if (!this.readAttribute(this.field, 'required')) {
-                            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select-none');
+                            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select.none');
                         }
 
                         var validationIn = this.validationRule('in');
