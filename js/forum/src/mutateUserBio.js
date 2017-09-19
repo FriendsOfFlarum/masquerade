@@ -6,7 +6,7 @@ import Mutate from "flagrow/masquerade/utils/Mutate";
 export default function () {
     override(UserBio.prototype, 'view', function (view) {
         // Load the old user bio.
-        let original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
+        let original = +app.forum.attribute('masquerade.disable-user-bio') ? null : view();
         let answers = app.forum.attribute('canViewMasquerade') ? this.props.user.bioFields() || [] : [];
 
         return m('div', {className: 'Masquerade-Bio'}, [
