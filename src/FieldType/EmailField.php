@@ -2,12 +2,12 @@
 
 namespace Flagrow\Masquerade\FieldType;
 
-class UrlField extends BaseField
+class EmailField extends BaseField
 {
     public function overrideAttributes()
     {
         return [
-            'validation' => 'url',
+            'validation' => 'email',
         ];
     }
 }

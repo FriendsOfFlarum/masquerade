@@ -7,6 +7,8 @@ flagrow-masquerade:
             view-profile: View profile
             configure-profile: Configure profile
             save-profile: Save
+        fields:
+            select-none: No option selected
     admin:
         buttons:
             add-field: Add field
@@ -33,7 +35,7 @@ flagrow-masquerade:
             validation: Validation
             validation-help: >
                 Check the supported <a>Laravel validation rules</a>. Eg:
-                "string,min:5" or "url".
+                "string|min:5" or "url".
             prefix: Field prefix
             prefix-help: >
                 Shows your prefix in front of values entered by the user for this field.
@@ -46,4 +48,7 @@ flagrow-masquerade:
             disable-user-bio: Disable user bio field
         types:
             advanced: Advanced
+            boolean: Checkbox
+            email: Email
+            select: Dropdown
             url: Url

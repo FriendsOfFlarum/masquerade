@@ -208,8 +208,6 @@ System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/co
             var original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
             var answers = app.forum.attribute('canViewMasquerade') ? this.props.user.bioFields() || [] : [];
 
-            console.log(app.forum.attribute('canViewMasquerade'), this.props.user.bioFields());
-
             return m('.Masquerade-Bio', [original, m('div', answers.map(function (answer) {
                 var field = answer.attribute('field');
                 var type = TypeFactory.typeForField({
@@ -437,139 +435,6 @@ System.register('flagrow/masquerade/panes/ProfilePane', ['flarum/components/User
         }
     };
 });;
-"use strict";
-
-System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", "flarum/helpers/icon"], function (_export, _context) {
-    "use strict";
-
-    var Button, icon, Mutate;
-    return {
-        setters: [function (_flarumComponentsButton) {
-            Button = _flarumComponentsButton.default;
-        }, function (_flarumHelpersIcon) {
-            icon = _flarumHelpersIcon.default;
-        }],
-        execute: function () {
-            Mutate = function () {
-                /**
-                 * @param field Field is either an instance of the models/Field object or a plain object of the serialized field
-                 * @param content Value of the field
-                 */
-                function Mutate(field, content) {
-                    babelHelpers.classCallCheck(this, Mutate);
-
-                    this.validation = this.fieldAttribute(field.validation);
-                    this.type = this.fieldAttribute(field.type);
-                    this.content = content;
-                }
-
-                babelHelpers.createClass(Mutate, [{
-                    key: "parse",
-                    value: function parse() {
-                        if (!this.content || this.content.length == 0) {
-                            return this.content;
-                        }
-
-                        var type = this.identify();
-
-                        if (type) {
-                            return this[type]();
-                        }
-
-                        return this.content;
-                    }
-                }, {
-                    key: "identify",
-                    value: function identify() {
-                        var validation = this.validation.split(',');
-                        var identified = null;
-
-                        // If the field has a type we use it
-                        if (this.type) {
-                            return this.type;
-                        }
-
-                        // If it's an advanced field with no type we then guess the best type
-                        validation.forEach(function (rule) {
-                            rule = rule.trim();
-
-                            if (Mutate.filtered().indexOf(rule) !== -1) {
-                                identified = rule;
-                            }
-                        });
-
-                        return identified;
-                    }
-                }, {
-                    key: "url",
-                    value: function url() {
-                        var _this = this;
-
-                        return Button.component({
-                            onclick: function onclick() {
-                                return _this.to();
-                            },
-                            className: 'Button Button--text',
-                            icon: 'link',
-                            children: this.content.replace(/^https?:\/\//, '')
-                        });
-                    }
-                }, {
-                    key: "to",
-                    value: function to() {
-                        var popup = window.open();
-                        popup.location = this.content;
-                    }
-                }, {
-                    key: "boolean",
-                    value: function boolean() {
-                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
-                    }
-                }, {
-                    key: "email",
-                    value: function email() {
-                        var _this2 = this;
-
-                        var email = this.content.split(/@|\./).map(function (segment) {
-                            return segment.replace(/(.{2})./g, '$1*');
-                        }).join('*');
-
-                        return Button.component({
-                            onclick: function onclick() {
-                                return _this2.mailTo();
-                            },
-                            className: 'Button Button--text',
-                            icon: 'envelope-o',
-                            children: email
-                        });
-                    }
-                }, {
-                    key: "mailTo",
-                    value: function mailTo() {
-                        window.location = 'mailto:' + this.content;
-                    }
-                }], [{
-                    key: "fieldAttribute",
-                    value: function fieldAttribute(attribute) {
-                        if (typeof attribute === 'function') {
-                            return attribute();
-                        }
-
-                        return attribute;
-                    }
-                }, {
-                    key: "filtered",
-                    value: function filtered() {
-                        return ['url', 'boolean', 'email'];
-                    }
-                }]);
-                return Mutate;
-            }();
-
-            _export("default", Mutate);
-        }
-    };
-});;
 'use strict';
 
 System.register('flagrow/masquerade/types/BaseField', ['flarum/helpers/icon'], function (_export, _context) {
@@ -601,6 +466,26 @@ System.register('flagrow/masquerade/types/BaseField', ['flarum/helpers/icon'], f
                         }
 
                         return object[attribute];
+                    }
+                }, {
+                    key: 'validationRules',
+                    value: function validationRules() {
+                        return this.readAttribute(this.field, 'validation').split('|');
+                    }
+                }, {
+                    key: 'validationRule',
+                    value: function validationRule(ruleName) {
+                        var ruleContent = null;
+
+                        this.validationRules().forEach(function (rule) {
+                            var split = rule.split(':', 2);
+
+                            if (split[0] === ruleName) {
+                                ruleContent = split[1];
+                            }
+                        });
+
+                        return ruleContent;
                     }
                 }, {
                     key: 'editorField',
@@ -644,60 +529,35 @@ System.register('flagrow/masquerade/types/BaseField', ['flarum/helpers/icon'], f
 });;
 'use strict';
 
-System.register('flagrow/masquerade/types/UrlField', ['flarum/components/Button', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
+System.register('flagrow/masquerade/types/BooleanField', ['flarum/helpers/icon', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
     "use strict";
 
-    var Button, BaseField, UrlField;
+    var icon, BaseField, BooleanField;
     return {
-        setters: [function (_flarumComponentsButton) {
-            Button = _flarumComponentsButton.default;
+        setters: [function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
         }, function (_flagrowMasqueradeTypesBaseField) {
             BaseField = _flagrowMasqueradeTypesBaseField.default;
         }],
         execute: function () {
-            UrlField = function (_BaseField) {
-                babelHelpers.inherits(UrlField, _BaseField);
+            BooleanField = function (_BaseField) {
+                babelHelpers.inherits(BooleanField, _BaseField);
 
-                function UrlField() {
-                    babelHelpers.classCallCheck(this, UrlField);
-                    return babelHelpers.possibleConstructorReturn(this, (UrlField.__proto__ || Object.getPrototypeOf(UrlField)).apply(this, arguments));
+                function BooleanField() {
+                    babelHelpers.classCallCheck(this, BooleanField);
+                    return babelHelpers.possibleConstructorReturn(this, (BooleanField.__proto__ || Object.getPrototypeOf(BooleanField)).apply(this, arguments));
                 }
 
-                babelHelpers.createClass(UrlField, [{
-                    key: 'editorInputProps',
-                    value: function editorInputProps() {
-                        var props = babelHelpers.get(UrlField.prototype.__proto__ || Object.getPrototypeOf(UrlField.prototype), 'editorInputProps', this).call(this);
-
-                        props.type = 'url';
-                        props.placeholder = 'https://example.com';
-
-                        return props;
-                    }
-                }, {
+                babelHelpers.createClass(BooleanField, [{
                     key: 'answerContent',
                     value: function answerContent() {
-                        var _this2 = this;
-
-                        return Button.component({
-                            onclick: function onclick() {
-                                return _this2.to();
-                            },
-                            className: 'Button Button--text',
-                            icon: 'link',
-                            children: this.value().replace(/^https?:\/\//, '')
-                        });
-                    }
-                }, {
-                    key: 'to',
-                    value: function to() {
-                        var popup = window.open();
-                        popup.location = this.value();
+                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
                     }
                 }]);
-                return UrlField;
+                return BooleanField;
             }(BaseField);
 
-            _export('default', UrlField);
+            _export('default', BooleanField);
         }
     };
 });;
@@ -765,44 +625,79 @@ System.register('flagrow/masquerade/types/EmailField', ['flarum/components/Butto
 });;
 'use strict';
 
-System.register('flagrow/masquerade/types/BooleanField', ['flarum/helpers/icon', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
+System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Select', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
     "use strict";
 
-    var icon, BaseField, BooleanField;
+    var Select, BaseField, EmailField;
     return {
-        setters: [function (_flarumHelpersIcon) {
-            icon = _flarumHelpersIcon.default;
+        setters: [function (_flarumComponentsSelect) {
+            Select = _flarumComponentsSelect.default;
         }, function (_flagrowMasqueradeTypesBaseField) {
             BaseField = _flagrowMasqueradeTypesBaseField.default;
         }],
         execute: function () {
-            BooleanField = function (_BaseField) {
-                babelHelpers.inherits(BooleanField, _BaseField);
+            EmailField = function (_BaseField) {
+                babelHelpers.inherits(EmailField, _BaseField);
 
-                function BooleanField() {
-                    babelHelpers.classCallCheck(this, BooleanField);
-                    return babelHelpers.possibleConstructorReturn(this, (BooleanField.__proto__ || Object.getPrototypeOf(BooleanField)).apply(this, arguments));
+                function EmailField() {
+                    babelHelpers.classCallCheck(this, EmailField);
+                    return babelHelpers.possibleConstructorReturn(this, (EmailField.__proto__ || Object.getPrototypeOf(EmailField)).apply(this, arguments));
                 }
 
-                babelHelpers.createClass(BooleanField, [{
-                    key: 'answerContent',
-                    value: function answerContent() {
-                        return [1, "1", true, "true", "yes"].indexOf(this.content) === 0 ? icon('check-square-o') : icon('square-o');
+                babelHelpers.createClass(EmailField, [{
+                    key: 'editorInput',
+                    value: function editorInput() {
+                        var _this2 = this;
+
+                        return Select.component({
+                            onchange: function onchange(value) {
+                                if (value === 'null') {
+                                    value = null;
+                                }
+
+                                _this2.set(value);
+                            },
+                            value: this.value(),
+                            options: this.options()
+                        });
+                    }
+                }, {
+                    key: 'options',
+                    value: function options() {
+                        var options = {};
+
+                        if (!this.readAttribute(this.field, 'required')) {
+                            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select-none');
+                        }
+
+                        var validationIn = this.validationRule('in');
+
+                        if (validationIn) {
+                            validationIn.split(',').forEach(function (value) {
+                                options[value] = value;
+                            });
+                        }
+
+                        if (typeof options[this.value()] === 'undefined') {
+                            options[this.value()] = '(invalid) ' + this.value();
+                        }
+
+                        return options;
                     }
                 }]);
-                return BooleanField;
+                return EmailField;
             }(BaseField);
 
-            _export('default', BooleanField);
+            _export('default', EmailField);
         }
     };
 });;
 'use strict';
 
-System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/types/BaseField', 'flagrow/masquerade/types/BooleanField', 'flagrow/masquerade/types/EmailField', 'flagrow/masquerade/types/UrlField'], function (_export, _context) {
+System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/types/BaseField', 'flagrow/masquerade/types/BooleanField', 'flagrow/masquerade/types/EmailField', 'flagrow/masquerade/types/SelectField', 'flagrow/masquerade/types/UrlField'], function (_export, _context) {
     "use strict";
 
-    var BaseField, BooleanField, EmailField, UrlField, TypeFactory;
+    var BaseField, BooleanField, EmailField, SelectField, UrlField, TypeFactory;
     return {
         setters: [function (_flagrowMasqueradeTypesBaseField) {
             BaseField = _flagrowMasqueradeTypesBaseField.default;
@@ -810,6 +705,8 @@ System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/typ
             BooleanField = _flagrowMasqueradeTypesBooleanField.default;
         }, function (_flagrowMasqueradeTypesEmailField) {
             EmailField = _flagrowMasqueradeTypesEmailField.default;
+        }, function (_flagrowMasqueradeTypesSelectField) {
+            SelectField = _flagrowMasqueradeTypesSelectField.default;
         }, function (_flagrowMasqueradeTypesUrlField) {
             UrlField = _flagrowMasqueradeTypesUrlField.default;
         }],
@@ -855,18 +752,21 @@ System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/typ
                         return {
                             boolean: BooleanField,
                             email: EmailField,
+                            select: SelectField,
                             url: UrlField
                         };
                     }
                 }, {
                     key: 'identify',
                     value: function identify(field) {
+                        var _this = this;
+
                         var validation = this.fieldAttribute(field, 'validation').split(',');
                         var identified = null;
 
                         // If the field has a type we use it
                         var fieldType = this.fieldAttribute(field, 'type');
-                        if (fieldType) {
+                        if (typeof this.types()[fieldType] !== 'undefined') {
                             return fieldType;
                         }
 
@@ -874,7 +774,7 @@ System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/typ
                         validation.forEach(function (rule) {
                             rule = rule.trim();
 
-                            if (Mutate.filtered().indexOf(rule) !== -1) {
+                            if (typeof _this.types()[rule] !== 'undefined') {
                                 identified = rule;
                             }
                         });
@@ -886,6 +786,65 @@ System.register('flagrow/masquerade/types/TypeFactory', ['flagrow/masquerade/typ
             }();
 
             _export('default', TypeFactory);
+        }
+    };
+});;
+'use strict';
+
+System.register('flagrow/masquerade/types/UrlField', ['flarum/components/Button', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
+    "use strict";
+
+    var Button, BaseField, UrlField;
+    return {
+        setters: [function (_flarumComponentsButton) {
+            Button = _flarumComponentsButton.default;
+        }, function (_flagrowMasqueradeTypesBaseField) {
+            BaseField = _flagrowMasqueradeTypesBaseField.default;
+        }],
+        execute: function () {
+            UrlField = function (_BaseField) {
+                babelHelpers.inherits(UrlField, _BaseField);
+
+                function UrlField() {
+                    babelHelpers.classCallCheck(this, UrlField);
+                    return babelHelpers.possibleConstructorReturn(this, (UrlField.__proto__ || Object.getPrototypeOf(UrlField)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(UrlField, [{
+                    key: 'editorInputProps',
+                    value: function editorInputProps() {
+                        var props = babelHelpers.get(UrlField.prototype.__proto__ || Object.getPrototypeOf(UrlField.prototype), 'editorInputProps', this).call(this);
+
+                        props.type = 'url';
+                        props.placeholder = 'https://example.com';
+
+                        return props;
+                    }
+                }, {
+                    key: 'answerContent',
+                    value: function answerContent() {
+                        var _this2 = this;
+
+                        return Button.component({
+                            onclick: function onclick() {
+                                return _this2.to();
+                            },
+                            className: 'Button Button--text',
+                            icon: 'link',
+                            children: this.value().replace(/^https?:\/\//, '')
+                        });
+                    }
+                }, {
+                    key: 'to',
+                    value: function to() {
+                        var popup = window.open();
+                        popup.location = this.value();
+                    }
+                }]);
+                return UrlField;
+            }(BaseField);
+
+            _export('default', UrlField);
         }
     };
 });

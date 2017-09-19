@@ -2,12 +2,12 @@
 
 namespace Flagrow\Masquerade\FieldType;
 
-class UrlField extends BaseField
+class BooleanField extends BaseField
 {
     public function overrideAttributes()
     {
         return [
-            'validation' => 'url',
+            'validation' => 'boolean',
         ];
     }
 }

@@ -8,8 +8,6 @@ export default function () {
         let original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
         let answers = app.forum.attribute('canViewMasquerade') ? this.props.user.bioFields() || [] : [];
 
-        console.log(app.forum.attribute('canViewMasquerade'), this.props.user.bioFields());
-
         return m('.Masquerade-Bio', [
             original,
             m('div', answers.map(answer => {

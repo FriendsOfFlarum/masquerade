@@ -1,6 +1,7 @@
 import BaseField from 'flagrow/masquerade/types/BaseField';
 import BooleanField from 'flagrow/masquerade/types/BooleanField';
 import EmailField from 'flagrow/masquerade/types/EmailField';
+import SelectField from 'flagrow/masquerade/types/SelectField';
 import UrlField from 'flagrow/masquerade/types/UrlField';
 
 export default class TypeFactory {
@@ -32,6 +33,7 @@ export default class TypeFactory {
         return {
             boolean: BooleanField,
             email: EmailField,
+            select: SelectField,
             url: UrlField,
         };
     }
@@ -46,7 +48,7 @@ export default class TypeFactory {
 
         // If the field has a type we use it
         const fieldType = this.fieldAttribute(field, 'type');
-        if (fieldType) {
+        if (typeof this.types()[fieldType] !== 'undefined') {
             return fieldType;
         }
 
@@ -54,7 +56,7 @@ export default class TypeFactory {
         validation.forEach(rule => {
             rule = rule.trim();
 
-            if (Mutate.filtered().indexOf(rule) !== -1) {
+            if (typeof this.types()[rule] !== 'undefined') {
                 identified = rule;
             }
         });

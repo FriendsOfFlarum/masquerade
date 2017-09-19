@@ -408,6 +408,9 @@ export default class ProfileConfigurePane extends Component {
     availableTypes() {
         return {
             url: app.translator.trans('flagrow-masquerade.admin.types.url'),
+            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
+            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
+            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
             null: app.translator.trans('flagrow-masquerade.admin.types.advanced'),
         };
     }

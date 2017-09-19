@@ -2,7 +2,7 @@
 
 namespace Flagrow\Masquerade\FieldType;
 
-abstract class Type
+class BaseField
 {
     public function overrideAttributes()
     {

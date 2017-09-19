@@ -9,7 +9,10 @@ class TypeFactory
     protected static function typeMapping()
     {
         return [
-            null => AdvancedField::class,
+            null => BaseField::class,
+            'boolean' => BooleanField::class,
+            'email' => EmailField::class,
+            'select' => BaseField::class,
             'url' => UrlField::class,
         ];
     }

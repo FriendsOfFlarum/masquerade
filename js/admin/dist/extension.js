@@ -465,6 +465,9 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                     value: function availableTypes() {
                         return {
                             url: app.translator.trans('flagrow-masquerade.admin.types.url'),
+                            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
+                            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
+                            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
                             null: app.translator.trans('flagrow-masquerade.admin.types.advanced')
                         };
                     }
@@ -490,17 +493,17 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
         }],
         execute: function () {
             Mutate = function () {
-                /**
-                 * @param field Field is either an instance of the models/Field object or a plain object of the serialized field
-                 * @param content Value of the field
-                 */
-                function Mutate(field, content) {
+                function Mutate(validation, content) {
                     babelHelpers.classCallCheck(this, Mutate);
 
-                    this.validation = this.fieldAttribute(field.validation);
-                    this.type = this.fieldAttribute(field.type);
+                    this.validation = validation || '';
                     this.content = content;
                 }
+
+                /**
+                 * Parses the field value.
+                 */
+
 
                 babelHelpers.createClass(Mutate, [{
                     key: "parse",
@@ -520,19 +523,15 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
                 }, {
                     key: "identify",
                     value: function identify() {
+                        var _this = this;
+
                         var validation = this.validation.split(',');
                         var identified = null;
 
-                        // If the field has a type we use it
-                        if (this.type) {
-                            return this.type;
-                        }
-
-                        // If it's an advanced field with no type we then guess the best type
                         validation.forEach(function (rule) {
                             rule = rule.trim();
 
-                            if (Mutate.filtered().indexOf(rule) !== -1) {
+                            if (_this.filtered().indexOf(rule) >= 0) {
                                 identified = rule;
                             }
                         });
@@ -540,13 +539,18 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
                         return identified;
                     }
                 }, {
+                    key: "filtered",
+                    value: function filtered() {
+                        return ['url', 'boolean', 'email'];
+                    }
+                }, {
                     key: "url",
                     value: function url() {
-                        var _this = this;
+                        var _this2 = this;
 
                         return Button.component({
                             onclick: function onclick() {
-                                return _this.to();
+                                return _this2.to();
                             },
                             className: 'Button Button--text',
                             icon: 'link',
@@ -567,7 +571,7 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
                 }, {
                     key: "email",
                     value: function email() {
-                        var _this2 = this;
+                        var _this3 = this;
 
                         var email = this.content.split(/@|\./).map(function (segment) {
                             return segment.replace(/(.{2})./g, '$1*');
@@ -575,7 +579,7 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
 
                         return Button.component({
                             onclick: function onclick() {
-                                return _this2.mailTo();
+                                return _this3.mailTo();
                             },
                             className: 'Button Button--text',
                             icon: 'envelope-o',
@@ -586,20 +590,6 @@ System.register("flagrow/masquerade/utils/Mutate", ["flarum/components/Button", 
                     key: "mailTo",
                     value: function mailTo() {
                         window.location = 'mailto:' + this.content;
-                    }
-                }], [{
-                    key: "fieldAttribute",
-                    value: function fieldAttribute(attribute) {
-                        if (typeof attribute === 'function') {
-                            return attribute();
-                        }
-
-                        return attribute;
-                    }
-                }, {
-                    key: "filtered",
-                    value: function filtered() {
-                        return ['url', 'boolean', 'email'];
                     }
                 }]);
                 return Mutate;

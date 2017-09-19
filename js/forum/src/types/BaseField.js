@@ -15,6 +15,33 @@ export default class BaseField {
         return object[attribute];
     }
 
+    /**
+     * Gets all Laravel validation rules split by rule
+     * @returns {Array}
+     */
+    validationRules() {
+        return this.readAttribute(this.field, 'validation').split('|');
+    }
+
+    /**
+     * Gets a Laravel validation rule by name
+     * @param {string} ruleName
+     * @returns {string|null}
+     */
+    validationRule(ruleName) {
+        let ruleContent = null;
+
+        this.validationRules().forEach(rule => {
+            const split = rule.split(':', 2);
+
+            if (split[0] === ruleName) {
+                ruleContent = split[1];
+            }
+        });
+
+        return ruleContent;
+    }
+
     editorField() {
         return m('fieldset', {className: 'Field'}, [
             m('legend', [

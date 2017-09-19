@@ -20,7 +20,7 @@ class AnswerValidator extends AbstractValidator
         }
 
         if ($field->validation) {
-            $rules = array_merge($rules, explode(',', $field->validation));
+            $rules = array_merge($rules, explode('|', $field->validation));
         }
 
         $this->rules = [$field->name => $rules];
