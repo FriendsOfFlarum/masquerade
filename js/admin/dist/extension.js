@@ -101,21 +101,8 @@ System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flaru
                 }, {
                     key: 'updateRules',
                     value: function updateRules(options) {
-                        var newRules = [];
-
-                        var rules = this.props.value.split('|');
-
-                        rules.forEach(function (rule) {
-                            var parts = rule.split(':', 2);
-
-                            if (parts[0] === 'in') {
-                                newRules.push('in:' + options.join(','));
-                            } else {
-                                newRules.push(rule);
-                            }
-                        });
-
-                        this.props.onchange(newRules.join('|'));
+                        // We ignore other existing rules, they would probably be leftovers from another field type when changing types
+                        this.props.onchange('in:' + options.join(','));
                     }
                 }, {
                     key: 'options',

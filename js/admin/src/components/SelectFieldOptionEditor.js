@@ -48,21 +48,8 @@ export default class SelectFieldOptionEditor extends Component {
     }
 
     updateRules(options) {
-        let newRules = [];
-
-        const rules = this.props.value.split('|');
-
-        rules.forEach(rule => {
-            const parts = rule.split(':', 2);
-
-            if (parts[0] === 'in') {
-                newRules.push('in:' + options.join(','));
-            } else {
-                newRules.push(rule);
-            }
-        });
-
-        this.props.onchange(newRules.join('|'));
+        // We ignore other existing rules, they would probably be leftovers from another field type when changing types
+        this.props.onchange('in:' + options.join(','));
     }
 
     options() {
