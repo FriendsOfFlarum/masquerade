@@ -5,7 +5,6 @@ import Field from "flagrow/masquerade/models/Field";
 import Answer from "flagrow/masquerade/models/Answer";
 import Model from 'flarum/Model';
 
-import addProfileConfigurePane from 'flagrow/masquerade/addProfileConfigurePane';
 import addProfilePane from 'flagrow/masquerade/addProfilePane';
 import mutateUserBio from 'flagrow/masquerade/mutateUserBio';
 
@@ -15,7 +14,6 @@ app.initializers.add('flagrow-masquerade', app => {
 
     User.prototype.bioFields = Model.hasMany('bioFields');
 
-    addProfileConfigurePane();
     addProfilePane();
 
     mutateUserBio();

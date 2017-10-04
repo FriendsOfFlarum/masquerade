@@ -5,7 +5,6 @@ flagrow-masquerade:
                 Please complete the necessary profile fields below.
         buttons:
             view-profile: View profile
-            configure-profile: Configure profile
             save-profile: Save
     admin:
         buttons:

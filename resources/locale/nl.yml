@@ -5,7 +5,6 @@ flagrow-masquerade:
                 Maak je profiel compleet door de verplichte velden in te vullen.
         buttons:
             view-profile: Bekijk profiel
-            configure-profile: Pas je profiel aan
             save-profile: Opslaan
     admin:
         buttons:
