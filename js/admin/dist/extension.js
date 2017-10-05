@@ -40,12 +40,14 @@ System.register("flagrow/masquerade/addProfileConfigurePane", ["flarum/extend", 
 });;
 'use strict';
 
-System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flarum/Component', 'flarum/helpers/icon'], function (_export, _context) {
+System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flarum/app', 'flarum/Component', 'flarum/helpers/icon'], function (_export, _context) {
     "use strict";
 
-    var Component, icon, SelectFieldOptionEditor;
+    var app, Component, icon, SelectFieldOptionEditor;
     return {
-        setters: [function (_flarumComponent) {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
             Component = _flarumComponent.default;
         }, function (_flarumHelpersIcon) {
             icon = _flarumHelpersIcon.default;
@@ -88,7 +90,7 @@ System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flaru
                                     _this2.deleteOption(optionIndex);
                                 }
                             }, icon('close')))]);
-                        }))), m('table', m('tbody'), m('tr', [m('td', m('input[type=text].FormControl', {
+                        }))), m('.helpText', app.translator.trans('flagrow-masquerade.admin.fields.option-coma-warning')), m('table', m('tbody'), m('tr', [m('td', m('input[type=text].FormControl', {
                             onchange: m.withAttr('value', this.newOption),
                             value: this.newOption(),
                             placeholder: app.translator.trans('flagrow-masquerade.admin.fields.option-new')

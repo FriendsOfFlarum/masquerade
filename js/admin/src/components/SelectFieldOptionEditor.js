@@ -1,3 +1,4 @@
+import app from 'flarum/app';
 import Component from 'flarum/Component';
 import icon from 'flarum/helpers/icon';
 
@@ -32,6 +33,7 @@ export default class SelectFieldOptionEditor extends Component {
                     },
                 }, icon('close'))),
             ])))),
+            m('.helpText', app.translator.trans('flagrow-masquerade.admin.fields.option-coma-warning')),
             m('table', m('tbody'), m('tr', [
                 m('td', m('input[type=text].FormControl', {
                     onchange: m.withAttr('value', this.newOption),
