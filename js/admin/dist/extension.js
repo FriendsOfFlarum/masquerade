@@ -264,10 +264,22 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             className: 'Field',
                             'data-id': field.id()
                         }, [m('legend', [exists ? m('div', { className: 'ButtonGroup pull-right' }, [Button.component({
+                            className: 'Button Button--icon',
+                            icon: "pencil-square-o",
+                            onclick: function onclick(e) {
+                                return _this4.toggleField(e);
+                            }
+                        })], [Button.component({
                             className: 'Button Button--icon Button--danger',
                             icon: "trash",
                             onclick: this.deleteField.bind(this, field)
-                        })]) : null, m('span', {
+                        })]) : m('div', { className: 'ButtonGroup pull-right' }, [Button.component({
+                            className: 'Button Button--icon',
+                            icon: "plus",
+                            onclick: function onclick(e) {
+                                return _this4.toggleField(e);
+                            }
+                        })]), m('span', {
                             className: 'title',
                             onclick: function onclick(e) {
                                 return _this4.toggleField(e);
