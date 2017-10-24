@@ -23,12 +23,12 @@ class AddWebRoutes
     public function routes(ConfigureForumRoutes $routes)
     {
         $routes->get(
-            '/masquerade/configure',
+            '/m/configure',
             'masquerade.profile.configure',
             ManageProfileController::class
         );
         $routes->get(
-            '/masquerade/{username}',
+            '/m/{username}',
             'masquerade.profile.view',
             ViewProfileController::class
         );
