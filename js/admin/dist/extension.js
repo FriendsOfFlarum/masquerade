@@ -7,7 +7,7 @@ System.register("flagrow/masquerade/addProfileConfigurePane", ["flarum/extend", 
 
     _export("default", function () {
         // create the route
-        app.routes['flagrow-masquerade-configure-profile'] = { path: '/flagrow/masquerade/configure', component: ProfileConfigurePane.component() };
+        app.routes['flagrow-masquerade-configure-profile'] = { path: '/masquerade/configure', component: ProfileConfigurePane.component() };
 
         // bind the route we created to the three dots settings button
         app.extensionSettings['flagrow-masquerade'] = function () {
