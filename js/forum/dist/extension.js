@@ -212,7 +212,9 @@ System.register("flagrow/masquerade/mutateUserBio", ["flarum/extend", "flarum/co
                 var field = answer.attribute('field');
                 var type = TypeFactory.typeForField({
                     field: field,
-                    value: answer.content
+                    value: function value() {
+                        return answer.content();
+                    }
                 });
 
                 return type.answerField();
