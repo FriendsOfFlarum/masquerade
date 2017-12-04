@@ -43,16 +43,16 @@ export default class BaseField {
     }
 
     editorField() {
-        return m('fieldset', {className: 'Field'}, [
+        return m('fieldset.Field', [
             m('legend', [
                 this.field.icon() ? icon(this.field.icon()) : '',
                 this.field.name(),
                 this.field.required() ? ' *' : '',
             ]),
-            m('div', {className: 'FormField'}, [
-                this.field.prefix() ? m('div', {className: 'prefix'}, this.field.prefix()) : '',
+            m('.FormField', [
+                this.field.prefix() ? m('.prefix', this.field.prefix()) : '',
                 this.editorInput(),
-                this.field.description() ? m('span', {className: 'helpText'}, this.field.description()) : '',
+                this.field.description() ? m('.helpText', this.field.description()) : '',
             ]),
         ]);
     }

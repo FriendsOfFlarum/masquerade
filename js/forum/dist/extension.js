@@ -492,7 +492,7 @@ System.register('flagrow/masquerade/types/BaseField', ['flarum/helpers/icon'], f
                 }, {
                     key: 'editorField',
                     value: function editorField() {
-                        return m('fieldset', { className: 'Field' }, [m('legend', [this.field.icon() ? icon(this.field.icon()) : '', this.field.name(), this.field.required() ? ' *' : '']), m('div', { className: 'FormField' }, [this.field.prefix() ? m('div', { className: 'prefix' }, this.field.prefix()) : '', this.editorInput(), this.field.description() ? m('span', { className: 'helpText' }, this.field.description()) : ''])]);
+                        return m('fieldset.Field', [m('legend', [this.field.icon() ? icon(this.field.icon()) : '', this.field.name(), this.field.required() ? ' *' : '']), m('.FormField', [this.field.prefix() ? m('.prefix', this.field.prefix()) : '', this.editorInput(), this.field.description() ? m('.helpText', this.field.description()) : ''])]);
                     }
                 }, {
                     key: 'editorInput',
