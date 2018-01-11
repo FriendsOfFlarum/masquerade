@@ -28,7 +28,7 @@
                 "image": "resources/logo.svg",
                 "backgroundColor": "#5f4bb6",
                 "backgroundSize": "90%",
-		"backgroundRepeat": "no-repeat",
+		        "backgroundRepeat": "no-repeat",
                 "backgroundPosition": "center"
             }
         },
