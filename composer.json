@@ -26,8 +26,9 @@
             "title": "Flagrow Masquerade",
             "icon": {
                 "image": "resources/logo.svg",
-                "backgroundColor": "#fff",
-                "backgroundSize": "cover",
+                "backgroundColor": "#5f4bb6",
+                "backgroundSize": "90%",
+		"backgroundRepeat": "no-repeat",
                 "backgroundPosition": "center"
             }
         },
