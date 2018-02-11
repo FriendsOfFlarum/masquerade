@@ -22,7 +22,7 @@ flagrow-masquerade:
             edit: Modifier champ {field}
             name: Nom du champ
             name-help: >
-                The publicly visible (non-translatable) field label.
+                La légende publique (non traduisible) de ce champ.
             description: Description du champ
             description-help: >
                 Une description optionnelle pour expliquer l'utilisation ou la nécéssité de ce champ.
