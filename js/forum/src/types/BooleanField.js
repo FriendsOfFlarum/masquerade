@@ -50,8 +50,12 @@ export default class BooleanField extends BaseField {
     }
 
     answerContent() {
+        if (BaseField.isNoOptionSelectedValue(this.value())) {
+            return '';
+        }
+
         return [1, '1', true, 'true', 'yes'].indexOf(this.value()) !== -1 ?
-            icon('check-square-o') :
-            icon('square-o');
+            [icon('check-square-o'), ' ', app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes')] :
+            [icon('square-o'), ' ', app.translator.trans('flagrow-masquerade.forum.fields.boolean.no')];
     }
 }
