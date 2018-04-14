@@ -1,6 +1,6 @@
 import UserPage from 'flarum/components/UserPage';
-import icon from "flarum/helpers/icon";
 import Button from "flarum/components/Button";
+import TypeFactory from 'flagrow/masquerade/types/TypeFactory';
 
 export default class ProfileConfigurePane extends UserPage {
     init() {
@@ -26,9 +26,10 @@ export default class ProfileConfigurePane extends UserPage {
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
                     .map(field => {
-                        if (!(field.id() in this.answers)) {
-                            this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('')
+                        if (!this.answers.hasOwnProperty(field.id())) {
+                            this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
                         }
+
                         return this.field(field);
                     })
                 ),
@@ -43,23 +44,13 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     field(field) {
-        return m('fieldset', {className: 'Field'}, [
-            m('legend', [
-                field.icon() ? icon(field.icon()) : '',
-                field.name(),
-                field.required() ? ' *' : ''
-            ]),
-            m('div', {className: 'FormField'}, [
-                field.prefix() ? m('div', {className: 'prefix'}, field.prefix()) : '',
-                m('input', {
-                    className: 'FormControl',
-                    oninput: m.withAttr('value', this.set.bind(this, field)),
-                    value: this.answers[field.id()](),
-                    required: field.required()
-                }),
-                field.description() ? m('span', {className: 'helpText'}, field.description()) : ''
-            ])
-        ]);
+        const type = TypeFactory.typeForField({
+            field,
+            set: this.set.bind(this, field),
+            value: this.answers[field.id()],
+        });
+
+        return type.editorField();
     }
 
     load() {
@@ -72,10 +63,10 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     set(field, value) {
-        if (!(field.id() in this.answers)) {
-            this.answers[field.id()] = m.prop(value);
-        } else {
+        if (this.answers.hasOwnProperty(field.id())) {
             this.answers[field.id()](value);
+        } else {
+            this.answers[field.id()] = m.prop(value);
         }
     }
 

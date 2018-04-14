@@ -1,6 +1,5 @@
 import UserPage from 'flarum/components/UserPage';
-import icon from "flarum/helpers/icon";
-import Mutate from "flagrow/masquerade/utils/Mutate";
+import TypeFactory from 'flagrow/masquerade/types/TypeFactory';
 
 export default class ProfileConfigurePane extends UserPage {
     init() {
@@ -30,15 +29,12 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     field(field) {
-        const mutate = new Mutate(field.validation(), this.answers[field.id()]);
+        const type = TypeFactory.typeForField({
+            field,
+            value: m.prop(this.answers[field.id()]),
+        });
 
-        return m('div', {className: 'Masquerade-Bio-Set'}, [
-            m('span', {className: 'Masquerade-Bio-Field'}, [
-                field.icon() ? icon(field.icon()) : '',
-                field.name() + ':'
-            ]),
-            m('span', {className: 'Masquerade-Bio-Answer'}, mutate.parse())
-        ])
+        return type.answerField();
     }
 
     load(user) {

@@ -4,6 +4,7 @@ import mixin from 'flarum/utils/mixin';
 export default class Field extends mixin(Model, {
     name: Model.attribute('name'),
     description: Model.attribute('description'),
+    type: Model.attribute('type'),
     validation: Model.attribute('validation'),
     required: Model.attribute('required'),
     prefix: Model.attribute('prefix'),

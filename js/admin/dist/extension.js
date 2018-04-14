@@ -38,6 +38,149 @@ System.register("flagrow/masquerade/addProfileConfigurePane", ["flarum/extend", 
         execute: function () {}
     };
 });;
+'use strict';
+
+System.register('flagrow/masquerade/components/SelectFieldOptionEditor', ['flarum/app', 'flarum/Component', 'flarum/helpers/icon'], function (_export, _context) {
+    "use strict";
+
+    var app, Component, icon, SelectFieldOptionEditor;
+    return {
+        setters: [function (_flarumApp) {
+            app = _flarumApp.default;
+        }, function (_flarumComponent) {
+            Component = _flarumComponent.default;
+        }, function (_flarumHelpersIcon) {
+            icon = _flarumHelpersIcon.default;
+        }],
+        execute: function () {
+            SelectFieldOptionEditor = function (_Component) {
+                babelHelpers.inherits(SelectFieldOptionEditor, _Component);
+
+                function SelectFieldOptionEditor() {
+                    babelHelpers.classCallCheck(this, SelectFieldOptionEditor);
+                    return babelHelpers.possibleConstructorReturn(this, (SelectFieldOptionEditor.__proto__ || Object.getPrototypeOf(SelectFieldOptionEditor)).apply(this, arguments));
+                }
+
+                babelHelpers.createClass(SelectFieldOptionEditor, [{
+                    key: 'init',
+                    value: function init() {
+                        this.newOption = m.prop('');
+                    }
+                }, {
+                    key: 'view',
+                    value: function view() {
+                        var _this2 = this;
+
+                        return m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.options')), m('table', m('tbody', this.options().map(function (option, optionIndex) {
+                            return m('tr', [m('td', m('input[type=text].FormControl', {
+                                oninput: m.withAttr('value', function (value) {
+                                    _this2.updateOption(optionIndex, value);
+                                }),
+                                value: option
+                            })), m('td', m('button.Button', {
+                                onclick: function onclick() {
+                                    _this2.moveOption(optionIndex, -1);
+                                }
+                            }, icon('chevron-up'))), m('td', m('button.Button', {
+                                onclick: function onclick() {
+                                    _this2.moveOption(optionIndex, 1);
+                                }
+                            }, icon('chevron-down'))), m('td', m('button.Button.Button--danger', {
+                                onclick: function onclick() {
+                                    _this2.deleteOption(optionIndex);
+                                }
+                            }, icon('close')))]);
+                        }))), m('.helpText', app.translator.trans('flagrow-masquerade.admin.fields.option-coma-warning')), m('table', m('tbody'), m('tr', [m('td', m('input[type=text].FormControl', {
+                            onchange: m.withAttr('value', this.newOption),
+                            value: this.newOption(),
+                            placeholder: app.translator.trans('flagrow-masquerade.admin.fields.option-new')
+                        })), m('td', m('button.Button.Button--primary', {
+                            onclick: function onclick() {
+                                _this2.addOption();
+                            }
+                        }, icon('plus')))]))]);
+                    }
+                }, {
+                    key: 'updateRules',
+                    value: function updateRules(options) {
+                        // We ignore other existing rules, they would probably be leftovers from another field type when changing types
+                        this.props.onchange('in:' + options.join(','));
+                    }
+                }, {
+                    key: 'options',
+                    value: function options() {
+                        var rules = this.props.value.split('|');
+
+                        var options = [];
+
+                        rules.forEach(function (rule) {
+                            var parts = rule.split(':', 2);
+
+                            if (parts[0] === 'in') {
+                                options = parts[1].split(',');
+                            }
+                        });
+
+                        return options;
+                    }
+                }, {
+                    key: 'updateOption',
+                    value: function updateOption(index, value) {
+                        var options = this.options();
+
+                        options[index] = value;
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'moveOption',
+                    value: function moveOption(index, moveIndex) {
+                        var options = this.options();
+
+                        var newIndex = index + moveIndex;
+
+                        if (newIndex < 0 || newIndex > options.length - 1) {
+                            return;
+                        }
+
+                        var move = options.splice(index, 1);
+
+                        options.splice(newIndex, 0, move[0]);
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'deleteOption',
+                    value: function deleteOption(index) {
+                        var options = this.options();
+
+                        options.splice(index, 1);
+
+                        this.updateRules(options);
+                    }
+                }, {
+                    key: 'addOption',
+                    value: function addOption() {
+                        if (this.newOption() === '') {
+                            return;
+                        }
+
+                        var options = this.options();
+
+                        options.push(this.newOption());
+
+                        this.newOption('');
+
+                        this.updateRules(options);
+                    }
+                }]);
+                return SelectFieldOptionEditor;
+            }(Component);
+
+            _export('default', SelectFieldOptionEditor);
+        }
+    };
+});;
 "use strict";
 
 System.register("flagrow/masquerade/main", ["flarum/extend", "flarum/app", "flarum/components/PermissionGrid", "flagrow/masquerade/models/Field", "flagrow/masquerade/addProfileConfigurePane"], function (_export, _context) {
@@ -114,7 +257,8 @@ System.register('flagrow/masquerade/models/Answer', ['flarum/Model', 'flarum/uti
                 return Answer;
             }(mixin(Model, {
                 content: Model.attribute('content'),
-                field: Model.hasOne('field')
+                field: Model.hasOne('field'),
+                userId: Model.attribute('user_id')
             }));
 
             _export('default', Answer);
@@ -152,6 +296,7 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
             }(mixin(Model, {
                 name: Model.attribute('name'),
                 description: Model.attribute('description'),
+                type: Model.attribute('type'),
                 validation: Model.attribute('validation'),
                 required: Model.attribute('required'),
                 prefix: Model.attribute('prefix'),
@@ -168,19 +313,23 @@ System.register('flagrow/masquerade/models/Field', ['flarum/Model', 'flarum/util
 });;
 "use strict";
 
-System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings"], function (_export, _context) {
+System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Component", "flarum/components/Select", "flarum/components/Switch", "flarum/components/Button", "flarum/utils/saveSettings", "flagrow/masquerade/components/SelectFieldOptionEditor"], function (_export, _context) {
     "use strict";
 
-    var Component, Switch, Button, saveSettings, ProfileConfigurePane;
+    var Component, Select, Switch, Button, saveSettings, SelectFieldOptionEditor, ProfileConfigurePane;
     return {
         setters: [function (_flarumComponent) {
             Component = _flarumComponent.default;
+        }, function (_flarumComponentsSelect) {
+            Select = _flarumComponentsSelect.default;
         }, function (_flarumComponentsSwitch) {
             Switch = _flarumComponentsSwitch.default;
         }, function (_flarumComponentsButton) {
             Button = _flarumComponentsButton.default;
         }, function (_flarumUtilsSaveSettings) {
             saveSettings = _flarumUtilsSaveSettings.default;
+        }, function (_flagrowMasqueradeComponentsSelectFieldOptionEditor) {
+            SelectFieldOptionEditor = _flagrowMasqueradeComponentsSelectFieldOptionEditor.default;
         }],
         execute: function () {
             ProfileConfigurePane = function (_Component) {
@@ -307,14 +456,29 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             state: field.required(),
                             onchange: this.updateExistingFieldInput.bind(this, 'required', field),
                             children: app.translator.trans('flagrow-masquerade.admin.fields.required')
-                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
+                        }), m('br')]]), m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.type')), Select.component({
+                            onchange: function onchange(value) {
+                                if (value === 'null') {
+                                    value = null;
+                                }
+
+                                _this4.updateExistingFieldInput('type', field, value);
+                            },
+                            options: this.availableTypes(),
+                            value: field.type()
+                        })]), field.type() === 'select' ? SelectFieldOptionEditor.component({
+                            onchange: function onchange(value) {
+                                _this4.updateExistingFieldInput('validation', field, value);
+                            },
+                            value: field.validation()
+                        }) : null, field.type() === null ? m('li', [m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')), m('input', {
                             className: 'FormControl',
                             value: field.validation(),
                             oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
                         }), m('span', { className: 'helpText' }, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
                             a: m("a", { href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
                                 target: "_blank" })
-                        }))]), m('li', { className: 'ButtonGroup' }, [Button.component({
+                        }))]) : null, m('li', { className: 'ButtonGroup' }, [Button.component({
                             type: 'submit',
                             className: 'Button Button--primary',
                             children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
@@ -325,7 +489,8 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             type: 'submit',
                             className: 'Button Button--danger',
                             children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
-                            loading: this.loading
+                            loading: this.loading,
+                            onclick: this.deleteField.bind(this, field)
                         }) : ''])])]);
                     }
                 }, {
@@ -432,6 +597,7 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                             'icon': m.prop(''),
                             'required': m.prop(false),
                             'on_bio': m.prop(false),
+                            'type': m.prop(null),
                             'validation': m.prop('')
                         };
                     }
@@ -443,6 +609,17 @@ System.register("flagrow/masquerade/panes/ProfileConfigurePane", ["flarum/Compon
                         }
 
                         return false;
+                    }
+                }, {
+                    key: "availableTypes",
+                    value: function availableTypes() {
+                        return {
+                            url: app.translator.trans('flagrow-masquerade.admin.types.url'),
+                            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
+                            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
+                            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
+                            null: app.translator.trans('flagrow-masquerade.admin.types.advanced')
+                        };
                     }
                 }]);
                 return ProfileConfigurePane;

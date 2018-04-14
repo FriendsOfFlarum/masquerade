@@ -16,6 +16,11 @@
             "name": "Daniël Klabbers",
             "email": "daniel@klabbers.email",
             "homepage": "http://luceos.com"
+        },
+        {
+            "name": "Clark Winkelmann",
+            "email": "clark.winkelmann@gmail.com",
+            "homepage": "https://clarkwinkelmann.com/"
         }
     ],
     "require": {

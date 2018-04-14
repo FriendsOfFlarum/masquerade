@@ -30,7 +30,7 @@ flagrow-masquerade:
             validation: Validatie
             validation-help: >
                 Bekijk de mogelijke <a>Laravel validatie regels</a>. Eg:
-                "string,min:5" of "url".
+                "string|min:5" of "url".
             prefix: Veld prefix
             prefix-help: >
                 Toont een prefix voor de ingevulde waarden van een veld.

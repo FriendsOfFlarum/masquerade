@@ -1,7 +1,9 @@
 import Component from "flarum/Component";
+import Select from "flarum/components/Select";
 import Switch from "flarum/components/Switch";
 import Button from "flarum/components/Button";
 import saveSettings from "flarum/utils/saveSettings";
+import SelectFieldOptionEditor from 'flagrow/masquerade/components/SelectFieldOptionEditor';
 
 export default class ProfileConfigurePane extends Component {
 
@@ -194,6 +196,26 @@ export default class ProfileConfigurePane extends Component {
                     ]
                 ]),
                 m('li', [
+                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.type')),
+                    Select.component({
+                        onchange: value => {
+                            if (value === 'null') {
+                                value = null;
+                            }
+
+                            this.updateExistingFieldInput('type', field, value);
+                        },
+                        options: this.availableTypes(),
+                        value: field.type(),
+                    }),
+                ]),
+                (field.type() === 'select' ? SelectFieldOptionEditor.component({
+                    onchange: value => {
+                        this.updateExistingFieldInput('validation', field, value);
+                    },
+                    value: field.validation(),
+                }) : null),
+                (field.type() === null ? m('li', [
                     m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')),
                     m('input', {
                         className: 'FormControl',
@@ -204,7 +226,7 @@ export default class ProfileConfigurePane extends Component {
                         a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules"
                               target="_blank"/>
                     }))
-                ]),
+                ]) : null),
                 m('li', {className: 'ButtonGroup'}, [
                     Button.component({
                         type: 'submit',
@@ -218,7 +240,8 @@ export default class ProfileConfigurePane extends Component {
                         type: 'submit',
                         className: 'Button Button--danger',
                         children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
-                        loading: this.loading
+                        loading: this.loading,
+                        onclick: this.deleteField.bind(this, field),
                     }) : '')
                 ])
             ])
@@ -367,6 +390,7 @@ export default class ProfileConfigurePane extends Component {
             'icon': m.prop(''),
             'required': m.prop(false),
             'on_bio': m.prop(false),
+            'type': m.prop(null),
             'validation': m.prop('')
         };
     }
@@ -382,5 +406,19 @@ export default class ProfileConfigurePane extends Component {
         }
 
         return false;
+    }
+
+    /**
+     * List of field types availables
+     * @returns {Array}
+     */
+    availableTypes() {
+        return {
+            url: app.translator.trans('flagrow-masquerade.admin.types.url'),
+            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
+            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
+            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
+            null: app.translator.trans('flagrow-masquerade.admin.types.advanced'),
+        };
     }
 }
