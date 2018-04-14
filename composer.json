@@ -10,7 +10,7 @@
         "profile"
     ],
     "type": "flarum-extension",
-    "license": "mit",
+    "license": "MIT",
     "authors": [
         {
             "name": "Daniël Klabbers",
@@ -25,10 +25,15 @@
         "flarum-extension": {
             "title": "Flagrow Masquerade",
             "icon": {
-                "name": "id-card-o",
-                "backgroundColor": "#f4f4f4",
-                "color": "#5f4bb6"
+                "image": "resources/logo.svg",
+                "backgroundColor": "#5f4bb6",
+                "backgroundSize": "90%",
+		        "backgroundRepeat": "no-repeat",
+                "backgroundPosition": "center"
             }
+        },
+        "flagrow": {
+            "discuss": "https://discuss.flarum.org/d/5791-flagrow-masquerade-user-profile-builder"
         }
     },
     "autoload": {
