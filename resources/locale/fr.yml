@@ -6,6 +6,12 @@ flagrow-masquerade:
         buttons:
             view-profile: Voir le profil
             save-profile: Sauvegarder
+        fields:
+            select:
+                none: Aucune option sélectionée
+            boolean:
+                yes: Oui
+                no: Non
     admin:
         buttons:
             add-field: Ajouer un champ
@@ -28,6 +34,7 @@ flagrow-masquerade:
                 Une description optionnelle pour expliquer l'utilisation ou la nécéssité de ce champ.
             required: Marquer ce champ comme requis.
             on_bio: Voir la réponse à ce champ dans le profil
+            type: Type
             validation: Validation
             validation-help: >
                 Vérifier les <a>règles de validation de Laravel</a>. Ex:
@@ -42,3 +49,12 @@ flagrow-masquerade:
                 Utilise "info" sans préfixe "fa-".
             force-user-to-completion: Forcer l'utilisateur à remplir son profil.
             disable-user-bio: Désactiver les champs de résumé utilisateur.
+            options: Options
+            option-new: Nouvelle option
+            option-coma-warning: La légende d'une option ne peut contenir aucune virgule (",").
+        types:
+            advanced: Avancé
+            boolean: Oui / Non
+            email: Email
+            select: Liste déroulante
+            url: Url
