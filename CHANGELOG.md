@@ -1,3 +1,10 @@
+- 0.2.0
+  - Added field types, currently offering url, email, checkbox, dropdown and advanced.
+  - Switched to pipe character to separate validation rules.
+  - Improved database indexing.
+  - Fixed not saving create/edit timestamps.
+  - New extension logo.
+  - French translation.
 - 0.1.4
   - Fixed some debug logging and an issue with empty answers.
 - 0.1.3
