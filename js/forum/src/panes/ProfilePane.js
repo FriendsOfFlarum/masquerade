@@ -40,7 +40,7 @@ export default class ProfileConfigurePane extends UserPage {
     load(user) {
         app.request({
             method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + user.id(),
+            url: app.forum.attribute('apiUrl') + '/u/:username/profile/' + user.id(),
         }).then(
             this.parseResponse.bind(this)
         );

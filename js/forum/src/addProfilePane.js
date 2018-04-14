@@ -6,11 +6,11 @@ import LinkButton from 'flarum/components/LinkButton';
 
 export default function () {
   app.routes['flagrow-masquerade-view-profile'] = {
-    path: '/masquerade/:username',
+    path: '/u/:username/profile',
     component: ProfilePane.component()
   };
   app.routes['masquerade-configure-profile'] = {
-    path: '/masquerade/configure',
+    path: '/profile/configure',
     component: ProfileConfigurePane.component()
   };
 

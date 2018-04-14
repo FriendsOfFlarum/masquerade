@@ -56,7 +56,7 @@ export default class ProfileConfigurePane extends UserPage {
     load() {
         app.request({
             method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/masquerade/configure',
+            url: app.forum.attribute('apiUrl') + '/profile/configure',
         }).then(
             this.parseResponse.bind(this)
         );
@@ -78,7 +78,7 @@ export default class ProfileConfigurePane extends UserPage {
 
         app.request({
             method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/masquerade/configure',
+            url: app.forum.attribute('apiUrl') + '/profile/configure',
             data
         }).then(
             this.parseResponse.bind(this)

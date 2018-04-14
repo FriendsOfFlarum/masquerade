@@ -38,8 +38,8 @@ class AddApiRoutes
         /**
          * Forum side
          */
-        $routes->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', UserProfileController::class);
-        $routes->get('/masquerade/configure', 'masquerade.api.configure', UserConfigureController::class);
-        $routes->post('/masquerade/configure', 'masquerade.api.configure.save', UserConfigureController::class);
+        $routes->get('/u/{username}/profile/{id:[0-9]+}', 'masquerade.api.profile', UserProfileController::class);
+        $routes->get('/profile/configure', 'masquerade.api.configure', UserConfigureController::class);
+        $routes->post('/profile/configure', 'masquerade.api.configure.save', UserConfigureController::class);
     }
 }
