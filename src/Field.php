@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $description
  * @property string $prefix
  * @property string $icon
+ * @property string $type
  * @property bool $required
  * @property string $validation
  * @property integer $sort
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Field extends AbstractModel
 {
     use SoftDeletes;
-    
+
     public $timestamps = true;
 
     protected $table = 'flagrow_masquerade_fields';

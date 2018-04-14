@@ -5,7 +5,7 @@ export default class BooleanField extends BaseField {
     editorInput() {
         return this.options().map(option => m('div', m('label', [
             m('input[type=radio]', {
-                checked: this.value() === option.key || option.other_keys && option.other_keys.indexOf(this.value()) !== -1,
+                checked: option.selected(this.value()),
                 onclick: () => {
                     this.set(option.key);
                 },
@@ -19,26 +19,28 @@ export default class BooleanField extends BaseField {
 
         if (!this.readAttribute(this.field, 'required')) {
             options.push({
+                selected: value => BaseField.isNoOptionSelectedValue(value),
                 key: null,
-                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none'),
+                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none-optional'),
             });
         }
 
         options.push({
+            selected: value => ['true', '1', 1, true, 'yes'].indexOf(value) !== -1,
             key: 'true',
-            other_keys: ['1', 1, true, 'yes'],
             label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes'),
         });
 
         options.push({
+            selected: value => ['false', '0', 0, false, 'no'].indexOf(value) !== -1,
             key: 'false',
-            other_keys: ['0', 0, false, 'no'],
             label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.no'),
         });
 
         // This is probably overkill because it looks like the backend casts the value anyway
-        if ([null, 'true', '1', 1, true, 'yes', 'false', '0', 0, false, 'no'].indexOf(this.value()) === -1) {
+        if (!BaseField.isNoOptionSelectedValue(this.value()) && ['true', '1', 1, true, 'yes', 'false', '0', 0, false, 'no'].indexOf(this.value()) === -1) {
             options.push({
+                selected: () => true,
                 key: this.value(),
                 label: '(invalid) ' + this.value(),
             });

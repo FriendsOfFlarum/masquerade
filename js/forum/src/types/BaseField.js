@@ -85,4 +85,10 @@ export default class BaseField {
     answerContent() {
         return this.value();
     }
+
+    static isNoOptionSelectedValue(value) {
+        // The value can be null when coming from the API
+        // The value can be '' when the field does not exist on the user (the empty string is set in ProfileConfigurePane)
+        return value === null || value === '';
+    }
 }

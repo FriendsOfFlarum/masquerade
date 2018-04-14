@@ -8,7 +8,8 @@ flagrow-masquerade:
             save-profile: Sauvegarder
         fields:
             select:
-                none: Aucune option sélectionée
+                none-optional: Aucune option sélectionnée (facultatif)
+                none-required: Sélectionner une option (requis)
             boolean:
                 yes: Oui
                 no: Non

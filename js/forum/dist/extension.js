@@ -251,9 +251,10 @@ System.register('flagrow/masquerade/panes/ProfileConfigurePane', ['flarum/compon
                         }, [this.enforceProfileCompletion && !this.profileCompleted ? m('div', { className: 'Alert Alert--Error' }, app.translator.trans('flagrow-masquerade.forum.alerts.profile-completion-required')) : '', m('div', { className: 'Fields' }, this.fields.sort(function (a, b) {
                             return a.sort() - b.sort();
                         }).map(function (field) {
-                            if (!(field.id() in _this2.answers)) {
+                            if (!_this2.answers.hasOwnProperty(field.id())) {
                                 _this2.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
                             }
+
                             return _this2.field(field);
                         })), Button.component({
                             type: 'submit',
@@ -284,10 +285,10 @@ System.register('flagrow/masquerade/panes/ProfileConfigurePane', ['flarum/compon
                 }, {
                     key: 'set',
                     value: function set(field, value) {
-                        if (!(field.id() in this.answers)) {
-                            this.answers[field.id()] = m.prop(value);
-                        } else {
+                        if (this.answers.hasOwnProperty(field.id())) {
                             this.answers[field.id()](value);
+                        } else {
+                            this.answers[field.id()] = m.prop(value);
                         }
                     }
                 }, {
@@ -492,6 +493,13 @@ System.register('flagrow/masquerade/types/BaseField', ['flarum/helpers/icon'], f
                     value: function answerContent() {
                         return this.value();
                     }
+                }], [{
+                    key: 'isNoOptionSelectedValue',
+                    value: function isNoOptionSelectedValue(value) {
+                        // The value can be null when coming from the API
+                        // The value can be '' when the field does not exist on the user (the empty string is set in ProfileConfigurePane)
+                        return value === null || value === '';
+                    }
                 }]);
                 return BaseField;
             }();
@@ -528,7 +536,7 @@ System.register('flagrow/masquerade/types/BooleanField', ['flarum/helpers/icon',
 
                         return this.options().map(function (option) {
                             return m('div', m('label', [m('input[type=radio]', {
-                                checked: _this2.value() === option.key || option.other_keys && option.other_keys.indexOf(_this2.value()) !== -1,
+                                checked: option.selected(_this2.value()),
                                 onclick: function onclick() {
                                     _this2.set(option.key);
                                 }
@@ -542,26 +550,36 @@ System.register('flagrow/masquerade/types/BooleanField', ['flarum/helpers/icon',
 
                         if (!this.readAttribute(this.field, 'required')) {
                             options.push({
+                                selected: function selected(value) {
+                                    return BaseField.isNoOptionSelectedValue(value);
+                                },
                                 key: null,
-                                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none')
+                                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none-optional')
                             });
                         }
 
                         options.push({
+                            selected: function selected(value) {
+                                return ['true', '1', 1, true, 'yes'].indexOf(value) !== -1;
+                            },
                             key: 'true',
-                            other_keys: ['1', 1, true, 'yes'],
                             label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes')
                         });
 
                         options.push({
+                            selected: function selected(value) {
+                                return ['false', '0', 0, false, 'no'].indexOf(value) !== -1;
+                            },
                             key: 'false',
-                            other_keys: ['0', 0, false, 'no'],
                             label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.no')
                         });
 
                         // This is probably overkill because it looks like the backend casts the value anyway
-                        if ([null, 'true', '1', 1, true, 'yes', 'false', '0', 0, false, 'no'].indexOf(this.value()) === -1) {
+                        if (!BaseField.isNoOptionSelectedValue(this.value()) && ['true', '1', 1, true, 'yes', 'false', '0', 0, false, 'no'].indexOf(this.value()) === -1) {
                             options.push({
+                                selected: function selected() {
+                                    return true;
+                                },
                                 key: this.value(),
                                 label: '(invalid) ' + this.value()
                             });
@@ -649,7 +667,7 @@ System.register('flagrow/masquerade/types/EmailField', ['flarum/components/Butto
 System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Select', 'flagrow/masquerade/types/BaseField'], function (_export, _context) {
     "use strict";
 
-    var Select, BaseField, EmailField;
+    var Select, BaseField, NO_OPTION_SELECTED_KEY, EmailField;
     return {
         setters: [function (_flarumComponentsSelect) {
             Select = _flarumComponentsSelect.default;
@@ -657,6 +675,8 @@ System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Sele
             BaseField = _flagrowMasqueradeTypesBaseField.default;
         }],
         execute: function () {
+            NO_OPTION_SELECTED_KEY = 'flagrow_masquerade_no_option_selected';
+
             EmailField = function (_BaseField) {
                 babelHelpers.inherits(EmailField, _BaseField);
 
@@ -672,13 +692,13 @@ System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Sele
 
                         return Select.component({
                             onchange: function onchange(value) {
-                                if (value === 'null') {
+                                if (value === NO_OPTION_SELECTED_KEY) {
                                     value = null;
                                 }
 
                                 _this2.set(value);
                             },
-                            value: this.value(),
+                            value: BaseField.isNoOptionSelectedValue(this.value()) ? NO_OPTION_SELECTED_KEY : this.value(),
                             options: this.options()
                         });
                     }
@@ -688,7 +708,9 @@ System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Sele
                         var options = {};
 
                         if (!this.readAttribute(this.field, 'required')) {
-                            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select.none');
+                            options[NO_OPTION_SELECTED_KEY] = app.translator.trans('flagrow-masquerade.forum.fields.select.none-optional');
+                        } else if (BaseField.isNoOptionSelectedValue(this.value())) {
+                            options[NO_OPTION_SELECTED_KEY] = app.translator.trans('flagrow-masquerade.forum.fields.select.none-required');
                         }
 
                         var validationIn = this.validationRule('in');
@@ -699,7 +721,7 @@ System.register('flagrow/masquerade/types/SelectField', ['flarum/components/Sele
                             });
                         }
 
-                        if (typeof options[this.value()] === 'undefined') {
+                        if (!BaseField.isNoOptionSelectedValue(this.value()) && typeof options[this.value()] === 'undefined') {
                             options[this.value()] = '(invalid) ' + this.value();
                         }
 

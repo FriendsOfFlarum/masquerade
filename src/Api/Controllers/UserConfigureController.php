@@ -86,18 +86,14 @@ class UserConfigureController extends AbstractCollectionController
 
     protected function processBoolean(Field $field, &$content)
     {
-        if ($this->hasType($field, 'boolean')) {
-            $content = in_array(strtolower($content), ['yes', 'true']);
+        // For boolean field type, convert the values to true booleans
+        // so we can't end up with the whole spectrum of values accepted by the validator in the database
+        if ($field->type === 'boolean') {
+            if ($content === '' || $content === null) {
+                $content = null;
+            } else {
+                $content = in_array(strtolower($content), ['yes', 'true']);
+            }
         }
-    }
-
-    protected function hasType(Field $field, $type)
-    {
-        return collect(explode(',', $field->validation))
-            ->map(function ($rule) {
-                return trim($rule);
-            })
-            ->filter()
-            ->contains($type);
     }
 }

@@ -26,9 +26,10 @@ export default class ProfileConfigurePane extends UserPage {
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
                     .map(field => {
-                        if (!(field.id() in this.answers)) {
-                            this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('')
+                        if (!this.answers.hasOwnProperty(field.id())) {
+                            this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
                         }
+
                         return this.field(field);
                     })
                 ),
@@ -62,10 +63,10 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     set(field, value) {
-        if (!(field.id() in this.answers)) {
-            this.answers[field.id()] = m.prop(value);
-        } else {
+        if (this.answers.hasOwnProperty(field.id())) {
             this.answers[field.id()](value);
+        } else {
+            this.answers[field.id()] = m.prop(value);
         }
     }
 

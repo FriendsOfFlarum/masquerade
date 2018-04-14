@@ -1,17 +1,19 @@
 import Select from 'flarum/components/Select';
 import BaseField from 'flagrow/masquerade/types/BaseField';
 
+const NO_OPTION_SELECTED_KEY = 'flagrow_masquerade_no_option_selected';
+
 export default class EmailField extends BaseField {
     editorInput() {
         return Select.component({
             onchange: value => {
-                if (value === 'null') {
+                if (value === NO_OPTION_SELECTED_KEY) {
                     value = null;
                 }
 
                 this.set(value);
             },
-            value: this.value(),
+            value: BaseField.isNoOptionSelectedValue(this.value()) ? NO_OPTION_SELECTED_KEY : this.value(),
             options: this.options(),
         });
     }
@@ -20,7 +22,9 @@ export default class EmailField extends BaseField {
         let options = {};
 
         if (!this.readAttribute(this.field, 'required')) {
-            options.null = app.translator.trans('flagrow-masquerade.forum.fields.select.none');
+            options[NO_OPTION_SELECTED_KEY] = app.translator.trans('flagrow-masquerade.forum.fields.select.none-optional');
+        } else if (BaseField.isNoOptionSelectedValue(this.value())) {
+            options[NO_OPTION_SELECTED_KEY] = app.translator.trans('flagrow-masquerade.forum.fields.select.none-required');
         }
 
         const validationIn = this.validationRule('in');
@@ -31,7 +35,7 @@ export default class EmailField extends BaseField {
             });
         }
 
-        if (typeof options[this.value()] === 'undefined') {
+        if (!BaseField.isNoOptionSelectedValue(this.value()) && typeof options[this.value()] === 'undefined') {
             options[this.value()] = '(invalid) ' + this.value();
         }
 
