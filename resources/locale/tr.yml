@@ -1,4 +1,3 @@
-
 flagrow-masquerade:
     forum:
         alerts:
@@ -57,4 +56,4 @@ flagrow-masquerade:
             boolean: Checkbox
             email: E-posta
             select: Dropdown
-url: Url
+            url: Url
