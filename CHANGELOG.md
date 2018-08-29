@@ -1,3 +1,5 @@
+- 0.2.1
+  - Fixed bio fields being accessible to anybody via the API even when permission was set to non-public.
 - 0.2.0
   - Added field types, currently offering url, email, checkbox, dropdown and advanced.
   - Switched to pipe character to separate validation rules.
