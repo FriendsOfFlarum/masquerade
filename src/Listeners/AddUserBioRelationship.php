@@ -59,10 +59,10 @@ class AddUserBioRelationship
     {
         if ($event->model instanceof User) {
             if ($event->actor->cannot('flagrow.masquerade.view-profile')) {
+                // When the relationships are auto-loaded later,
+                // this one will be skipped because it has already been set to null
                 $event->model->setRelation('bioFields', null);
             }
-
-            $event->model->load('bioFields');
         }
     }
 
