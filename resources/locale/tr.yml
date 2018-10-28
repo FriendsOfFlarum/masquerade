@@ -1,0 +1,59 @@
+flagrow-masquerade:
+    forum:
+        alerts:
+            profile-completion-required: >
+                Lütfen aşağıdaki gerekli profil alanlarını doldurun.
+        buttons:
+            view-profile: Profili Gör
+            save-profile: Kaydet
+        fields:
+            select:
+                none-optional: Herhangi bir seçenek seçilmedi (isteğe bağlı)
+                none-required: Lütfen bir seçenek seçin (zorunlu)
+            boolean:
+                yes: Evet
+                no: Hayır
+    admin:
+        buttons:
+            add-field: Alan ekle
+            edit-field: Alanı düzenle
+            delete-field: Alanı sil
+        permissions:
+            have-profile: Masquerade profili var
+            view-profile: Masquerade profilini gör
+        menu:
+            description: >
+                Kullanıcı profil alanlarını düzenle.
+        fields:
+            add: Alan ekle: {field}
+            edit: Alanı düzenle: {field}
+            name: Alan adı
+            name-help: >
+                Herkese görünür (çevrilemeyen) alan adı.
+            description: Alan açıklaması
+            description-help: >
+                Bunun ne işe yaradığını anlatan isteğe bağlı bir açıklama.
+            required: Alanı zorunlu olarak işaretle.
+            on_bio: Bu alanın cevabını kullanıcı açıklamasında göster.
+            type: Tip
+            validation: Doğrulama
+            validation-help: >
+               Desteklenen <a>Laravel doğrulama kurallarını</a> kontrol et. Örn:
+                "string|min:5" or "url".
+            prefix: Alan prefix'i
+            prefix-help: >
+                Prefix'inizi kullanıcının giriş yaptığı tüm değerlerin önünde gösterir
+            icon: İkon
+            icon-help: >
+                Kullanıcı tarafından girilmiş değerlerin önünde bir ikon gösterir. Kullanılabilir ikonlar için bakınız: <a>FontAwesome sitesi</a>. "info"'yu fa- prefix'i olmadan kullanın.
+            force-user-to-completion: Kullanıcıyı profili doldurması için zorla
+            disable-user-bio: Kullanıcı açıklama alanını devre dışı bırak
+            options: Seçenekler
+            option-new: Yeni seçenek
+            option-coma-warning: Seçenek açıklaması virgül içeremez (",").
+        types:
+            advanced: Gelişmiş
+            boolean: Checkbox
+            email: E-posta
+            select: Dropdown
+            url: Url
