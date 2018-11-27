@@ -28,7 +28,7 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "Flagrow Masquerade",
+            "title": "Masquerade",
             "icon": {
                 "image": "resources/logo.svg",
                 "backgroundColor": "#5f4bb6",
@@ -38,7 +38,7 @@
             }
         },
         "flagrow": {
-            "discuss": "https://discuss.flarum.org/d/5791-flagrow-masquerade-user-profile-builder"
+            "discuss": "https://discuss.flarum.org/d/5791"
         }
     },
     "autoload": {

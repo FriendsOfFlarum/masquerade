@@ -1,6 +1,6 @@
 import {override} from "flarum/extend";
 import UserBio from "flarum/components/UserBio";
-import TypeFactory from 'flagrow/masquerade/types/TypeFactory';
+import TypeFactory from './types/TypeFactory';
 
 export default function () {
     override(UserBio.prototype, 'view', function (view) {

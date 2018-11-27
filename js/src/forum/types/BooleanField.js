@@ -1,5 +1,5 @@
 import icon from 'flarum/helpers/icon';
-import BaseField from 'flagrow/masquerade/types/BaseField';
+import BaseField from './BaseField';
 
 export default class BooleanField extends BaseField {
     editorInput() {

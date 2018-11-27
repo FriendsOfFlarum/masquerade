@@ -1,6 +1,6 @@
 import { extend } from 'flarum/extend';
-import ProfilePane from 'flagrow/masquerade/panes/ProfilePane';
-import ProfileConfigurePane from 'flagrow/masquerade/panes/ProfileConfigurePane';
+import ProfilePane from './panes/ProfilePane';
+import ProfileConfigurePane from './panes/ProfileConfigurePane';
 import UserPage from 'flarum/components/UserPage';
 import LinkButton from 'flarum/components/LinkButton';
 

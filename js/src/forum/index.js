@@ -1,12 +1,12 @@
 import {extend} from "flarum/extend";
 import app from "flarum/app";
 import User from "flarum/models/User";
-import Field from "flagrow/masquerade/models/Field";
-import Answer from "flagrow/masquerade/models/Answer";
+import Field from "./../lib/models/Field";
+import Answer from "./../lib/models/Answer";
 import Model from 'flarum/Model';
 
-import addProfilePane from 'flagrow/masquerade/addProfilePane';
-import mutateUserBio from 'flagrow/masquerade/mutateUserBio';
+import addProfilePane from './addProfilePane';
+import mutateUserBio from './mutateUserBio';
 
 app.initializers.add('flagrow-masquerade', app => {
     app.store.models['masquerade-field'] = Field;

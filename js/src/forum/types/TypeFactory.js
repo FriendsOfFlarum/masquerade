@@ -1,8 +1,8 @@
-import BaseField from 'flagrow/masquerade/types/BaseField';
-import BooleanField from 'flagrow/masquerade/types/BooleanField';
-import EmailField from 'flagrow/masquerade/types/EmailField';
-import SelectField from 'flagrow/masquerade/types/SelectField';
-import UrlField from 'flagrow/masquerade/types/UrlField';
+import BaseField from './BaseField';
+import BooleanField from './BooleanField';
+import EmailField from './EmailField';
+import SelectField from './SelectField';
+import UrlField from './UrlField';
 
 export default class TypeFactory {
     static typeForField({field, set, value}) {

@@ -1,8 +1,8 @@
 import {extend} from "flarum/extend";
 import app from "flarum/app";
 import PermissionGrid from "flarum/components/PermissionGrid";
-import Field from "flagrow/masquerade/models/Field";
-import addProfileConfigurePane from 'flagrow/masquerade/addProfileConfigurePane';
+import Field from "./../lib/models/Field";
+import addProfileConfigurePane from './addProfileConfigurePane';
 
 app.initializers.add('flagrow-masquerade', app => {
     app.store.models['masquerade-field'] = Field;

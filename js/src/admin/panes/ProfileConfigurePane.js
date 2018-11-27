@@ -3,7 +3,7 @@ import Select from "flarum/components/Select";
 import Switch from "flarum/components/Switch";
 import Button from "flarum/components/Button";
 import saveSettings from "flarum/utils/saveSettings";
-import SelectFieldOptionEditor from 'flagrow/masquerade/components/SelectFieldOptionEditor';
+import SelectFieldOptionEditor from '../components/SelectFieldOptionEditor';
 
 export default class ProfileConfigurePane extends Component {
 

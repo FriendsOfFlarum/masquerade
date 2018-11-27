@@ -1,5 +1,5 @@
 import UserPage from 'flarum/components/UserPage';
-import TypeFactory from 'flagrow/masquerade/types/TypeFactory';
+import TypeFactory from './../types/TypeFactory';
 
 export default class ProfileConfigurePane extends UserPage {
     init() {

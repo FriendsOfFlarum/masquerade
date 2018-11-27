@@ -1,5 +1,5 @@
 import Button from 'flarum/components/Button';
-import BaseField from 'flagrow/masquerade/types/BaseField';
+import BaseField from './BaseField';
 
 export default class EmailField extends BaseField {
     editorInputProps() {

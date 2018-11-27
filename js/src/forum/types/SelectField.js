@@ -1,5 +1,5 @@
 import Select from 'flarum/components/Select';
-import BaseField from 'flagrow/masquerade/types/BaseField';
+import BaseField from './BaseField';
 
 const NO_OPTION_SELECTED_KEY = 'flagrow_masquerade_no_option_selected';
 
