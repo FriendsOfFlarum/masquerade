@@ -3,7 +3,7 @@
 namespace Flagrow\Masquerade\Validators;
 
 use Flagrow\Masquerade\FieldType\TypeFactory;
-use Flarum\Core\Validator\AbstractValidator;
+use Flarum\Foundation\AbstractValidator;
 
 class FieldValidator extends AbstractValidator
 {

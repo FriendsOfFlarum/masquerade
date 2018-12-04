@@ -3,10 +3,8 @@
     "description": "User profile builder extension for your Flarum forum.",
     "keywords": [
         "extension",
-        "flarum",
-        "flagrow",
-        "user profile",
-        "member profile",
+        "flarum", "flagrow",
+        "user profile", "member profile",
         "profile"
     ],
     "type": "flarum-extension",

@@ -5,13 +5,13 @@ namespace Flagrow\Masquerade\Api\Controllers;
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\AnswerValidator;
-use Flarum\Api\Controller\AbstractCollectionController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractListController;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class UserProfileController extends AbstractCollectionController
+class UserProfileController extends AbstractListController
 {
     use AssertPermissionTrait;
 

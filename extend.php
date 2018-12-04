@@ -2,37 +2,29 @@
 
 namespace Flagrow\Masquerade;
 
+use Flagrow\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
 use Illuminate\Contracts\Events\Dispatcher;
 
 return [
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . 'js/dist/forum.js')
-        ->css(__DIR__ . 'resources/less/forum.less')
-        ->route(
-            '/masquerade/configure',
-            'masquerade.profile.configure',
-            Http\Controllers\ManageProfileController::class
-        )
-        ->route(
-            '/masquerade/{username}',
-            'masquerade.profile.view',
-            Http\Controllers\ViewProfileController::class
-        ),
+        ->js(__DIR__ . '/js/dist/forum.js')
+        ->css(__DIR__ . '/resources/less/forum.less')
+        ->route('/masquerade/configure', 'masquerade.profile.configure', Forum\Content\ConfigureProfile::class)
+        ->route('/masquerade/{username}', 'masquerade.profile.view', Forum\Content\ViewProfile::class),
     (new Extend\Frontend('admin'))
-        ->js(__DIR__ . 'js/dist/admin.js')
-        ->css(__DIR__ . 'resources/less/admin.less'),
+        ->js(__DIR__ . '/js/dist/admin.js')
+        ->css(__DIR__ . '/resources/less/admin.less'),
     (new Extend\Routes('api'))
-        ->get('/masquerade/fields', 'masquerade.api.fields.index', FieldIndexController::class)
-        ->post('/masquerade/fields/order', 'masquerade.api.fields.order', OrderFieldController::class)
-        ->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.create', SaveFieldController::class)
-        ->patch('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.update', SaveFieldController::class)
-        ->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.delete', DeleteFieldController::class)
-
-        ->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', UserProfileController::class)
-        ->get('/masquerade/configure', 'masquerade.api.configure', UserConfigureController::class)
-        ->post('/masquerade/configure', 'masquerade.api.configure.save', UserConfigureController::class),
-    (new Extend\Locales(__DIR__.'resources/locale')),
+        ->get('/masquerade/fields', 'masquerade.api.fields.index', Api\FieldIndexController::class)
+        ->post('/masquerade/fields/order', 'masquerade.api.fields.order', Api\OrderFieldController::class)
+        ->post('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.create', Api\SaveFieldController::class)
+        ->patch('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.update', Api\SaveFieldController::class)
+        ->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.delete', Api\DeleteFieldController::class)
+        ->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', Api\UserProfileController::class)
+        ->get('/masquerade/configure', 'masquerade.api.configure', Api\UserConfigureController::class)
+        ->post('/masquerade/configure', 'masquerade.api.configure.save', Api\UserConfigureController::class),
+    (new Extend\Locales(__DIR__ . '/resources/locale')),
     function (Dispatcher $events) {
         $events->subscribe(Listeners\InjectPermissions::class);
         $events->subscribe(Listeners\InjectSettings::class);

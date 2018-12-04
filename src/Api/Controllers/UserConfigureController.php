@@ -6,14 +6,14 @@ use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Field;
 use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\AnswerValidator;
-use Flarum\Api\Controller\AbstractCollectionController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractListController;
+use Flarum\User\AssertPermissionTrait;
 use Flarum\Core\User;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class UserConfigureController extends AbstractCollectionController
+class UserConfigureController extends AbstractListController
 {
     use AssertPermissionTrait;
 

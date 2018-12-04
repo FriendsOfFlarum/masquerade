@@ -5,13 +5,13 @@ namespace Flagrow\Masquerade\Api\Controllers;
 use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
 use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\FieldValidator;
-use Flarum\Api\Controller\AbstractResourceController;
-use Flarum\Core\Access\AssertPermissionTrait;
+use Flarum\Api\Controller\AbstractShowController;
+use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class DeleteFieldController extends AbstractResourceController
+class DeleteFieldController extends AbstractShowController
 {
     use AssertPermissionTrait;
 
