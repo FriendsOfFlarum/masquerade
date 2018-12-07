@@ -14,7 +14,7 @@ export default function () {
         // add the Image Upload tab to the admin navigation menu
         items.add('flagrow-masquerade-configure-profile', AdminLinkButton.component({
             href: app.route('flagrow-masquerade-configure-profile'),
-            icon: 'id-card-o',
+            icon: 'fas fa-id-card',
             children: 'Masquerade',
             description: app.translator.trans('flagrow-masquerade.admin.menu.description')
         }));

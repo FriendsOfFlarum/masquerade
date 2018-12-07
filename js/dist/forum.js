@@ -187,7 +187,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_Model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/Model */ "flarum/Model");
 /* harmony import */ var flarum_Model__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_Model__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _addProfilePane__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./addProfilePane */ "./src/forum/addProfilePane.js");
-/* harmony import */ var _mutateUserBio__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./mutateUserBio */ "./src/forum/mutateUserBio.js");
+/* harmony import */ var _mutateUserHero__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./mutateUserHero */ "./src/forum/mutateUserHero.js");
 
 
 
@@ -201,15 +201,15 @@ flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.initializers.add('flagrow-masq
   app.store.models['masquerade-answer'] = _lib_models_Answer__WEBPACK_IMPORTED_MODULE_4__["default"];
   flarum_models_User__WEBPACK_IMPORTED_MODULE_2___default.a.prototype.bioFields = flarum_Model__WEBPACK_IMPORTED_MODULE_5___default.a.hasMany('bioFields');
   Object(_addProfilePane__WEBPACK_IMPORTED_MODULE_6__["default"])();
-  Object(_mutateUserBio__WEBPACK_IMPORTED_MODULE_7__["default"])();
+  Object(_mutateUserHero__WEBPACK_IMPORTED_MODULE_7__["default"])();
 });
 
 /***/ }),
 
-/***/ "./src/forum/mutateUserBio.js":
-/*!************************************!*\
-  !*** ./src/forum/mutateUserBio.js ***!
-  \************************************/
+/***/ "./src/forum/mutateUserHero.js":
+/*!*************************************!*\
+  !*** ./src/forum/mutateUserHero.js ***!
+  \*************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -217,18 +217,16 @@ flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.initializers.add('flagrow-masq
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/extend */ "flarum/extend");
 /* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_extend__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var flarum_components_UserBio__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/UserBio */ "flarum/components/UserBio");
-/* harmony import */ var flarum_components_UserBio__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_UserBio__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_UserCard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/UserCard */ "flarum/components/UserCard");
+/* harmony import */ var flarum_components_UserCard__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_UserCard__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _types_TypeFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./types/TypeFactory */ "./src/forum/types/TypeFactory.js");
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (function () {
-  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["override"])(flarum_components_UserBio__WEBPACK_IMPORTED_MODULE_1___default.a.prototype, 'view', function (view) {
-    // Load the old user bio.
-    var original = app.forum.attribute('masquerade.disable-user-bio') ? null : view();
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_UserCard__WEBPACK_IMPORTED_MODULE_1___default.a.prototype, 'infoItems', function (items) {
     var answers = app.forum.attribute('canViewMasquerade') ? this.props.user.bioFields() || [] : [];
-    return m('.Masquerade-Bio', [original, m('div', answers.map(function (answer) {
+    items.add('masquerade-bio', m('div', answers.map(function (answer) {
       var field = answer.attribute('field');
       var type = _types_TypeFactory__WEBPACK_IMPORTED_MODULE_2__["default"].typeForField({
         field: field,
@@ -237,7 +235,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
       return type.answerField();
-    }))]);
+    })));
   });
 });
 
@@ -1113,14 +1111,14 @@ module.exports = flarum.core.compat['components/Select'];
 
 /***/ }),
 
-/***/ "flarum/components/UserBio":
-/*!***********************************************************!*\
-  !*** external "flarum.core.compat['components/UserBio']" ***!
-  \***********************************************************/
+/***/ "flarum/components/UserCard":
+/*!************************************************************!*\
+  !*** external "flarum.core.compat['components/UserCard']" ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = flarum.core.compat['components/UserBio'];
+module.exports = flarum.core.compat['components/UserCard'];
 
 /***/ }),
 

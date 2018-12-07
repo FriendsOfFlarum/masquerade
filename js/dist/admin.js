@@ -154,7 +154,7 @@ __webpack_require__.r(__webpack_exports__);
     // add the Image Upload tab to the admin navigation menu
     items.add('flagrow-masquerade-configure-profile', flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_2___default.a.component({
       href: app.route('flagrow-masquerade-configure-profile'),
-      icon: 'id-card-o',
+      icon: 'fas fa-id-card',
       children: 'Masquerade',
       description: app.translator.trans('flagrow-masquerade.admin.menu.description')
     }));

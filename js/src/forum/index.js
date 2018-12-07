@@ -6,7 +6,7 @@ import Answer from "./../lib/models/Answer";
 import Model from 'flarum/Model';
 
 import addProfilePane from './addProfilePane';
-import mutateUserBio from './mutateUserBio';
+import mutateUserHero from './mutateUserHero';
 
 app.initializers.add('flagrow-masquerade', app => {
     app.store.models['masquerade-field'] = Field;
@@ -16,5 +16,5 @@ app.initializers.add('flagrow-masquerade', app => {
 
     addProfilePane();
 
-    mutateUserBio();
+    mutateUserHero();
 });

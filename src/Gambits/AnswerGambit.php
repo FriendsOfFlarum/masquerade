@@ -2,9 +2,8 @@
 
 namespace Flagrow\Masquerade\Gambits;
 
-use Flarum\Core\Search\AbstractSearch;
-use Flarum\Core\Search\GambitInterface;
-use Illuminate\Database\Query\Builder;
+use Flarum\Search\AbstractSearch;
+use Flarum\Search\GambitInterface;
 use Illuminate\Database\Query\Expression;
 
 class AnswerGambit implements GambitInterface
