@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade\Content;
+namespace FoF\Masquerade\Content;
 
 use Flarum\Frontend\Document;
 use Flarum\User\AssertPermissionTrait;
@@ -12,6 +12,6 @@ class ViewProfile
 
     public function __invoke(Document $document, Request $request)
     {
-        $this->assertCan($request->getAttribute('actor'), 'flagrow.masquerade.view-profile');
+        $this->assertCan($request->getAttribute('actor'), 'fof.masquerade.view-profile');
     }
 }

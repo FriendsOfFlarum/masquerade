@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade\Listeners;
+namespace FoF\Masquerade\Listeners;
 
 use Flarum\Api\Event\Serializing;
 use Flarum\Api\Serializer\ForumSerializer;
@@ -16,8 +16,8 @@ class InjectPermissions
     public function permissions(Serializing $event)
     {
         if ($event->serializer instanceof ForumSerializer) {
-            $event->attributes['canViewMasquerade'] = $event->actor->can('flagrow.masquerade.view-profile');
-            $event->attributes['canHaveMasquerade'] = $event->actor->can('flagrow.masquerade.have-profile');
+            $event->attributes['canViewMasquerade'] = $event->actor->can('fof.masquerade.view-profile');
+            $event->attributes['canHaveMasquerade'] = $event->actor->can('fof.masquerade.have-profile');
         }
     }
 }

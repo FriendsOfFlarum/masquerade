@@ -1,9 +1,9 @@
 <?php
 
-namespace Flagrow\Masquerade\Listeners;
+namespace FoF\Masquerade\Listeners;
 
 use Flarum\Event\ConfigureMiddleware;
-use Flagrow\Masquerade\Middleware\DemandProfileCompletion as Middleware;
+use FoF\Masquerade\Middleware\DemandProfileCompletion as Middleware;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 

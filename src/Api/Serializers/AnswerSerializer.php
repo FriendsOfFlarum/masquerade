@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Api\Serializers;
+namespace FoF\Masquerade\Api\Serializers;
 
-use Flagrow\Masquerade\Field;
+use FoF\Masquerade\Field;
 use Flarum\Api\Serializer\AbstractSerializer;
 
 class AnswerSerializer extends AbstractSerializer

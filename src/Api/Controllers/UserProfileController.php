@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Masquerade\Api\Controllers;
+namespace FoF\Masquerade\Api\Controllers;
 
-use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
-use Flagrow\Masquerade\Repositories\FieldRepository;
-use Flagrow\Masquerade\Validators\AnswerValidator;
+use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use FoF\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,7 +44,7 @@ class UserProfileController extends AbstractListController
     {
         $actor = $request->getAttribute('actor');
 
-        $this->assertCan($actor, 'flagrow.masquerade.view-profile');
+        $this->assertCan($actor, 'fof.masquerade.view-profile');
 
         $id = array_get($request->getQueryParams(), 'id');
 

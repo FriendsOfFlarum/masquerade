@@ -1,9 +1,9 @@
 <?php
 
-namespace Flagrow\Masquerade\Api\Controllers;
+namespace FoF\Masquerade\Api\Controllers;
 
-use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
-use Flagrow\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use FoF\Masquerade\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface;

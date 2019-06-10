@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Validators;
+namespace FoF\Masquerade\Validators;
 
-use Flagrow\Masquerade\Field;
+use FoF\Masquerade\Field;
 use Flarum\Foundation\AbstractValidator;
 
 class AnswerValidator extends AbstractValidator

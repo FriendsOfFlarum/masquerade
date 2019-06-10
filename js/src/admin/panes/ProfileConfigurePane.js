@@ -64,7 +64,7 @@ export default class ProfileConfigurePane extends Component {
                         Switch.component({
                             state: this.enforceProfileCompletion(),
                             onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.force-user-to-completion')
+                            children: app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')
                         }),
                         m('br')
                     ],
@@ -72,7 +72,7 @@ export default class ProfileConfigurePane extends Component {
                         Switch.component({
                             state: this.disableUserBio(),
                             onchange: this.updateSetting.bind(this, this.disableUserBio, 'masquerade.disable-user-bio'),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.disable-user-bio')
+                            children: app.translator.trans('fof-masquerade.admin.fields.disable-user-bio')
                         }),
                         m('br')
                     ]
@@ -130,57 +130,57 @@ export default class ProfileConfigurePane extends Component {
                         className: 'title',
                         onclick: (e) => this.toggleField(e)
                     },
-                    app.translator.trans('flagrow-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                    app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
                         field: field.name()
                     })
                 )
             ]),
             m('ul', [
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.name')),
+                    m('label', app.translator.trans('fof-masquerade.admin.fields.name')),
                     m('input', {
                         className: 'FormControl',
                         value: field.name(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
                     }),
-                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.name-help'))
+                    m('span', {className: 'helpText'}, app.translator.trans('fof-masquerade.admin.fields.name-help'))
                 ]),
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.description')),
+                    m('label', app.translator.trans('fof-masquerade.admin.fields.description')),
                     m('input', {
                         className: 'FormControl',
                         value: field.description(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
                     }),
-                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.description-help'))
+                    m('span', {className: 'helpText'}, app.translator.trans('fof-masquerade.admin.fields.description-help'))
                 ]),
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.icon')),
+                    m('label', app.translator.trans('fof-masquerade.admin.fields.icon')),
                     m('input', {
                         className: 'FormControl',
                         value: field.icon(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
                     }),
-                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
+                    m('span', {className: 'helpText'}, app.translator.trans('fof-masquerade.admin.fields.icon-help', {
                         a: <a href="https://fontawesome.com/icons?m=free" target="_blank"/>
                     }))
                 ]),
                 // @todo Disabled for now, wasn't really showing up nicely.
                 // m('li', [
-                //     m('label', app.translator.trans('flagrow-masquerade.admin.fields.prefix')),
+                //     m('label', app.translator.trans('fof-masquerade.admin.fields.prefix')),
                 //     m('input', {
                 //         className: 'FormControl',
                 //         value: field.prefix(),
                 //         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'prefix', field))
                 //     }),
-                //     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.prefix-help'))
+                //     m('span', {className: 'helpText'}, app.translator.trans('fof-masquerade.admin.fields.prefix-help'))
                 // ]),
                 m('li', [
                     m('label', ''), [
                         Switch.component({
                             state: field.on_bio(),
                             onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.on_bio')
+                            children: app.translator.trans('fof-masquerade.admin.fields.on_bio')
                         }),
                         m('br')
                     ]
@@ -190,13 +190,13 @@ export default class ProfileConfigurePane extends Component {
                         Switch.component({
                             state: field.required(),
                             onchange: this.updateExistingFieldInput.bind(this, 'required', field),
-                            children: app.translator.trans('flagrow-masquerade.admin.fields.required')
+                            children: app.translator.trans('fof-masquerade.admin.fields.required')
                         }),
                         m('br')
                     ]
                 ]),
                 m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.type')),
+                    m('label', app.translator.trans('fof-masquerade.admin.fields.type')),
                     Select.component({
                         onchange: value => {
                             if (value === 'null') {
@@ -216,13 +216,13 @@ export default class ProfileConfigurePane extends Component {
                     value: field.validation(),
                 }) : null),
                 (field.type() === null ? m('li', [
-                    m('label', app.translator.trans('flagrow-masquerade.admin.fields.validation')),
+                    m('label', app.translator.trans('fof-masquerade.admin.fields.validation')),
                     m('input', {
                         className: 'FormControl',
                         value: field.validation(),
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
                     }),
-                    m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.validation-help', {
+                    m('span', {className: 'helpText'}, app.translator.trans('fof-masquerade.admin.fields.validation-help', {
                         a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules"
                               target="_blank"/>
                     }))
@@ -231,7 +231,7 @@ export default class ProfileConfigurePane extends Component {
                     Button.component({
                         type: 'submit',
                         className: 'Button Button--primary',
-                        children: app.translator.trans('flagrow-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
+                        children: app.translator.trans('fof-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
                         loading: this.loading,
                         disabled: !this.readyToAdd(field),
                         onclick: this.updateExistingField.bind(this, field)
@@ -239,7 +239,7 @@ export default class ProfileConfigurePane extends Component {
                     (exists ? Button.component({
                         type: 'submit',
                         className: 'Button Button--danger',
-                        children: app.translator.trans('flagrow-masquerade.admin.buttons.delete-field'),
+                        children: app.translator.trans('fof-masquerade.admin.buttons.delete-field'),
                         loading: this.loading,
                         onclick: this.deleteField.bind(this, field),
                     }) : '')
@@ -414,11 +414,11 @@ export default class ProfileConfigurePane extends Component {
      */
     availableTypes() {
         return {
-            url: app.translator.trans('flagrow-masquerade.admin.types.url'),
-            email: app.translator.trans('flagrow-masquerade.admin.types.email'),
-            boolean: app.translator.trans('flagrow-masquerade.admin.types.boolean'),
-            select: app.translator.trans('flagrow-masquerade.admin.types.select'),
-            null: app.translator.trans('flagrow-masquerade.admin.types.advanced'),
+            url: app.translator.trans('fof-masquerade.admin.types.url'),
+            email: app.translator.trans('fof-masquerade.admin.types.email'),
+            boolean: app.translator.trans('fof-masquerade.admin.types.boolean'),
+            select: app.translator.trans('fof-masquerade.admin.types.select'),
+            null: app.translator.trans('fof-masquerade.admin.types.advanced'),
         };
     }
 }

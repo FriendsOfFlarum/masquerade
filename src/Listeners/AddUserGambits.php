@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Listeners;
+namespace FoF\Masquerade\Listeners;
 
-use Flagrow\Masquerade\Gambits\AnswerGambit;
+use FoF\Masquerade\Gambits\AnswerGambit;
 use Flarum\Event\ConfigureUserGambits;
 use Illuminate\Contracts\Events\Dispatcher;
 

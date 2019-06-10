@@ -21,20 +21,20 @@ export default class BooleanField extends BaseField {
             options.push({
                 selected: value => BaseField.isNoOptionSelectedValue(value),
                 key: null,
-                label: app.translator.trans('flagrow-masquerade.forum.fields.select.none-optional'),
+                label: app.translator.trans('fof-masquerade.forum.fields.select.none-optional'),
             });
         }
 
         options.push({
             selected: value => ['true', '1', 1, true, 'yes'].indexOf(value) !== -1,
             key: 'true',
-            label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes'),
+            label: app.translator.trans('fof-masquerade.forum.fields.boolean.yes'),
         });
 
         options.push({
             selected: value => ['false', '0', 0, false, 'no'].indexOf(value) !== -1,
             key: 'false',
-            label: app.translator.trans('flagrow-masquerade.forum.fields.boolean.no'),
+            label: app.translator.trans('fof-masquerade.forum.fields.boolean.no'),
         });
 
         // This is probably overkill because it looks like the backend casts the value anyway
@@ -55,7 +55,7 @@ export default class BooleanField extends BaseField {
         }
 
         return [1, '1', true, 'true', 'yes'].indexOf(this.value()) !== -1 ?
-            [icon('far fa-check-square'), ' ', app.translator.trans('flagrow-masquerade.forum.fields.boolean.yes')] :
-            [icon('far fa-square'), ' ', app.translator.trans('flagrow-masquerade.forum.fields.boolean.no')];
+            [icon('far fa-check-square'), ' ', app.translator.trans('fof-masquerade.forum.fields.boolean.yes')] :
+            [icon('far fa-square'), ' ', app.translator.trans('fof-masquerade.forum.fields.boolean.no')];
     }
 }

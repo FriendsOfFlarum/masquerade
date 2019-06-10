@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Validators;
+namespace FoF\Masquerade\Validators;
 
-use Flagrow\Masquerade\FieldType\TypeFactory;
+use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\Foundation\AbstractValidator;
 
 class FieldValidator extends AbstractValidator

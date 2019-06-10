@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade;
+namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
@@ -19,7 +19,7 @@ use Flarum\User\User;
 class Answer extends AbstractModel
 {
     public $timestamps = true;
-    protected $table = 'flagrow_masquerade_answers';
+    protected $table = 'fof_masquerade_answers';
     protected $fillable = ['*'];
 
     /**

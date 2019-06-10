@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade;
+namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
@@ -28,7 +28,7 @@ class Field extends AbstractModel
 
     public $timestamps = true;
 
-    protected $table = 'flagrow_masquerade_fields';
+    protected $table = 'fof_masquerade_fields';
 
     protected $casts = ['required' => 'boolean', 'on_bio' => 'boolean'];
 

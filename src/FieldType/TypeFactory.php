@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade\FieldType;
+namespace FoF\Masquerade\FieldType;
 
 use Illuminate\Support\Arr;
 

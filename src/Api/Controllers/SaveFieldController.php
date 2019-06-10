@@ -1,10 +1,10 @@
 <?php
 
-namespace Flagrow\Masquerade\Api\Controllers;
+namespace FoF\Masquerade\Api\Controllers;
 
-use Flagrow\Masquerade\Api\Serializers\FieldSerializer;
-use Flagrow\Masquerade\Repositories\FieldRepository;
-use Flagrow\Masquerade\Validators\FieldValidator;
+use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use FoF\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Validators\FieldValidator;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;

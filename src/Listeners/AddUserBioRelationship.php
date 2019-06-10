@@ -1,9 +1,9 @@
 <?php
 
-namespace Flagrow\Masquerade\Listeners;
+namespace FoF\Masquerade\Listeners;
 
-use Flagrow\Masquerade\Answer;
-use Flagrow\Masquerade\Api\Serializers\AnswerSerializer;
+use FoF\Masquerade\Answer;
+use FoF\Masquerade\Api\Serializers\AnswerSerializer;
 use Flarum\Api\Event\Serializing;
 use Flarum\Api\Event\WillGetData;
 use Flarum\Api\Serializer\BasicUserSerializer;
@@ -58,7 +58,7 @@ class AddUserBioRelationship
     public function addUserBioApiAttributes(Serializing $event)
     {
         if ($event->model instanceof User) {
-            if ($event->actor->cannot('flagrow.masquerade.view-profile')) {
+            if ($event->actor->cannot('fof.masquerade.view-profile')) {
                 // When the relationships are auto-loaded later,
                 // this one will be skipped because it has already been set to null
                 $event->model->setRelation('bioFields', null);

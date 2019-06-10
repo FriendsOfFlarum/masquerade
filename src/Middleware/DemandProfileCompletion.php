@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Middleware;
+namespace FoF\Masquerade\Middleware;
 
-use Flagrow\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Repositories\FieldRepository;
 use Flarum\Http\UrlGenerator;
 use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface as Response;

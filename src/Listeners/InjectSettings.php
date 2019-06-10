@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade\Listeners;
+namespace FoF\Masquerade\Listeners;
 
-use Flagrow\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Repositories\FieldRepository;
 use Flarum\Api\Event\Serializing;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Settings\SettingsRepositoryInterface;

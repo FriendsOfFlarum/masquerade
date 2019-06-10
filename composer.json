@@ -1,10 +1,11 @@
 {
-    "name": "flagrow/masquerade",
+    "name": "fof/masquerade",
     "description": "User profile builder extension for your Flarum forum.",
     "keywords": [
         "extension",
-        "flarum", "flagrow",
-        "user profile", "member profile",
+        "flarum",
+        "user profile",
+        "member profile",
         "profile"
     ],
     "type": "flarum-extension",
@@ -24,14 +25,17 @@
     "require": {
         "flarum/core": "^0.1.0-beta.8"
     },
+    "replace": {
+        "flagrow/masquerade": "*"
+    },
     "extra": {
         "flarum-extension": {
-            "title": "Masquerade",
+            "title": "FoF Masquerade",
             "icon": {
                 "image": "resources/logo.svg",
-                "backgroundColor": "#5f4bb6",
+                "backgroundColor": "#e74c3c",
                 "backgroundSize": "90%",
-		        "backgroundRepeat": "no-repeat",
+                "backgroundRepeat": "no-repeat",
                 "backgroundPosition": "center"
             }
         },
@@ -41,7 +45,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Flagrow\\Masquerade\\": "src/"
+            "FoF\\Masquerade\\": "src/"
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade\Content;
+namespace FoF\Masquerade\Content;
 
 use Flarum\Frontend\Document;
 use Flarum\User\AssertPermissionTrait;
@@ -17,6 +17,6 @@ class ConfigureProfile
             throw new PermissionDeniedException;
         }
 
-        $this->assertCan($request->getAttribute('actor'), 'flagrow.masquerade.have-profile');
+        $this->assertCan($request->getAttribute('actor'), 'fof.masquerade.have-profile');
     }
 }

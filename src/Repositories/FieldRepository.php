@@ -1,18 +1,18 @@
 <?php
 
-namespace Flagrow\Masquerade\Repositories;
+namespace FoF\Masquerade\Repositories;
 
-use Flagrow\Masquerade\Answer;
-use Flagrow\Masquerade\Field;
-use Flagrow\Masquerade\FieldType\TypeFactory;
+use FoF\Masquerade\Answer;
+use FoF\Masquerade\Field;
+use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\User\User;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;
 
 class FieldRepository
 {
-    const CACHE_KEY_ALL_FIELDS = 'masquerade.fields.all';
-    const CACHE_KEY_UNCOMPLETED = 'masquerade.uncompleted.u.%d';
+    const CACHE_KEY_ALL_FIELDS = 'fof.masquerade.fields.all';
+    const CACHE_KEY_UNCOMPLETED = 'fof.masquerade.uncompleted.u.%d';
 
     /**
      * @var Field

@@ -1,8 +1,8 @@
 <?php
 
-namespace Flagrow\Masquerade;
+namespace FoF\Masquerade;
 
-use Flagrow\Masquerade\Api\Controllers as Api;
+use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
 use Illuminate\Contracts\Events\Dispatcher;
 

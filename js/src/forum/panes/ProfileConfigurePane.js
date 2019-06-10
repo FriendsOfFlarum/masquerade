@@ -21,7 +21,7 @@ export default class ProfileConfigurePane extends UserPage {
                 onsubmit: this.update.bind(this)
             }, [
                 (this.enforceProfileCompletion && !this.profileCompleted) ?
-                    m('div', {className: 'Alert Alert--Error'}, app.translator.trans('flagrow-masquerade.forum.alerts.profile-completion-required')) :
+                    m('div', {className: 'Alert Alert--Error'}, app.translator.trans('fof-masquerade.forum.alerts.profile-completion-required')) :
                     '',
                 m('div', {className: 'Fields'}, this.fields
                     .sort((a, b) => a.sort() - b.sort())
@@ -36,7 +36,7 @@ export default class ProfileConfigurePane extends UserPage {
                 Button.component({
                     type: 'submit',
                     className: 'Button Button--primary',
-                    children: app.translator.trans('flagrow-masquerade.forum.buttons.save-profile'),
+                    children: app.translator.trans('fof-masquerade.forum.buttons.save-profile'),
                     loading: this.loading
                 })
             ]

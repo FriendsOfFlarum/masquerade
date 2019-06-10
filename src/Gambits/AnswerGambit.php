@@ -1,6 +1,6 @@
 <?php
 
-namespace Flagrow\Masquerade\Gambits;
+namespace FoF\Masquerade\Gambits;
 
 use Flarum\Search\AbstractSearch;
 use Flarum\Search\GambitInterface;
@@ -22,7 +22,7 @@ class AnswerGambit implements GambitInterface
         if ($bit) {
             $q->orWhereExists(function ($query) use ($bit) {
                 $query->select(app('flarum.db')->raw(1))
-                    ->from('flagrow_masquerade_answers')
+                    ->from('fof_masquerade_answers')
                     ->where('users.id', new Expression('user_id'))
                     ->where('content', 'like', "%$bit%");
             });
