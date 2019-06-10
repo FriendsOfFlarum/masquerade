@@ -8,7 +8,7 @@ use Flagrow\Masquerade\Repositories\FieldRepository;
 use Flagrow\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\AssertPermissionTrait;
-use Flarum\Core\User;
+use Flarum\User\User;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;

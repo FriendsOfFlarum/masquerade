@@ -5,7 +5,7 @@ namespace Flagrow\Masquerade\Repositories;
 use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Field;
 use Flagrow\Masquerade\FieldType\TypeFactory;
-use Flarum\Core\User;
+use Flarum\User\User;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;
 

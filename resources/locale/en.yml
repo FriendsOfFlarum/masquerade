@@ -46,8 +46,8 @@ flagrow-masquerade:
             icon: Icon
             icon-help: >
                 Shows an icon in front of values entered by the user. For a reference of
-                available icons, check the <a>FontAwesome website</a>. Use "info" without
-                the "fa-" prefix.
+                available icons, check the <a>FontAwesome website</a>. Use icon names with
+                the "fa-" prefix, like "fas fa-info".
             force-user-to-completion: Force user to complete profile
             disable-user-bio: Disable user bio field
             options: Options

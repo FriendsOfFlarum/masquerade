@@ -10,7 +10,7 @@ app.initializers.add('flagrow-masquerade', app => {
     // add the permission option for viewing a masquerade profile
     extend(PermissionGrid.prototype, 'viewItems', items => {
         items.add('masquerade-view-profile', {
-            icon: 'id-card-o',
+            icon: 'far fa-id-card',
             label: app.translator.trans('flagrow-masquerade.admin.permissions.view-profile'),
             permission: 'flagrow.masquerade.view-profile',
             allowGuest: true
@@ -19,7 +19,7 @@ app.initializers.add('flagrow-masquerade', app => {
     // add the permission option for creating a masquerade profile
     extend(PermissionGrid.prototype, 'startItems', items => {
         items.add('masquerade-have-profile', {
-            icon: 'id-card-o',
+            icon: 'far fa-id-card',
             label: app.translator.trans('flagrow-masquerade.admin.permissions.have-profile'),
             permission: 'flagrow.masquerade.have-profile'
         });

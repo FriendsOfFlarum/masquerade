@@ -3,7 +3,7 @@
 namespace Flagrow\Masquerade\Listeners;
 
 use Flarum\Event\ConfigureMiddleware;
-use Flagrow\Masquerade\Http\Middleware\DemandProfileCompletion as Middleware;
+use Flagrow\Masquerade\Middleware\DemandProfileCompletion as Middleware;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 

@@ -12,11 +12,17 @@ export default class UrlField extends BaseField {
     }
 
     answerContent() {
+        const value = this.value();
+
+        if (!value) {
+            return null;
+        }
+
         return Button.component({
             onclick: () => this.to(),
             className: 'Button Button--text',
-            icon: 'link',
-            children: this.value().replace(/^https?:\/\//, ''),
+            icon: 'fas fa-link',
+            children: value.replace(/^https?:\/\//, ''),
         });
     }
 

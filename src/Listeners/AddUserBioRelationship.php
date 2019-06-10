@@ -4,14 +4,14 @@ namespace Flagrow\Masquerade\Listeners;
 
 use Flagrow\Masquerade\Answer;
 use Flagrow\Masquerade\Api\Serializers\AnswerSerializer;
+use Flarum\Api\Event\Serializing;
+use Flarum\Api\Event\WillGetData;
+use Flarum\Api\Serializer\BasicUserSerializer;
 use Flarum\Api\Serializer\CurrentUserSerializer;
-use Flarum\Api\Serializer\UserBasicSerializer;
 use Flarum\Api\Serializer\UserSerializer;
-use Flarum\Core\User;
-use Flarum\Event\ConfigureApiController;
 use Flarum\Event\GetApiRelationship;
 use Flarum\Event\GetModelRelationship;
-use Flarum\Event\PrepareApiAttributes;
+use Flarum\User\User;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class AddUserBioRelationship
@@ -23,8 +23,8 @@ class AddUserBioRelationship
     {
         $events->listen(GetModelRelationship::class, [$this, 'addUserBioRelationship']);
         $events->listen(GetApiRelationship::class, [$this, 'addUserBioToApi']);
-        $events->listen(PrepareApiAttributes::class, [$this, 'addUserBioApiAttributes']);
-        $events->listen(ConfigureApiController::class, [$this, 'addUserBioIncludes']);
+        $events->listen(Serializing::class, [$this, 'addUserBioApiAttributes']);
+        $events->listen(WillGetData::class, [$this, 'addUserBioIncludes']);
     }
 
     /**
@@ -53,9 +53,9 @@ class AddUserBioRelationship
     }
 
     /**
-     * @param PrepareApiAttributes $event
+     * @param Serializing $event
      */
-    public function addUserBioApiAttributes(PrepareApiAttributes $event)
+    public function addUserBioApiAttributes(Serializing $event)
     {
         if ($event->model instanceof User) {
             if ($event->actor->cannot('flagrow.masquerade.view-profile')) {
@@ -67,12 +67,12 @@ class AddUserBioRelationship
     }
 
     /**
-     * @param ConfigureApiController $event
+     * @param WillGetData $event
      */
-    public function addUserBioIncludes(ConfigureApiController $event)
+    public function addUserBioIncludes(WillGetData $event)
     {
         if (in_array($event->controller->serializer, [
-            UserBasicSerializer::class,
+            BasicUserSerializer::class,
             UserSerializer::class,
             CurrentUserSerializer::class
         ])) {

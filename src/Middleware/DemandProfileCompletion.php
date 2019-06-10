@@ -1,18 +1,18 @@
 <?php
 
-namespace Flagrow\Masquerade\Http\Middleware;
+namespace Flagrow\Masquerade\Middleware;
 
 use Flagrow\Masquerade\Repositories\FieldRepository;
-use Flarum\Core\User;
-use Flarum\Forum\UrlGenerator;
+use Flarum\Http\UrlGenerator;
+use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Stratigility\MiddlewareInterface;
 
 class DemandProfileCompletion implements MiddlewareInterface
 {
-
     /**
      * @var FieldRepository
      */
@@ -25,27 +25,26 @@ class DemandProfileCompletion implements MiddlewareInterface
     public function __construct(FieldRepository $fields, UrlGenerator $url)
     {
         $this->fields = $fields;
-        $this->url = $url->toRoute('masquerade.profile.configure');
+        $this->url = $url->to('forum')->route('masquerade.profile.configure');
     }
 
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         /** @var User $actor */
         $actor = $request->getAttribute('actor');
-
 
         if (
             $this->url != (string)$request->getUri() &&
             $actor &&
             $actor->exists &&
-            $actor->is_activated &&
-            ! $this->fields->completed($actor->id)
+            $actor->is_email_confirmed &&
+            !$this->fields->completed($actor->id)
         ) {
             return new RedirectResponse(
                 $this->url
             );
         }
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 }

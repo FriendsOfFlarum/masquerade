@@ -21,17 +21,17 @@ export default class SelectFieldOptionEditor extends Component {
                     onclick: () => {
                         this.moveOption(optionIndex, -1);
                     },
-                }, icon('chevron-up'))),
+                }, icon('fas fa-chevron-up'))),
                 m('td', m('button.Button', {
                     onclick: () => {
                         this.moveOption(optionIndex, 1);
                     },
-                }, icon('chevron-down'))),
+                }, icon('fas fa-chevron-down'))),
                 m('td', m('button.Button.Button--danger', {
                     onclick: () => {
                         this.deleteOption(optionIndex);
                     },
-                }, icon('close'))),
+                }, icon('fas fa-close'))),
             ])))),
             m('.helpText', app.translator.trans('flagrow-masquerade.admin.fields.option-coma-warning')),
             m('table', m('tbody'), m('tr', [
@@ -44,7 +44,7 @@ export default class SelectFieldOptionEditor extends Component {
                     onclick: () => {
                         this.addOption();
                     },
-                }, icon('plus'))),
+                }, icon('fas fa-plus'))),
             ])),
         ]);
     }

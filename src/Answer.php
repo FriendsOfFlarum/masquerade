@@ -3,8 +3,8 @@
 namespace Flagrow\Masquerade;
 
 use Carbon\Carbon;
-use Flarum\Core\User;
 use Flarum\Database\AbstractModel;
+use Flarum\User\User;
 
 /**
  * @property int $id

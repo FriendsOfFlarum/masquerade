@@ -1,8 +1,7 @@
 <?php
 
-namespace Flagrow\Masquerade\Forum\Content;
+namespace Flagrow\Masquerade\Content;
 
-use Flarum\Frontend\Content\ContentInterface;
 use Flarum\Frontend\Document;
 use Flarum\User\AssertPermissionTrait;
 use Psr\Http\Message\ServerRequestInterface as Request;

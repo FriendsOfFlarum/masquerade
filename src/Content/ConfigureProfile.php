@@ -1,8 +1,7 @@
 <?php
 
-namespace Flagrow\Masquerade\Forum\Content;
+namespace Flagrow\Masquerade\Content;
 
-use Flarum\Frontend\Content\ContentInterface;
 use Flarum\Frontend\Document;
 use Flarum\User\AssertPermissionTrait;
 use Flarum\User\Exception\PermissionDeniedException;
@@ -14,7 +13,7 @@ class ConfigureProfile
 
     public function __invoke(Document $document, Request $request)
     {
-        if (! $request->getAttribute('session')->get('user_id')) {
+        if (!$request->getAttribute('session')->get('user_id')) {
             throw new PermissionDeniedException;
         }
 

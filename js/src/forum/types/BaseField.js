@@ -45,14 +45,14 @@ export default class BaseField {
     editorField() {
         return m('fieldset.Field', [
             m('legend', [
-                this.field.icon() ? icon(this.field.icon()) : '',
+                this.field.icon() ? [icon(this.field.icon()), ' '] : null,
                 this.field.name(),
-                this.field.required() ? ' *' : '',
+                this.field.required() ? ' *' : null,
             ]),
             m('.FormField', [
-                this.field.prefix() ? m('.prefix', this.field.prefix()) : '',
+                this.field.prefix() ? m('.prefix', this.field.prefix()) : null,
                 this.editorInput(),
-                this.field.description() ? m('.helpText', this.field.description()) : '',
+                this.field.description() ? m('.helpText', this.field.description()) : null,
             ]),
         ]);
     }
@@ -75,8 +75,8 @@ export default class BaseField {
 
         return m('.Masquerade-Bio-Set', [
             m('span.Masquerade-Bio-Field', [
-                iconName ? icon(iconName) : '',
-                this.readAttribute(this.field, 'name') + ':',
+                iconName ? [icon(iconName), ' '] : null,
+                this.readAttribute(this.field, 'name') + ': ',
             ]),
             m('span.Masquerade-Bio-Answer', this.answerContent()),
         ]);

@@ -12,7 +12,13 @@ export default class EmailField extends BaseField {
     }
 
     answerContent() {
-        const email = this.value()
+        const value = this.value();
+
+        if (!value) {
+            return null;
+        }
+
+        const email = value
             .split(/@|\./)
             .map(segment => {
                 return segment.replace(/(.{2})./g, '$1*');
@@ -22,7 +28,7 @@ export default class EmailField extends BaseField {
         return Button.component({
             onclick: () => this.mailTo(),
             className: 'Button Button--text',
-            icon: 'envelope-o',
+            icon: 'far fa-envelope',
             children: email,
         });
     }

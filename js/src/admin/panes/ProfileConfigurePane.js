@@ -121,7 +121,7 @@ export default class ProfileConfigurePane extends Component {
                 exists ? m('div', {className: 'ButtonGroup pull-right'}, [
                     Button.component({
                         className: 'Button Button--icon Button--danger',
-                        icon: "trash",
+                        icon: "fas fa-trash",
                         onclick: this.deleteField.bind(this, field)
                     })
                 ]) : null,
@@ -162,7 +162,7 @@ export default class ProfileConfigurePane extends Component {
                         oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
                     }),
                     m('span', {className: 'helpText'}, app.translator.trans('flagrow-masquerade.admin.fields.icon-help', {
-                        a: <a href="http://fontawesome.io/icons/" target="_blank"/>
+                        a: <a href="https://fontawesome.com/icons?m=free" target="_blank"/>
                     }))
                 ]),
                 // @todo Disabled for now, wasn't really showing up nicely.

@@ -2,18 +2,18 @@
 
 namespace Flagrow\Masquerade\Listeners;
 
+use Flarum\Api\Event\Serializing;
 use Flarum\Api\Serializer\ForumSerializer;
-use Flarum\Event\PrepareApiAttributes;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class InjectPermissions
 {
     public function subscribe(Dispatcher $events)
     {
-        $events->listen(PrepareApiAttributes::class, [$this, 'permissions']);
+        $events->listen(Serializing::class, [$this, 'permissions']);
     }
 
-    public function permissions(PrepareApiAttributes $event)
+    public function permissions(Serializing $event)
     {
         if ($event->serializer instanceof ForumSerializer) {
             $event->attributes['canViewMasquerade'] = $event->actor->can('flagrow.masquerade.view-profile');
