@@ -58,14 +58,12 @@ class FieldRepository
 
         if ($id) {
             $field = $this->field->findOrFail($id);
-        }
-
-        if (!$id) {
+        } else {
             $field = $this->field->newInstance();
             $field->sort = $this->highestSort();
         }
 
-        $field->forceFill(Arr::except($attributes, ['id', 'sort']));
+        $field->fill($attributes);
 
         if ($field->isDirty()) {
             $field->save();
