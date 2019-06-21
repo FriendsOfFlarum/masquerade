@@ -15,8 +15,8 @@ fof-masquerade:
                 no: No
     admin:
         buttons:
-            add-field: Add field
-            edit-field: Edit field
+            add-field: Create field
+            edit-field: Save changes
             delete-field: Delete field
         permissions:
             have-profile: Have masquerade profile

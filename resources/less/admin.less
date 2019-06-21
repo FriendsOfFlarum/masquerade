@@ -8,28 +8,21 @@
         padding: 5px;
         background: @body-bg;
         border-radius: @border-radius;
+
         legend {
             margin: 10px;
             width: 100%;
-            > span {
+
+            .Field-toggle {
                 cursor: pointer;
             }
         }
-        > ul {
-            display: none;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            > li {
-                margin: 8px 0;
-                display: block;
 
-                > label {
-                    font-weight: bold;
-                }
-            }
+        .Field-body {
+            display: none;
         }
-        &.new > ul, &.active > ul {
+
+        &.active .Field-body {
             display: block;
         }
     }

@@ -2,13 +2,15 @@ import app from 'flarum/app';
 import Component from 'flarum/Component';
 import icon from 'flarum/helpers/icon';
 
+/* global m */
+
 export default class SelectFieldOptionEditor extends Component {
     init() {
         this.newOption = m.prop('');
     }
 
     view() {
-        return m('li', [
+        return m('.Form-group', [
             m('label', app.translator.trans('fof-masquerade.admin.fields.options')),
             m('table', m('tbody', this.options().map((option, optionIndex) => m('tr', [
                 m('td', m('input[type=text].FormControl', {
