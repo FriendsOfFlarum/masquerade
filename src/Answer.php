@@ -19,8 +19,18 @@ use Flarum\User\User;
 class Answer extends AbstractModel
 {
     public $timestamps = true;
+
     protected $table = 'fof_masquerade_answers';
-    protected $fillable = ['*'];
+
+    protected $fillable = [
+        'user_id',
+    ];
+
+    protected $visible = [
+        'user_id',
+        'content',
+        'field', // Used for the bio feature TODO: should use a relationship
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

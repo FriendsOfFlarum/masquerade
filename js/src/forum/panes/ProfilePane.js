@@ -1,6 +1,8 @@
 import UserPage from 'flarum/components/UserPage';
 import TypeFactory from './../types/TypeFactory';
 
+/* global m */
+
 export default class ProfileConfigurePane extends UserPage {
     init() {
         super.init();
@@ -13,19 +15,17 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     content() {
-        return m('div', {
-                className: 'Masquerade-Bio'
-            }, [
-                m('div', {className: 'Fields'}, this.fields
-                    .sort((a, b) => a.sort() - b.sort())
-                    .map(field => {
-                        this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
+        return m('.Masquerade-Bio', [
+            m('.Fields', this.fields
+                .sort((a, b) => a.sort() - b.sort())
+                .map(field => {
+                    // UserID check must be done with == because userId() is number while id() is string
+                    this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
 
-                        return this.field(field);
-                    })
-                )
-            ]
-        );
+                    return this.field(field);
+                })
+            ),
+        ]);
     }
 
     field(field) {
@@ -57,6 +57,6 @@ export default class ProfileConfigurePane extends UserPage {
         this.fields = app.store.pushPayload(response);
 
         this.loading = false;
-        m.redraw()
+        m.redraw();
     }
 }

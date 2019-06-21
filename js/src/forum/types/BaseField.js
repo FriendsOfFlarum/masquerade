@@ -1,5 +1,7 @@
 import icon from 'flarum/helpers/icon';
 
+/* global m */
+
 export default class BaseField {
     constructor({field, set, value}) {
         this.field = field;

@@ -137,7 +137,7 @@ class FieldRepository
     {
         /** @var Answer $answer */
         $answer = $field->answers()->firstOrNew([
-            'user_id' => $actor->id
+            'user_id' => $actor->id,
         ]);
 
         $answer->content = $content;

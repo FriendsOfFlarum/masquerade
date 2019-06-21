@@ -43,7 +43,7 @@ export default class TypeFactory {
      * @returns {null|string}
      */
     static identify(field) {
-        const validation = this.fieldAttribute(field, 'validation').split(',');
+        const validation = (this.fieldAttribute(field, 'validation') || '').split(',');
         let identified = null;
 
         // If the field has a type we use it

@@ -46,6 +46,18 @@ class Field extends AbstractModel
         'on_bio',
     ];
 
+    protected $visible = [
+        'name',
+        'description',
+        'prefix',
+        'icon',
+        'type',
+        'required',
+        'validation',
+        'sort',
+        'on_bio',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
