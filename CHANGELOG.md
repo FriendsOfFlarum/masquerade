@@ -1,3 +1,10 @@
+- 0.3.0
+  - Updated for beta 8 compatibility
+  - Removed non-English translations
+  - Fixed profile link being visible even if a user can't see a profile
+  - Fixed fillable attributes in the API for the admin panel
+  - Fixed javascript errors in the editor and viewer when type is null or if the field has no rules
+  - Moved to FriendsOfFlarum namespace
 - 0.2.1
   - Fixed bio fields being accessible to anybody via the API even when permission was set to non-public.
 - 0.2.0

@@ -1,6 +1,6 @@
-# Masquerade by ![Flagrow logo](https://avatars0.githubusercontent.com/u/16413865?v=3&s=20) [Flagrow](https://discuss.flarum.org/d/1832)
+# Masquerade by FriendsOfFlarum
 
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/flagrow/masquerade/blob/master/LICENSE.md) [![Latest Stable Version](https://img.shields.io/packagist/v/flagrow/masquerade.svg)](https://packagist.org/packages/flagrow/masquerade) [![Total Downloads](https://img.shields.io/packagist/dt/flagrow/masquerade.svg)](https://packagist.org/packages/flagrow/masquerade) [![Join our Discord server](https://discordapp.com/api/guilds/240489109041315840/embed.png)](https://flagrow.io/join-discord)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/masquerade.svg)](https://packagist.org/packages/fof/masquerade)
 
 The user profile generator. Includes:
 
@@ -11,22 +11,26 @@ The user profile generator. Includes:
 - Permission who can view a masquerade profile.
 - Allowing you to configure forced redirection to make a (email verified) user complete the required fields.
 
-![](https://discuss.hyn.me/assets/files/2017-05-16/1494967396-0-masquerade-demo.gif)
-
 ## Installation
 
 Use [Bazaar](https://discuss.flarum.org/d/5151) or install manually:
 
 ```bash
-composer require "flagrow/masquerade:*"
+composer require fof/masquerade
 ```
 
 ## Updating
 
-```bash
-composer update flagrow/masquerade
-php flarum migrate
-php flarum cache:clear
+To the next minor version:
+
+```sh
+composer update fof/masquerade
+```
+
+To the latest compatible version:
+
+```sh
+composer require fof/masquerade
 ```
 
 ## Configuration
@@ -37,18 +41,37 @@ Be aware that the "Add new field" and "Edit field <foo>" toggle the field form w
 
 Make sure you configure the masquerade permissions on the Admin Permissions tab to your needs.
 
-## Security
+## Updating from Flagrow
 
-If you discover a security vulnerability within Masquerade, please send an email to the Flagrow team at security@flagrow.io. All security vulnerabilities will be promptly addressed.
+This extension replaces [Flagrow Masquerade](https://packagist.org/packages/flagrow/masquerade).
 
-Please include as many details as possible. You can use `php flarum info` to get the PHP, Flarum and extension versions installed.
+**Please backup your data before attempting the update!**
+
+First make sure you installed the latest Flagrow release will all migrations applied:
+
+```sh
+composer require flagrow/masquerade
+# Go to admin panel and check extension is enabled
+php flarum migrate
+```
+
+(Instead of running the migrate command you can also disable and re-enable the extension in the admin panel)
+
+Then upgrade from the old extension to the new one:
+
+```sh
+composer remove flagrow/masquerade
+composer require fof/masquerade
+```
+
+When you enable the new extension, the permissions and the data from Flagrow Masquerade will be moved to FoF Masquerade.
 
 ## Links
 
 - [Flarum Discuss post](https://discuss.flarum.org/d/5791)
-- [Source code on GitHub](https://github.com/flagrow/masquerade)
-- [Changelog](https://github.com/flagrow/masquerade/blob/master/CHANGELOG.md)
-- [Report an issue](https://github.com/flagrow/masquerade/issues)
-- [Download via Packagist](https://packagist.org/packages/flagrow/masquerade)
+- [Source code on GitHub](https://github.com/FriendsOfFlarum/masquerade)
+- [Changelog](https://github.com/FriendsOfFlarum/masquerade/blob/master/CHANGELOG.md)
+- [Report an issue](https://github.com/FriendsOfFlarum/masquerade/issues)
+- [Download via Packagist](https://packagist.org/packages/fof/masquerade)
 
-An extension by [Flagrow](https://flagrow.io/).
+An extension by [FriendsOfFlarum](https://github.com/FriendsOfFlarum)
