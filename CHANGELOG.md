@@ -1,3 +1,6 @@
+- 0.3.1
+  - Fix field edition that was creating new fields instead of updating
+  - Fix field UI not updating after deletion
 - 0.3.0
   - Updated for beta 8 compatibility
   - Removed non-English translations
