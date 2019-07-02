@@ -291,7 +291,9 @@ export default class ProfileConfigurePane extends Component {
         let data = field.data;
 
         app.request({
-            method: 'POST',
+            // We use PATCH and not PUT because the endpoint allows filling only some of the fields
+            // (even if here we always pass all the attributes)
+            method: 'PATCH',
             url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
             data,
         }).then(
@@ -337,6 +339,8 @@ export default class ProfileConfigurePane extends Component {
      */
     resetNew() {
         this.new = {
+            // id() does not hold any value, but it's necessary to keep it because it's called to make the difference
+            // between the simple object holding the new field's value and the model holding an existing field's value
             'id': m.prop(),
             'name': m.prop(''),
             'description': m.prop(''),

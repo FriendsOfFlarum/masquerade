@@ -7,7 +7,6 @@ use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\User\User;
 use Illuminate\Cache\Repository;
-use Illuminate\Support\Arr;
 
 class FieldRepository
 {
@@ -39,29 +38,36 @@ class FieldRepository
      */
     public function all()
     {
-        return $this->cache->rememberForever(static::CACHE_KEY_ALL_FIELDS, function() {
+        return $this->cache->rememberForever(static::CACHE_KEY_ALL_FIELDS, function () {
             return $this->query()->get();
         });
     }
 
-    /**
-     * @param array $attributes
-     * @return Field
-     */
-    public function findOrNew(array $attributes)
+    public function store(array $attributes): Field
     {
+        $field = $this->field->newInstance();
+        $field->sort = $this->highestSort();
+
         $type = TypeFactory::typeForField($attributes);
 
         $attributes = array_merge($attributes, $type->overrideAttributes());
 
-        $id = Arr::get($attributes, 'id');
+        $field->fill($attributes);
+        $field->save();
 
-        if ($id) {
-            $field = $this->field->findOrFail($id);
-        } else {
-            $field = $this->field->newInstance();
-            $field->sort = $this->highestSort();
-        }
+        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+
+        return $field;
+    }
+
+    public function update($id, array $attributes): Field
+    {
+        /** @var $field Field */
+        $field = $this->field->findOrFail($id);
+
+        $type = TypeFactory::typeForField($attributes);
+
+        $attributes = array_merge($attributes, $type->overrideAttributes());
 
         $field->fill($attributes);
 
@@ -114,18 +120,18 @@ class FieldRepository
      */
     public function completed($userId)
     {
-//        return $this->cache->rememberForever(sprintf(
-//            static::CACHE_KEY_UNCOMPLETED,
-//            $userId
-//        ), function () use ($userId) {
-            return $this->field
-                    ->where('required', true)
-                    ->whereDoesntHave('answers', function ($q) use ($userId) {
-                        $q->where('user_id', $userId);
-                    })
-                    ->count() == 0;
+//      return $this->cache->rememberForever(sprintf(
+//          static::CACHE_KEY_UNCOMPLETED,
+//          $userId
+//      ), function () use ($userId) {
+        return $this->field
+                ->where('required', true)
+                ->whereDoesntHave('answers', function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                })
+                ->count() == 0;
 
-//        });
+//      });
     }
 
     /**
@@ -159,12 +165,11 @@ class FieldRepository
         return $this->field->newQuery()->orderBy('sort', 'desc');
     }
 
-    /**
-     * @return int
-     */
-    protected function highestSort() {
+    protected function highestSort(): int
+    {
+        /** @var $max Field */
         $max = Field::orderBy('sort', 'desc')->first();
 
-        return $max ? $max->sort + 1: 0;
+        return $max ? $max->sort + 1 : 0;
     }
 }
