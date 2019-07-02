@@ -56,6 +56,7 @@ class Field extends AbstractModel
         'validation',
         'sort',
         'on_bio',
+        'deleted_at', // Used to know if an API response was about deletion
     ];
 
     /**

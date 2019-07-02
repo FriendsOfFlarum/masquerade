@@ -47,15 +47,6 @@ export default class ProfileConfigurePane extends Component {
      * @returns {*}
      */
     view() {
-        let fields = [];
-
-        this.existing
-            .sort((a, b) => a.sort() - b.sort())
-            .forEach(field => {
-                // Build array of fields to show.
-                fields.push(this.addField(field));
-            });
-
         return m('.ProfileConfigurePane', m('.container', [
             m('form', [
                 m('.Form-group', Switch.component({
@@ -69,7 +60,10 @@ export default class ProfileConfigurePane extends Component {
                     children: app.translator.trans('fof-masquerade.admin.fields.disable-user-bio'),
                 })),
             ]),
-            m('form.js-sortable-fields', fields),
+            m('form.js-sortable-fields', this.existing.map(field => {
+                // Build array of fields to show.
+                return this.addField(field);
+            })),
             m('form', {
                 onsubmit: this.submitAddField.bind(this),
             }, [
@@ -103,6 +97,7 @@ export default class ProfileConfigurePane extends Component {
 
         return m('fieldset.Field', {
             'data-id': field.id(),
+            key: field.id(),
         }, [
             m('legend', [
                 exists ? [Button.component({
@@ -220,7 +215,7 @@ export default class ProfileConfigurePane extends Component {
     /**
      * Sorts the fields.
      *
-     * @param Array sort
+     * @param {Array} sorting
      */
     updateSort(sorting) {
         let data = {
@@ -231,7 +226,9 @@ export default class ProfileConfigurePane extends Component {
             method: 'POST',
             url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
             data
-        });
+        }).then(
+            this.requestSuccess.bind(this)
+        );
     }
 
     /**
@@ -315,6 +312,13 @@ export default class ProfileConfigurePane extends Component {
         }
 
         this.existing = app.store.all('masquerade-field');
+
+        // Update order in case the store order doesn't reflect the true ordering
+        this.existing.sort((a, b) => {
+            if (a.sort() < b.sort()) return -1;
+            if (a.sort() > b.sort()) return 1;
+            return 0;
+        });
 
         this.loading = false;
         m.redraw()

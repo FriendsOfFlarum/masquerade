@@ -2,27 +2,22 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Api\Controller\AbstractListController;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\OrderFieldValidator;
-use Flarum\Api\Controller\AbstractShowController;
 use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class OrderFieldController extends AbstractShowController
+class OrderFieldController extends AbstractListController
 {
     use AssertPermissionTrait;
 
     public $serializer = FieldSerializer::class;
-    /**
-     * @var OrderFieldValidator
-     */
+
     protected $validator;
-    /**
-     * @var FieldRepository
-     */
     protected $fields;
 
     public function __construct(OrderFieldValidator $validator, FieldRepository $fields)
@@ -31,13 +26,6 @@ class OrderFieldController extends AbstractShowController
         $this->fields = $fields;
     }
 
-    /**
-     * Get the data to be serialized and assigned to the response document.
-     *
-     * @param ServerRequestInterface $request
-     * @param Document $document
-     * @return mixed
-     */
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $this->assertAdmin($request->getAttribute('actor'));
@@ -49,5 +37,7 @@ class OrderFieldController extends AbstractShowController
         $order = Arr::get($attributes, 'sort');
 
         $this->fields->sorting($order);
+
+        return $this->fields->all();
     }
 }
