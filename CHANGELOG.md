@@ -1,3 +1,6 @@
+- 0.3.2
+  - Use a prefix (`answer:`) for the search gambit, this restores the ability to use normal user search
+  - Check actor is allowed to see profiles before searching users by answer
 - 0.3.1
   - Fix field edition that was creating new fields instead of updating
   - Fix field UI not updating after deletion
