@@ -14,6 +14,7 @@ fof-masquerade:
                 yes: Yes
                 no: No
     admin:
+        title: Masquerade
         buttons:
             add-field: Create field
             edit-field: Save changes
@@ -25,6 +26,7 @@ fof-masquerade:
             description: >
                 Configure user profile fields.
         fields:
+            title: Fields
             add: Add field {field}
             edit: Edit field {field}
             name: Field name

@@ -8,6 +8,7 @@
         padding: 5px;
         background: @body-bg;
         border-radius: @border-radius;
+        margin-top: 20px;
 
         legend {
             margin: 10px;
@@ -15,6 +16,22 @@
 
             .Field-toggle {
                 cursor: pointer;
+                transform: translateY(15px);
+            }
+            .Field-toggle:after {
+                content: '\f0d7';
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900;
+                margin-left: 8px;
+            }
+        }
+
+        &.active {
+            .Field-toggle:after {
+                content: '\f0d8';
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900;
+                margin-left: 8px;
             }
         }
 
@@ -25,6 +42,10 @@
         &.active .Field-body {
             display: block;
         }
+    }
+
+    .Checkbox--switch .Checkbox-display {
+        background: #d8d8d8;
     }
 
     @media @desktop-up {
