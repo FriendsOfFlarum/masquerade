@@ -15,6 +15,7 @@ fof-masquerade:
                 no: No
     admin:
         title: Masquerade
+        general-options: General options
         buttons:
             add-field: Create field
             edit-field: Save changes

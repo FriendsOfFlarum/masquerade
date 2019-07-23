@@ -49,7 +49,7 @@ export default class ProfileConfigurePane extends Component {
     view() {
         return m('.ProfileConfigurePane', m('.container', [
             m('h1', app.translator.trans('fof-masquerade.admin.title')),
-            m('h2', app.translator.trans('fof-masquerade.admin.fields.options')),
+            m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
             m('form', [
                 m('.Form-group', Switch.component({
                     state: this.enforceProfileCompletion(),
