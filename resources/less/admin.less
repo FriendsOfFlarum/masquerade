@@ -16,23 +16,18 @@
 
             .Field-toggle {
                 cursor: pointer;
-                transform: translateY(15px);
-            }
-            .Field-toggle:after {
-                content: '\f0d7';
-                font-family: 'Font Awesome 5 Free';
-                font-weight: 900;
-                margin-left: 8px;
+                margin-left: 5px;
+
+                .icon {
+                    margin-left: 5px;
+                }
             }
         }
 
-        &.active {
-            .Field-toggle:after {
-                content: '\f0d8';
-                font-family: 'Font Awesome 5 Free';
-                font-weight: 900;
-                margin-left: 8px;
-            }
+        &.active .Field-toggle .icon::before {
+            // We manipulate the icon via CSS because the whole open/close toggle system is currently CSS based
+            // If we move to a component state-based toggle we can switch the icon in the JS template instead
+            content: '\f0d8'; // caret-up
         }
 
         .Field-body {

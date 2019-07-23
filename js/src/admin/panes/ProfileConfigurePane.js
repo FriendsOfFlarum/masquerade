@@ -1,4 +1,5 @@
 import app from 'flarum/app';
+import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Select from 'flarum/components/Select';
 import Switch from 'flarum/components/Switch';
@@ -110,9 +111,13 @@ export default class ProfileConfigurePane extends Component {
                 }), ' '] : null,
                 m('span.Field-toggle', {
                     onclick: (e) => this.toggleField(e),
-                }, app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                    field: field.name(),
-                })),
+                }, [
+                    app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                        field: field.name(),
+                    }),
+                    ' ',
+                    icon('fas fa-caret-down'),
+                ]),
             ]),
             m('.Field-body', [
                 m('.Form-group', [
