@@ -48,8 +48,8 @@ export default class ProfileConfigurePane extends Component {
      */
     view() {
         return m('.ProfileConfigurePane', m('.container', [
-            m('h1', [app.translator.trans('fof-masquerade.admin.title')]),
-            m('h2', [app.translator.trans('fof-masquerade.admin.fields.options')]),
+            m('h1', app.translator.trans('fof-masquerade.admin.title')),
+            m('h2', app.translator.trans('fof-masquerade.admin.fields.options')),
             m('form', [
                 m('.Form-group', Switch.component({
                     state: this.enforceProfileCompletion(),
@@ -62,7 +62,7 @@ export default class ProfileConfigurePane extends Component {
                     children: app.translator.trans('fof-masquerade.admin.fields.disable-user-bio'),
                 })),
             ]),
-            m('h2', [app.translator.trans('fof-masquerade.admin.fields.title')]),
+            m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
             m('form.js-sortable-fields', this.existing.map(field => {
                 // Build array of fields to show.
                 return this.addField(field);
