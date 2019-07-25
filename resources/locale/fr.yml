@@ -1,0 +1,61 @@
+fof-masquerade:
+    forum:
+        alerts:
+            profile-completion-required: >
+                Merci de compléter les champs ci-dessous
+        buttons:
+            view-profile: Voir profile
+            save-profile: Sauvegarder
+        fields:
+            select:
+                none-optional: Aucune option sélectionnée (optionnel)
+                none-required: Merci de choisir une option (requis)
+            boolean:
+                yes: Oui
+                no: Non
+    admin:
+        buttons:
+            add-field: Créer un champ
+            edit-field: Sauvegarder les modifications
+            delete-field: Supprimer le champ
+        permissions:
+            have-profile: Peut posséder un profil masquerade
+            view-profile: Peut voir un profil masquerade
+        menu:
+            description: >
+                Configurer les champs sur les profils utilisateurs.
+        fields:
+            add: Ajouter un champ {field}
+            edit: Editer le champ {field}
+            name: Nom du champ
+            name-help: >
+                Le nom du champ (non-traduisible) visible par tous.
+            description: Description du champ
+            description-help: >
+                Une description supplémentaire de ce champ.
+            required: Rendre ce champ obligatoire
+            on_bio: Afficher les réponses dans la biographie des utilisateurs
+            type: Type
+            validation: Validation
+            validation-help: >
+                Voir les règles de validations de Laravel: <a>Laravel validation rules</a>. Ex:
+                "string|min:5" ou "url".
+            prefix:  Prefixe du champ
+            prefix-help: >
+                Affiche le préfixe devant les réponses saisies par les utilisateurs pour ce champ.
+            icon: Icone
+            icon-help: >
+                Affiche une icone devant la réponse de l'utilisateur. Liste complète des icones disponible sur
+                le site de <a>FontAwesome</a>. Utilisez le nom des icones avec le préfixe
+                "fa-" , par exemple "fas fa-info".
+            force-user-to-completion: Forcer l'utilisateur à completer son profil
+            disable-user-bio: Désactiver la bio dans les profils utilisateurs.
+            options: Options
+            option-new: Nouvelle option
+            option-coma-warning: La description d'un champ ne peut pas contenir de virgules (",").
+        types:
+            advanced: Avancé
+            boolean: Cases à cocher
+            email: Email
+            select: Menu déroulant
+            url: Url
