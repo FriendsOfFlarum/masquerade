@@ -20,12 +20,17 @@ class DemandProfileCompletion implements MiddlewareInterface
     /**
      * @var string
      */
-    protected $url;
+    protected $configureProfileUrl;
+    /**
+     * @var string
+     */
+    protected $configureProfilePathWithoutBase;
 
     public function __construct(FieldRepository $fields, UrlGenerator $url)
     {
         $this->fields = $fields;
-        $this->url = $url->to('forum')->route('masquerade.profile.configure');
+        $this->configureProfileUrl = $url->to('forum')->route('masquerade.profile.configure');
+        $this->configureProfilePathWithoutBase = str_replace($url->to('forum')->base(), '', $this->configureProfileUrl);
     }
 
     public function process(Request $request, RequestHandlerInterface $handler): Response
@@ -34,14 +39,14 @@ class DemandProfileCompletion implements MiddlewareInterface
         $actor = $request->getAttribute('actor');
 
         if (
-            $this->url != (string)$request->getUri() &&
+            $this->configureProfilePathWithoutBase != $request->getUri()->getPath() &&
             $actor &&
             $actor->exists &&
             $actor->is_email_confirmed &&
             !$this->fields->completed($actor->id)
         ) {
             return new RedirectResponse(
-                $this->url
+                $this->configureProfileUrl
             );
         }
 
