@@ -1,5 +1,6 @@
 - 0.3.3
   - UI Improvements
+  - Fix "force profile" not working with subfolder installation
 - 0.3.2
   - Use a prefix (`answer:`) for the search gambit, this restores the ability to use normal user search
   - Check actor is allowed to see profiles before searching users by answer
