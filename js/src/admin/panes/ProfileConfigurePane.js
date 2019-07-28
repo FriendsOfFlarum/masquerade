@@ -1,4 +1,5 @@
 import app from 'flarum/app';
+import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
 import Select from 'flarum/components/Select';
 import Switch from 'flarum/components/Switch';
@@ -48,6 +49,8 @@ export default class ProfileConfigurePane extends Component {
      */
     view() {
         return m('.ProfileConfigurePane', m('.container', [
+            m('h1', app.translator.trans('fof-masquerade.admin.title')),
+            m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
             m('form', [
                 m('.Form-group', Switch.component({
                     state: this.enforceProfileCompletion(),
@@ -60,6 +63,7 @@ export default class ProfileConfigurePane extends Component {
                     children: app.translator.trans('fof-masquerade.admin.fields.disable-user-bio'),
                 })),
             ]),
+            m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
             m('form.js-sortable-fields', this.existing.map(field => {
                 // Build array of fields to show.
                 return this.addField(field);
@@ -107,9 +111,13 @@ export default class ProfileConfigurePane extends Component {
                 }), ' '] : null,
                 m('span.Field-toggle', {
                     onclick: (e) => this.toggleField(e),
-                }, app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                    field: field.name(),
-                })),
+                }, [
+                    app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                        field: field.name(),
+                    }),
+                    ' ',
+                    icon('fas fa-caret-down'),
+                ]),
             ]),
             m('.Field-body', [
                 m('.Form-group', [

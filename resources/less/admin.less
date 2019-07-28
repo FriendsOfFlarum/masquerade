@@ -8,6 +8,7 @@
         padding: 5px;
         background: @body-bg;
         border-radius: @border-radius;
+        margin-top: 20px;
 
         legend {
             margin: 10px;
@@ -15,7 +16,18 @@
 
             .Field-toggle {
                 cursor: pointer;
+                margin-left: 5px;
+
+                .icon {
+                    margin-left: 5px;
+                }
             }
+        }
+
+        &.active .Field-toggle .icon::before {
+            // We manipulate the icon via CSS because the whole open/close toggle system is currently CSS based
+            // If we move to a component state-based toggle we can switch the icon in the JS template instead
+            content: '\f0d8'; // caret-up
         }
 
         .Field-body {
@@ -25,6 +37,10 @@
         &.active .Field-body {
             display: block;
         }
+    }
+
+    .Checkbox--switch .Checkbox-display {
+        background: #d8d8d8;
     }
 
     @media @desktop-up {
