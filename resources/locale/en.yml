@@ -61,4 +61,4 @@ fof-masquerade:
             boolean: Checkbox
             email: Email
             select: Dropdown
-            url: Url
+            url: URL
