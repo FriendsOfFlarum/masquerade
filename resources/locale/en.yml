@@ -54,7 +54,7 @@ fof-masquerade:
             force-user-to-completion: Force user to complete profile
             options: Options
             option-new: New option
-            option-coma-warning: The label of an option cannot contain any comma (",").
+            option-comma-warning: The label of an option cannot contain any comma (",").
         types:
             advanced: Advanced
             boolean: Checkbox

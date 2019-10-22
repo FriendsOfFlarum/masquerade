@@ -35,7 +35,7 @@ export default class SelectFieldOptionEditor extends Component {
                     },
                 }, icon('fas fa-close'))),
             ])))),
-            m('.helpText', app.translator.trans('fof-masquerade.admin.fields.option-coma-warning')),
+            m('.helpText', app.translator.trans('fof-masquerade.admin.fields.option-comma-warning')),
             m('table', m('tbody'), m('tr', [
                 m('td', m('input[type=text].FormControl', {
                     onchange: m.withAttr('value', this.newOption),
