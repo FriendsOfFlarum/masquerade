@@ -12,4 +12,7 @@ return [
             $schema->rename('flagrow_masquerade_answers', 'fof_masquerade_answers');
         }
     },
+    'down' => function (Builder $schema) {
+        // Not doing anything but `down` has to be defined
+    },
 ];
