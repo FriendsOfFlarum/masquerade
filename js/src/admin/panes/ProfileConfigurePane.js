@@ -20,7 +20,6 @@ export default class ProfileConfigurePane extends Component {
         this.existing = [];
         this.loadExisting();
         this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
-        this.disableUserBio = m.prop(app.data.settings['masquerade.disable-user-bio'] == 1);
     }
 
     /**
@@ -56,11 +55,6 @@ export default class ProfileConfigurePane extends Component {
                     state: this.enforceProfileCompletion(),
                     onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
                     children: app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion'),
-                })),
-                m('.Form-group', Switch.component({
-                    state: this.disableUserBio(),
-                    onchange: this.updateSetting.bind(this, this.disableUserBio, 'masquerade.disable-user-bio'),
-                    children: app.translator.trans('fof-masquerade.admin.fields.disable-user-bio'),
                 })),
             ]),
             m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
