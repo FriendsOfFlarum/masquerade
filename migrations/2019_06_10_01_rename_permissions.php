@@ -12,4 +12,7 @@ return [
             ->where('permission', 'flagrow.masquerade.have-profile')
             ->update(['permission' => 'fof.masquerade.have-profile']);
     },
+    'down' => function (Builder $schema) {
+        // Not doing anything but `down` has to be defined
+    },
 ];
