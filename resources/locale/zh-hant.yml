@@ -36,6 +36,7 @@ fof-masquerade:
             description: 欄位說明
             description-help: >
                 可選說明，用於解釋此欄位的使用說明。
+            disable-user-bio: 暫時停用客制化個人檔案資訊
             required: 標記欄位必填
             on_bio: 在用戶簡歷中顯示此欄位
             type: 類型
