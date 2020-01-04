@@ -2,62 +2,60 @@ fof-masquerade:
     forum:
         alerts:
             profile-completion-required: >
-                Please complete the necessary profile fields below.
+                請在下面填寫必要的個人檔案資訊欄位。
         buttons:
-            view-profile: View profile
-            save-profile: Save
+            view-profile: 查看個人檔案資訊
+            save-profile: 儲存
         fields:
             select:
-                none-optional: No option selected (optional)
-                none-required: Please select an option (required)
+                none-optional: 未選擇任何選項 (可選)
+                none-required: 請選擇一個選項 (必填)
             boolean:
-                yes: Yes
-                no: No
+                yes: 是
+                no: 否
     admin:
-        title: Masquerade
-        general-options: General options
+        title: Masquerade 客制化個人檔案資訊
+        general-options: 一般選項
         buttons:
-            add-field: Create field
-            edit-field: Save changes
-            delete-field: Delete field
+            add-field: 建立欄位
+            edit-field: 儲存更改
+            delete-field: 刪除欄位
         permissions:
-            have-profile: Have masquerade profile
-            view-profile: View masquerade profile
+            have-profile: 擁有客制化個人檔案資訊
+            view-profile: 查看客制化個人檔案資訊
         menu:
             description: >
-                Configure user profile fields.
+                設置個人檔案資訊欄位
         fields:
-            title: Fields
-            add: Add field {field}
-            edit: Edit field {field}
-            name: Field name
+            title: 欄位
+            add: 新增欄位 {field}
+            edit: 編輯欄位 {field}
+            name: 欄位名稱
             name-help: >
-                The publicly visible (non-translatable) field label.
-            description: Field description
+                公開可見字段標籤 (不可翻譯)。
+            description: 欄位說明
             description-help: >
-                An optional description to explain the use/need of this field.
-            required: Mark field obligatory
-            on_bio: Show answer to this field in user bio
-            type: Type
-            validation: Validation
+                可選說明，用於解釋此欄位的使用說明。
+            required: 標記欄位必填
+            on_bio: 在用戶簡歷中顯示此欄位
+            type: 類型
+            validation: 輸入驗證
             validation-help: >
-                Check the supported <a>Laravel validation rules</a>. Eg:
-                "string|min:5" or "url".
-            prefix: Field prefix
+                檢查支持的 <a>Laravel 驗證規則</a>. 例如: "string|min:5" 或 "url".
+            prefix: 欄位前綴
             prefix-help: >
-                Shows your prefix in front of values entered by the user for this field.
-            icon: Icon
+                在用戶輸入的值的前面顯示前綴。
+            icon: 圖標
             icon-help: >
-                Shows an icon in front of values entered by the user. For a reference of
-                available icons, check the <a>FontAwesome website</a>. Use icon names with
-                the "fa-" prefix, like "fas fa-info".
-            force-user-to-completion: Force user to complete profile
-            options: Options
-            option-new: New option
-            option-comma-warning: The label of an option cannot contain any comma (",").
+                在用戶輸入的值前面顯示一個圖標。有關可用圖標，請參考 <a>FontAwesome website</a>.
+                使用圖標名稱連同前綴 "fa-"。例如: "fas fa-info"
+            force-user-to-completion: 強制用戶完成填寫個人資料
+            options: 選項
+            option-new: 新增選項
+            option-comma-warning: 選項的標籤不能包含任何逗號 (",")。
         types:
-            advanced: Advanced
-            boolean: Checkbox
-            email: Email
-            select: Dropdown
-            url: URL
+            advanced: 高級設置
+            boolean: 複選框
+            email: 電郵地址
+            select: 下拉式選單
+            url: URL 地址
