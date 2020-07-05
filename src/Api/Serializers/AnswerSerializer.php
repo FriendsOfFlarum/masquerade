@@ -4,6 +4,7 @@ namespace FoF\Masquerade\Api\Serializers;
 
 use FoF\Masquerade\Field;
 use Flarum\Api\Serializer\AbstractSerializer;
+use s9e\TextFormatter\Bundles\Fatdown as TextFormatter;
 
 class AnswerSerializer extends AbstractSerializer
 {
@@ -16,7 +17,12 @@ class AnswerSerializer extends AbstractSerializer
      */
     protected function getDefaultAttributes($model)
     {
-        return $model->toArray();
+        $answer = $model->toArray();
+        if ($answer['field']['type'] == 'text') {
+            // render HTML for text field
+            $answer['content_html'] = nl2br(TextFormatter::render(TextFormatter::parse($answer['content'])));
+        }
+        return $answer;
     }
 
     /**

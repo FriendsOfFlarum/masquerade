@@ -61,3 +61,4 @@ fof-masquerade:
             email: Email
             select: Dropdown
             url: URL
+            text: Text

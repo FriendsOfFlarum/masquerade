@@ -382,6 +382,7 @@ export default class ProfileConfigurePane extends Component {
             email: app.translator.trans('fof-masquerade.admin.types.email'),
             boolean: app.translator.trans('fof-masquerade.admin.types.boolean'),
             select: app.translator.trans('fof-masquerade.admin.types.select'),
+            text: app.translator.trans('fof-masquerade.admin.types.text'),
             null: app.translator.trans('fof-masquerade.admin.types.advanced'),
         };
     }

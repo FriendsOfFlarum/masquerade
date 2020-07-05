@@ -19,8 +19,16 @@ export default class ProfileConfigurePane extends UserPage {
             m('.Fields', this.fields
                 .sort((a, b) => a.sort() - b.sort())
                 .map(field => {
+                    let content = null;
                     // UserID check must be done with == because userId() is number while id() is string
-                    this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
+                    if (field.answer() && field.answer().userId() == this.user.id()) {
+                        if (field.type() === 'text') {
+                            content = field.answer().contentHtml()
+                        } else {
+                            content = field.answer().content()
+                        }
+                    }
+                    this.answers[field.id()] = content;
 
                     return this.field(field);
                 })

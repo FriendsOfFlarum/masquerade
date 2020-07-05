@@ -13,6 +13,7 @@ class TypeFactory
             'email' => EmailField::class,
             'select' => BaseField::class,
             'url' => UrlField::class,
+            'text' => TextField::class,
         ];
     }
 

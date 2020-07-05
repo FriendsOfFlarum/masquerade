@@ -1,2 +1,925 @@
-module.exports=function(t){var e={};function n(a){if(e[a])return e[a].exports;var i=e[a]={i:a,l:!1,exports:{}};return t[a].call(i.exports,i,i.exports,n),i.l=!0,i.exports}return n.m=t,n.c=e,n.d=function(t,e,a){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:a})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var a=Object.create(null);if(n.r(a),Object.defineProperty(a,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var i in t)n.d(a,i,function(e){return t[e]}.bind(null,i));return a},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s=20)}([function(t,e){t.exports=flarum.core.compat.app},function(t,e){t.exports=flarum.core.compat.Model},function(t,e,n){"use strict";function a(t,e){t.prototype=Object.create(e.prototype),t.prototype.constructor=t,t.__proto__=e}n.d(e,"a",function(){return a})},function(t,e){t.exports=flarum.core.compat["helpers/icon"]},function(t,e){t.exports=flarum.core.compat.extend},function(t,e){t.exports=flarum.core.compat["components/Button"]},function(t,e){t.exports=flarum.core.compat["utils/mixin"]},,function(t,e,n){"use strict";n.d(e,"a",function(){return s});var a=n(2),i=n(1),o=n.n(i),r=n(6),s=function(t){function e(){return t.apply(this,arguments)||this}return Object(a.a)(e,t),e.prototype.apiEndpoint=function(){return"/masquerade/fields"+(this.exists?"/"+this.data.id:"")},e}(n.n(r)()(o.a,{name:o.a.attribute("name"),description:o.a.attribute("description"),type:o.a.attribute("type"),validation:o.a.attribute("validation"),required:o.a.attribute("required"),prefix:o.a.attribute("prefix"),icon:o.a.attribute("icon"),sort:o.a.attribute("sort"),deleted_at:o.a.attribute("deleted_at",o.a.transformDate),answer:o.a.hasOne("answer"),on_bio:o.a.attribute("on_bio")}))},function(t,e){t.exports=flarum.core.compat["components/Select"]},function(t,e){t.exports=flarum.core.compat.Component},function(t,e){t.exports=flarum.core.compat["components/Switch"]},function(t,e){t.exports=flarum.core.compat["components/PermissionGrid"]},,,,function(t,e){t.exports=flarum.core.compat["components/AdminNav"]},function(t,e){t.exports=flarum.core.compat["components/AdminLinkButton"]},function(t,e){t.exports=flarum.core.compat["utils/saveSettings"]},,function(t,e,n){"use strict";n.r(e);var a=n(4),i=n(0),o=n.n(i),r=n(12),s=n.n(r),u=n(8),d=n(16),l=n.n(d),p=n(17),f=n.n(p),c=n(2),h=n(3),b=n.n(h),v=n(10),g=n.n(v),q=n(9),x=n.n(q),y=n(11),F=n.n(y),w=n(5),O=n.n(w),S=n(18),_=n.n(S),E=function(t){function e(){return t.apply(this,arguments)||this}Object(c.a)(e,t);var n=e.prototype;return n.init=function(){this.newOption=m.prop("")},n.view=function(){var t=this;return m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.options")),m("table",m("tbody",this.options().map(function(e,n){return m("tr",[m("td",m("input[type=text].FormControl",{oninput:m.withAttr("value",function(e){t.updateOption(n,e)}),value:e})),m("td",m("button.Button",{onclick:function(){t.moveOption(n,-1)}},b()("fas fa-chevron-up"))),m("td",m("button.Button",{onclick:function(){t.moveOption(n,1)}},b()("fas fa-chevron-down"))),m("td",m("button.Button.Button--danger",{onclick:function(){t.deleteOption(n)}},b()("fas fa-close")))])}))),m(".helpText",o.a.translator.trans("fof-masquerade.admin.fields.option-comma-warning")),m("table",m("tbody"),m("tr",[m("td",m("input[type=text].FormControl",{onchange:m.withAttr("value",this.newOption),value:this.newOption(),placeholder:o.a.translator.trans("fof-masquerade.admin.fields.option-new")})),m("td",m("button.Button.Button--primary",{onclick:function(){t.addOption()}},b()("fas fa-plus")))]))])},n.updateRules=function(t){this.props.onchange("in:"+t.join(","))},n.options=function(){var t=this.props.value.split("|"),e=[];return t.forEach(function(t){var n=t.split(":",2);"in"===n[0]&&(e=n[1].split(","))}),e},n.updateOption=function(t,e){var n=this.options();n[t]=e,this.updateRules(n)},n.moveOption=function(t,e){var n=this.options(),a=t+e;if(!(a<0||a>n.length-1)){var i=n.splice(t,1);n.splice(a,0,i[0]),this.updateRules(n)}},n.deleteOption=function(t){var e=this.options();e.splice(t,1),this.updateRules(e)},n.addOption=function(){if(""!==this.newOption()){var t=this.options();t.push(this.newOption()),this.newOption(""),this.updateRules(t)}},e}(g.a),j=function(t){function e(){return t.apply(this,arguments)||this}Object(c.a)(e,t);var n=e.prototype;return n.init=function(){this.resetNew(),this.loading=!1,this.existing=[],this.loadExisting(),this.enforceProfileCompletion=m.prop(1==o.a.data.settings["masquerade.force-profile-completion"])},n.config=function(){var t=this;this.$(".js-sortable-fields").sortable({cancel:""}).on("sortupdate",function(e,n){var a=t.$(".js-sortable-fields > .Field").map(function(){return $(this).data("id")}).get();t.updateSort(a)})},n.view=function(){var t=this;return m(".ProfileConfigurePane",m(".container",[m("h1",o.a.translator.trans("fof-masquerade.admin.title")),m("h2",o.a.translator.trans("fof-masquerade.admin.general-options")),m("form",[m(".Form-group",F.a.component({state:this.enforceProfileCompletion(),onchange:this.updateSetting.bind(this,this.enforceProfileCompletion,"masquerade.force-profile-completion"),children:o.a.translator.trans("fof-masquerade.admin.fields.force-user-to-completion")}))]),m("h2",o.a.translator.trans("fof-masquerade.admin.fields.title")),m("form.js-sortable-fields",this.existing.map(function(e){return t.addField(e)})),m("form",{onsubmit:this.submitAddField.bind(this)},[this.addField(this.new)])]))},n.updateSetting=function(t,e,n){var a;_()(((a={})[e]=n,a)),t(n)},n.addField=function(t){var e=this,n=t.id();return m("fieldset.Field",{"data-id":t.id(),key:t.id()},[m("legend",[n?[O.a.component({className:"Button Button--icon Button--danger",icon:"fas fa-trash",onclick:this.deleteField.bind(this,t)})," "]:null,m("span.Field-toggle",{onclick:function(t){return e.toggleField(t)}},[o.a.translator.trans("fof-masquerade.admin.fields."+(n?"edit":"add"),{field:t.name()})," ",b()("fas fa-caret-down")])]),m(".Field-body",[m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.name")),m("input.FormControl",{value:t.name(),oninput:m.withAttr("value",this.updateExistingFieldInput.bind(this,"name",t))}),m("span.helpText",o.a.translator.trans("fof-masquerade.admin.fields.name-help"))]),m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.description")),m("input.FormControl",{value:t.description(),oninput:m.withAttr("value",this.updateExistingFieldInput.bind(this,"description",t))}),m("span.helpText",o.a.translator.trans("fof-masquerade.admin.fields.description-help"))]),m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.icon")),m("input.FormControl",{value:t.icon(),oninput:m.withAttr("value",this.updateExistingFieldInput.bind(this,"icon",t))}),m("span.helpText",o.a.translator.trans("fof-masquerade.admin.fields.icon-help",{a:m("a",{href:"https://fontawesome.com/icons?m=free",target:"_blank"})}))]),m(".Form-group",F.a.component({state:t.on_bio(),onchange:this.updateExistingFieldInput.bind(this,"on_bio",t),children:o.a.translator.trans("fof-masquerade.admin.fields.on_bio")})),m(".Form-group",F.a.component({state:t.required(),onchange:this.updateExistingFieldInput.bind(this,"required",t),children:o.a.translator.trans("fof-masquerade.admin.fields.required")})),m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.type")),x.a.component({onchange:function(n){"null"===n&&(n=null),e.updateExistingFieldInput("type",t,n)},options:this.availableTypes(),value:t.type()})]),"select"===t.type()?E.component({onchange:function(n){e.updateExistingFieldInput("validation",t,n)},value:t.validation()}):null,null===t.type()?m(".Form-group",[m("label",o.a.translator.trans("fof-masquerade.admin.fields.validation")),m("input.FormControl",{value:t.validation(),oninput:m.withAttr("value",this.updateExistingFieldInput.bind(this,"validation",t))}),m("span.helpText",o.a.translator.trans("fof-masquerade.admin.fields.validation-help",{a:m("a",{href:"https://laravel.com/docs/5.2/validation#available-validation-rules",target:"_blank"})}))]):null,m(".Form-group",m(".ButtonGroup",[O.a.component({type:"submit",className:"Button Button--primary",children:o.a.translator.trans("fof-masquerade.admin.buttons."+(n?"edit":"add")+"-field"),loading:this.loading,disabled:!this.readyToAdd(t),onclick:this.updateExistingField.bind(this,t)}),n?O.a.component({type:"submit",className:"Button Button--danger",children:o.a.translator.trans("fof-masquerade.admin.buttons.delete-field"),loading:this.loading,onclick:this.deleteField.bind(this,t)}):null]))])])},n.updateExistingFieldInput=function(t,e,n){var a;e.id()?e.pushAttributes(((a={})[t]=n,a)):e[t](n)},n.updateSort=function(t){var e={sort:t};o.a.request({method:"POST",url:o.a.forum.attribute("apiUrl")+"/masquerade/fields/order",data:e}).then(this.requestSuccess.bind(this))},n.toggleField=function(t){$(t.target).parents(".Field").toggleClass("active")},n.deleteField=function(t){o.a.request({method:"DELETE",url:o.a.forum.attribute("apiUrl")+"/masquerade/fields/"+t.id()}).then(this.requestSuccess.bind(this))},n.submitAddField=function(t){t.preventDefault();var e=this.new;o.a.request({method:"POST",url:o.a.forum.attribute("apiUrl")+"/masquerade/fields",data:e}).then(this.requestSuccess.bind(this)),this.resetNew(),m.redraw()},n.updateExistingField=function(t){if(t.id()){var e=t.data;o.a.request({method:"PATCH",url:o.a.forum.attribute("apiUrl")+"/masquerade/fields/"+t.id(),data:e}).then(this.requestSuccess.bind(this))}},n.requestSuccess=function(t){var e=o.a.store.pushPayload(t);e instanceof Array||!e.deleted_at()||o.a.store.remove(e),this.existing=o.a.store.all("masquerade-field"),this.existing.sort(function(t,e){return t.sort()<e.sort()?-1:t.sort()>e.sort()?1:0}),this.loading=!1,m.redraw()},n.loadExisting=function(){return this.loading=!0,o.a.request({method:"GET",url:o.a.forum.attribute("apiUrl")+"/masquerade/fields"}).then(this.requestSuccess.bind(this))},n.resetNew=function(){this.new={id:m.prop(),name:m.prop(""),description:m.prop(""),prefix:m.prop(""),icon:m.prop(""),required:m.prop(!1),on_bio:m.prop(!1),type:m.prop(null),validation:m.prop("")}},n.readyToAdd=function(t){return!!t.name()},n.availableTypes=function(){return{url:o.a.translator.trans("fof-masquerade.admin.types.url"),email:o.a.translator.trans("fof-masquerade.admin.types.email"),boolean:o.a.translator.trans("fof-masquerade.admin.types.boolean"),select:o.a.translator.trans("fof-masquerade.admin.types.select"),null:o.a.translator.trans("fof-masquerade.admin.types.advanced")}},e}(g.a),B=function(){app.routes["fof-masquerade-configure-profile"]={path:"/fof/masquerade/configure",component:j.component()},app.extensionSettings["fof-masquerade"]=function(){return m.route(app.route("fof-masquerade-configure-profile"))},Object(a.extend)(l.a.prototype,"items",function(t){t.add("fof-masquerade-configure-profile",f.a.component({href:app.route("fof-masquerade-configure-profile"),icon:"far fa-id-card",children:"Masquerade",description:app.translator.trans("fof-masquerade.admin.menu.description")}))})};o.a.initializers.add("fof-masquerade",function(t){t.store.models["masquerade-field"]=u.a,Object(a.extend)(s.a.prototype,"viewItems",function(e){e.add("masquerade-view-profile",{icon:"far fa-id-card",label:t.translator.trans("fof-masquerade.admin.permissions.view-profile"),permission:"fof.masquerade.view-profile",allowGuest:!0})}),Object(a.extend)(s.a.prototype,"startItems",function(e){e.add("masquerade-have-profile",{icon:"far fa-id-card",label:t.translator.trans("fof-masquerade.admin.permissions.have-profile"),permission:"fof.masquerade.have-profile"})}),B()})}]);
+module.exports =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./admin.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./admin.js":
+/*!******************!*\
+  !*** ./admin.js ***!
+  \******************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_admin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/admin */ "./src/admin/index.js");
+/* empty/unused harmony star reexport */
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _inheritsLoose; });
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+/***/ }),
+
+/***/ "./src/admin/addProfileConfigurePane.js":
+/*!**********************************************!*\
+  !*** ./src/admin/addProfileConfigurePane.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/extend */ "flarum/extend");
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_extend__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_components_AdminNav__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/components/AdminNav */ "flarum/components/AdminNav");
+/* harmony import */ var flarum_components_AdminNav__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_components_AdminNav__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/AdminLinkButton */ "flarum/components/AdminLinkButton");
+/* harmony import */ var flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _panes_ProfileConfigurePane__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./panes/ProfileConfigurePane */ "./src/admin/panes/ProfileConfigurePane.js");
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  // create the route
+  app.routes['fof-masquerade-configure-profile'] = {
+    path: '/fof/masquerade/configure',
+    component: _panes_ProfileConfigurePane__WEBPACK_IMPORTED_MODULE_3__["default"].component()
+  }; // bind the route we created to the three dots settings button
+
+  app.extensionSettings['fof-masquerade'] = function () {
+    return m.route(app.route('fof-masquerade-configure-profile'));
+  };
+
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_AdminNav__WEBPACK_IMPORTED_MODULE_1___default.a.prototype, 'items', function (items) {
+    // add the Image Upload tab to the admin navigation menu
+    items.add('fof-masquerade-configure-profile', flarum_components_AdminLinkButton__WEBPACK_IMPORTED_MODULE_2___default.a.component({
+      href: app.route('fof-masquerade-configure-profile'),
+      icon: 'far fa-id-card',
+      children: 'Masquerade',
+      description: app.translator.trans('fof-masquerade.admin.menu.description')
+    }));
+  });
+});
+
+/***/ }),
+
+/***/ "./src/admin/components/SelectFieldOptionEditor.js":
+/*!*********************************************************!*\
+  !*** ./src/admin/components/SelectFieldOptionEditor.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SelectFieldOptionEditor; });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/Component */ "flarum/Component");
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_Component__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/helpers/icon */ "flarum/helpers/icon");
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+/* global m */
+
+var SelectFieldOptionEditor =
+/*#__PURE__*/
+function (_Component) {
+  Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(SelectFieldOptionEditor, _Component);
+
+  function SelectFieldOptionEditor() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = SelectFieldOptionEditor.prototype;
+
+  _proto.init = function init() {
+    this.newOption = m.prop('');
+  };
+
+  _proto.view = function view() {
+    var _this = this;
+
+    return m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.options')), m('table', m('tbody', this.options().map(function (option, optionIndex) {
+      return m('tr', [m('td', m('input[type=text].FormControl', {
+        oninput: m.withAttr('value', function (value) {
+          _this.updateOption(optionIndex, value);
+        }),
+        value: option
+      })), m('td', m('button.Button', {
+        onclick: function onclick() {
+          _this.moveOption(optionIndex, -1);
+        }
+      }, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3___default()('fas fa-chevron-up'))), m('td', m('button.Button', {
+        onclick: function onclick() {
+          _this.moveOption(optionIndex, 1);
+        }
+      }, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3___default()('fas fa-chevron-down'))), m('td', m('button.Button.Button--danger', {
+        onclick: function onclick() {
+          _this.deleteOption(optionIndex);
+        }
+      }, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3___default()('fas fa-close')))]);
+    }))), m('.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.option-comma-warning')), m('table', m('tbody'), m('tr', [m('td', m('input[type=text].FormControl', {
+      onchange: m.withAttr('value', this.newOption),
+      value: this.newOption(),
+      placeholder: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.option-new')
+    })), m('td', m('button.Button.Button--primary', {
+      onclick: function onclick() {
+        _this.addOption();
+      }
+    }, flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_3___default()('fas fa-plus')))]))]);
+  };
+
+  _proto.updateRules = function updateRules(options) {
+    // We ignore other existing rules, they would probably be leftovers from another field type when changing types
+    this.props.onchange('in:' + options.join(','));
+  };
+
+  _proto.options = function options() {
+    var rules = this.props.value.split('|');
+    var options = [];
+    rules.forEach(function (rule) {
+      var parts = rule.split(':', 2);
+
+      if (parts[0] === 'in') {
+        options = parts[1].split(',');
+      }
+    });
+    return options;
+  };
+
+  _proto.updateOption = function updateOption(index, value) {
+    var options = this.options();
+    options[index] = value;
+    this.updateRules(options);
+  };
+
+  _proto.moveOption = function moveOption(index, moveIndex) {
+    var options = this.options();
+    var newIndex = index + moveIndex;
+
+    if (newIndex < 0 || newIndex > options.length - 1) {
+      return;
+    }
+
+    var move = options.splice(index, 1);
+    options.splice(newIndex, 0, move[0]);
+    this.updateRules(options);
+  };
+
+  _proto.deleteOption = function deleteOption(index) {
+    var options = this.options();
+    options.splice(index, 1);
+    this.updateRules(options);
+  };
+
+  _proto.addOption = function addOption() {
+    if (this.newOption() === '') {
+      return;
+    }
+
+    var options = this.options();
+    options.push(this.newOption());
+    this.newOption('');
+    this.updateRules(options);
+  };
+
+  return SelectFieldOptionEditor;
+}(flarum_Component__WEBPACK_IMPORTED_MODULE_2___default.a);
+
+
+
+/***/ }),
+
+/***/ "./src/admin/index.js":
+/*!****************************!*\
+  !*** ./src/admin/index.js ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/extend */ "flarum/extend");
+/* harmony import */ var flarum_extend__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_extend__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/components/PermissionGrid */ "flarum/components/PermissionGrid");
+/* harmony import */ var flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _lib_models_Field__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../lib/models/Field */ "./src/lib/models/Field.js");
+/* harmony import */ var _addProfileConfigurePane__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./addProfileConfigurePane */ "./src/admin/addProfileConfigurePane.js");
+
+
+
+
+
+flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.initializers.add('fof-masquerade', function (app) {
+  app.store.models['masquerade-field'] = _lib_models_Field__WEBPACK_IMPORTED_MODULE_3__["default"]; // add the permission option for viewing a masquerade profile
+
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'viewItems', function (items) {
+    items.add('masquerade-view-profile', {
+      icon: 'far fa-id-card',
+      label: app.translator.trans('fof-masquerade.admin.permissions.view-profile'),
+      permission: 'fof.masquerade.view-profile',
+      allowGuest: true
+    });
+  }); // add the permission option for creating a masquerade profile
+
+  Object(flarum_extend__WEBPACK_IMPORTED_MODULE_0__["extend"])(flarum_components_PermissionGrid__WEBPACK_IMPORTED_MODULE_2___default.a.prototype, 'startItems', function (items) {
+    items.add('masquerade-have-profile', {
+      icon: 'far fa-id-card',
+      label: app.translator.trans('fof-masquerade.admin.permissions.have-profile'),
+      permission: 'fof.masquerade.have-profile'
+    });
+  });
+  Object(_addProfileConfigurePane__WEBPACK_IMPORTED_MODULE_4__["default"])();
+});
+
+/***/ }),
+
+/***/ "./src/admin/panes/ProfileConfigurePane.js":
+/*!*************************************************!*\
+  !*** ./src/admin/panes/ProfileConfigurePane.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ProfileConfigurePane; });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/app */ "flarum/app");
+/* harmony import */ var flarum_app__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_app__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/helpers/icon */ "flarum/helpers/icon");
+/* harmony import */ var flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/Component */ "flarum/Component");
+/* harmony import */ var flarum_Component__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_Component__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_components_Select__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/components/Select */ "flarum/components/Select");
+/* harmony import */ var flarum_components_Select__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Select__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/components/Switch */ "flarum/components/Switch");
+/* harmony import */ var flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/components/Button */ "flarum/components/Button");
+/* harmony import */ var flarum_components_Button__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_components_Button__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! flarum/utils/saveSettings */ "flarum/utils/saveSettings");
+/* harmony import */ var flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _components_SelectFieldOptionEditor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/SelectFieldOptionEditor */ "./src/admin/components/SelectFieldOptionEditor.js");
+
+
+
+
+
+
+
+
+
+/* global m */
+
+var ProfileConfigurePane =
+/*#__PURE__*/
+function (_Component) {
+  Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(ProfileConfigurePane, _Component);
+
+  function ProfileConfigurePane() {
+    return _Component.apply(this, arguments) || this;
+  }
+
+  var _proto = ProfileConfigurePane.prototype;
+
+  /**
+   * Sets up the component.
+   */
+  _proto.init = function init() {
+    this.resetNew();
+    this.loading = false;
+    this.existing = [];
+    this.loadExisting();
+    this.enforceProfileCompletion = m.prop(flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.data.settings['masquerade.force-profile-completion'] == 1);
+  }
+  /**
+   * Configures the component.
+   */
+  ;
+
+  _proto.config = function config() {
+    var _this = this;
+
+    this.$('.js-sortable-fields').sortable({
+      cancel: ''
+    }).on('sortupdate', function (e, ui) {
+      var sorting = _this.$('.js-sortable-fields > .Field').map(function () {
+        return $(this).data('id');
+      }).get();
+
+      _this.updateSort(sorting);
+    });
+  }
+  /**
+   * Generates the component view.
+   *
+   * @returns {*}
+   */
+  ;
+
+  _proto.view = function view() {
+    var _this2 = this;
+
+    return m('.ProfileConfigurePane', m('.container', [m('h1', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.title')), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.general-options')), m('form', [m('.Form-group', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default.a.component({
+      state: this.enforceProfileCompletion(),
+      onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
+      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')
+    }))]), m('h2', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.title')), m('form.js-sortable-fields', this.existing.map(function (field) {
+      // Build array of fields to show.
+      return _this2.addField(field);
+    })), m('form', {
+      onsubmit: this.submitAddField.bind(this)
+    }, [this.addField(this["new"])])]));
+  }
+  /**
+   * Updates setting in database.
+   * @param prop
+   * @param setting
+   * @param value
+   */
+  ;
+
+  _proto.updateSetting = function updateSetting(prop, setting, value) {
+    var _saveSettings;
+
+    flarum_utils_saveSettings__WEBPACK_IMPORTED_MODULE_7___default()((_saveSettings = {}, _saveSettings[setting] = value, _saveSettings));
+    prop(value);
+  }
+  /**
+   * Creates a field in the DOM.
+   *
+   * @param field
+   * @returns {*}
+   */
+  ;
+
+  _proto.addField = function addField(field) {
+    var _this3 = this;
+
+    var exists = field.id();
+    return m('fieldset.Field', {
+      'data-id': field.id(),
+      key: field.id()
+    }, [m('legend', [exists ? [flarum_components_Button__WEBPACK_IMPORTED_MODULE_6___default.a.component({
+      className: 'Button Button--icon Button--danger',
+      icon: "fas fa-trash",
+      onclick: this.deleteField.bind(this, field)
+    }), ' '] : null, m('span.Field-toggle', {
+      onclick: function onclick(e) {
+        return _this3.toggleField(e);
+      }
+    }, [flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+      field: field.name()
+    }), ' ', flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_2___default()('fas fa-caret-down')])]), m('.Field-body', [m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.name')), m('input.FormControl', {
+      value: field.name(),
+      oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))
+    }), m('span.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.name-help'))]), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.description')), m('input.FormControl', {
+      value: field.description(),
+      oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))
+    }), m('span.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.description-help'))]), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.icon')), m('input.FormControl', {
+      value: field.icon(),
+      oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))
+    }), m('span.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.icon-help', {
+      a: m("a", {
+        href: "https://fontawesome.com/icons?m=free",
+        target: "_blank"
+      })
+    }))]), m('.Form-group', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default.a.component({
+      state: field.on_bio(),
+      onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
+      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.on_bio')
+    })), m('.Form-group', flarum_components_Switch__WEBPACK_IMPORTED_MODULE_5___default.a.component({
+      state: field.required(),
+      onchange: this.updateExistingFieldInput.bind(this, 'required', field),
+      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.required')
+    })), m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.type')), flarum_components_Select__WEBPACK_IMPORTED_MODULE_4___default.a.component({
+      onchange: function onchange(value) {
+        if (value === 'null') {
+          value = null;
+        }
+
+        _this3.updateExistingFieldInput('type', field, value);
+      },
+      options: this.availableTypes(),
+      value: field.type()
+    })]), field.type() === 'select' ? _components_SelectFieldOptionEditor__WEBPACK_IMPORTED_MODULE_8__["default"].component({
+      onchange: function onchange(value) {
+        _this3.updateExistingFieldInput('validation', field, value);
+      },
+      value: field.validation()
+    }) : null, field.type() === null ? m('.Form-group', [m('label', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.validation')), m('input.FormControl', {
+      value: field.validation(),
+      oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))
+    }), m('span.helpText', flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.fields.validation-help', {
+      a: m("a", {
+        href: "https://laravel.com/docs/5.2/validation#available-validation-rules",
+        target: "_blank"
+      })
+    }))]) : null, m('.Form-group', m('.ButtonGroup', [flarum_components_Button__WEBPACK_IMPORTED_MODULE_6___default.a.component({
+      type: 'submit',
+      className: 'Button Button--primary',
+      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
+      loading: this.loading,
+      disabled: !this.readyToAdd(field),
+      onclick: this.updateExistingField.bind(this, field)
+    }), exists ? flarum_components_Button__WEBPACK_IMPORTED_MODULE_6___default.a.component({
+      type: 'submit',
+      className: 'Button Button--danger',
+      children: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.buttons.delete-field'),
+      loading: this.loading,
+      onclick: this.deleteField.bind(this, field)
+    }) : null]))])]);
+  };
+
+  _proto.updateExistingFieldInput = function updateExistingFieldInput(what, field, value) {
+    var exists = field.id();
+
+    if (exists) {
+      var _field$pushAttributes;
+
+      field.pushAttributes((_field$pushAttributes = {}, _field$pushAttributes[what] = value, _field$pushAttributes));
+    } else {
+      field[what](value);
+    }
+  }
+  /**
+   * Sorts the fields.
+   *
+   * @param {Array} sorting
+   */
+  ;
+
+  _proto.updateSort = function updateSort(sorting) {
+    var data = {
+      sort: sorting
+    };
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'POST',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/masquerade/fields/order',
+      data: data
+    }).then(this.requestSuccess.bind(this));
+  }
+  /**
+   * Opens and closes field configuration sets.
+   *
+   * @param e
+   */
+  ;
+
+  _proto.toggleField = function toggleField(e) {
+    $(e.target).parents('.Field').toggleClass('active');
+  }
+  /**
+   * Deletes a field configuration set.
+   *
+   * @param field
+   */
+  ;
+
+  _proto.deleteField = function deleteField(field) {
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'DELETE',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id()
+    }).then(this.requestSuccess.bind(this));
+  }
+  /**
+   * Saves the settings to the database and redraw the page
+   *
+   * @param e
+   */
+  ;
+
+  _proto.submitAddField = function submitAddField(e) {
+    e.preventDefault();
+    var data = this["new"];
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'POST',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/masquerade/fields',
+      data: data
+    }).then(this.requestSuccess.bind(this));
+    this.resetNew();
+    m.redraw();
+  }
+  /**
+   * Updates the value of one field.
+   *
+   * @param field
+   */
+  ;
+
+  _proto.updateExistingField = function updateExistingField(field) {
+    if (!field.id()) return;
+    var data = field.data;
+    flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      // We use PATCH and not PUT because the endpoint allows filling only some of the fields
+      // (even if here we always pass all the attributes)
+      method: 'PATCH',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
+      data: data
+    }).then(this.requestSuccess.bind(this));
+  }
+  /**
+   * Parses result to update DOM.
+   *
+   * @param result
+   */
+  ;
+
+  _proto.requestSuccess = function requestSuccess(result) {
+    var model = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.pushPayload(result); // In case we've updated/deleted one instance delete it if necessary.
+
+    if (!(model instanceof Array) && model.deleted_at()) {
+      flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.remove(model);
+    }
+
+    this.existing = flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.store.all('masquerade-field'); // Update order in case the store order doesn't reflect the true ordering
+
+    this.existing.sort(function (a, b) {
+      if (a.sort() < b.sort()) return -1;
+      if (a.sort() > b.sort()) return 1;
+      return 0;
+    });
+    this.loading = false;
+    m.redraw();
+  }
+  /**
+   * Retrieves list of fields.
+   */
+  ;
+
+  _proto.loadExisting = function loadExisting() {
+    this.loading = true;
+    return flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.request({
+      method: 'GET',
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.forum.attribute('apiUrl') + '/masquerade/fields'
+    }).then(this.requestSuccess.bind(this));
+  }
+  /**
+   * Resets the new field.
+   */
+  ;
+
+  _proto.resetNew = function resetNew() {
+    this["new"] = {
+      // id() does not hold any value, but it's necessary to keep it because it's called to make the difference
+      // between the simple object holding the new field's value and the model holding an existing field's value
+      'id': m.prop(),
+      'name': m.prop(''),
+      'description': m.prop(''),
+      'prefix': m.prop(''),
+      'icon': m.prop(''),
+      'required': m.prop(false),
+      'on_bio': m.prop(false),
+      'type': m.prop(null),
+      'validation': m.prop('')
+    };
+  }
+  /**
+   * Checks whether creation field is completed.
+   *
+   * @returns boolean
+   */
+  ;
+
+  _proto.readyToAdd = function readyToAdd(field) {
+    if (field.name()) {
+      return true;
+    }
+
+    return false;
+  }
+  /**
+   * List of field types availables
+   * @returns {Array}
+   */
+  ;
+
+  _proto.availableTypes = function availableTypes() {
+    return {
+      url: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.url'),
+      email: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.email'),
+      "boolean": flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.boolean'),
+      select: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.select'),
+      text: flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.text'),
+      "null": flarum_app__WEBPACK_IMPORTED_MODULE_1___default.a.translator.trans('fof-masquerade.admin.types.advanced')
+    };
+  };
+
+  return ProfileConfigurePane;
+}(flarum_Component__WEBPACK_IMPORTED_MODULE_3___default.a);
+
+
+
+/***/ }),
+
+/***/ "./src/lib/models/Field.js":
+/*!*********************************!*\
+  !*** ./src/lib/models/Field.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Field; });
+/* harmony import */ var _babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inheritsLoose */ "./node_modules/@babel/runtime/helpers/esm/inheritsLoose.js");
+/* harmony import */ var flarum_Model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/Model */ "flarum/Model");
+/* harmony import */ var flarum_Model__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_Model__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/utils/mixin */ "flarum/utils/mixin");
+/* harmony import */ var flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+
+var Field =
+/*#__PURE__*/
+function (_mixin) {
+  Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(Field, _mixin);
+
+  function Field() {
+    return _mixin.apply(this, arguments) || this;
+  }
+
+  var _proto = Field.prototype;
+
+  /**
+   * Construct a path to the API endpoint for this resource.
+   *
+   * @return {String}
+   * @protected
+   */
+  _proto.apiEndpoint = function apiEndpoint() {
+    return '/masquerade/fields' + (this.exists ? '/' + this.data.id : '');
+  };
+
+  return Field;
+}(flarum_utils_mixin__WEBPACK_IMPORTED_MODULE_2___default()(flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a, {
+  name: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('name'),
+  description: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('description'),
+  type: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('type'),
+  validation: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('validation'),
+  required: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('required'),
+  prefix: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('prefix'),
+  icon: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('icon'),
+  sort: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('sort'),
+  deleted_at: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('deleted_at', flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.transformDate),
+  answer: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.hasOne('answer'),
+  on_bio: flarum_Model__WEBPACK_IMPORTED_MODULE_1___default.a.attribute('on_bio')
+}));
+
+
+
+/***/ }),
+
+/***/ "flarum/Component":
+/*!**************************************************!*\
+  !*** external "flarum.core.compat['Component']" ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['Component'];
+
+/***/ }),
+
+/***/ "flarum/Model":
+/*!**********************************************!*\
+  !*** external "flarum.core.compat['Model']" ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['Model'];
+
+/***/ }),
+
+/***/ "flarum/app":
+/*!********************************************!*\
+  !*** external "flarum.core.compat['app']" ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['app'];
+
+/***/ }),
+
+/***/ "flarum/components/AdminLinkButton":
+/*!*******************************************************************!*\
+  !*** external "flarum.core.compat['components/AdminLinkButton']" ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/AdminLinkButton'];
+
+/***/ }),
+
+/***/ "flarum/components/AdminNav":
+/*!************************************************************!*\
+  !*** external "flarum.core.compat['components/AdminNav']" ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/AdminNav'];
+
+/***/ }),
+
+/***/ "flarum/components/Button":
+/*!**********************************************************!*\
+  !*** external "flarum.core.compat['components/Button']" ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/Button'];
+
+/***/ }),
+
+/***/ "flarum/components/PermissionGrid":
+/*!******************************************************************!*\
+  !*** external "flarum.core.compat['components/PermissionGrid']" ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/PermissionGrid'];
+
+/***/ }),
+
+/***/ "flarum/components/Select":
+/*!**********************************************************!*\
+  !*** external "flarum.core.compat['components/Select']" ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/Select'];
+
+/***/ }),
+
+/***/ "flarum/components/Switch":
+/*!**********************************************************!*\
+  !*** external "flarum.core.compat['components/Switch']" ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['components/Switch'];
+
+/***/ }),
+
+/***/ "flarum/extend":
+/*!***********************************************!*\
+  !*** external "flarum.core.compat['extend']" ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['extend'];
+
+/***/ }),
+
+/***/ "flarum/helpers/icon":
+/*!*****************************************************!*\
+  !*** external "flarum.core.compat['helpers/icon']" ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['helpers/icon'];
+
+/***/ }),
+
+/***/ "flarum/utils/mixin":
+/*!****************************************************!*\
+  !*** external "flarum.core.compat['utils/mixin']" ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['utils/mixin'];
+
+/***/ }),
+
+/***/ "flarum/utils/saveSettings":
+/*!***********************************************************!*\
+  !*** external "flarum.core.compat['utils/saveSettings']" ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = flarum.core.compat['utils/saveSettings'];
+
+/***/ })
+
+/******/ });
 //# sourceMappingURL=admin.js.map
