@@ -6,6 +6,7 @@ use FoF\Masquerade\Field;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
+use s9e\TextFormatter\Bundles\Fatdown as TextFormatter;
 
 class FieldSerializer extends AbstractSerializer
 {
@@ -42,6 +43,8 @@ class FieldSerializer extends AbstractSerializer
         $for = $model->for ? $model->for : $this->getActor()->id;
 
         if ($answer = $model->answers()->where('user_id', $for)->first()) {
+            // just so load field data into $answer
+            $answer->field;
             return new Relationship(new Resource(
                 $answer,
                 new AnswerSerializer

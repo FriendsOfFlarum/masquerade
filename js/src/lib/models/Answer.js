@@ -3,6 +3,7 @@ import mixin from 'flarum/utils/mixin';
 
 export default class Answer extends mixin(Model, {
     content: Model.attribute('content'),
+    contentHtml: Model.attribute('content_html'),
     field: Model.hasOne('field'),
     userId: Model.attribute('user_id')
 }) {
