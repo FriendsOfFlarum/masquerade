@@ -46,9 +46,7 @@ class DemandProfileCompletion implements MiddlewareInterface
 
         if (
             $this->configureProfilePathWithoutBase != $request->getUri()->getPath() &&
-            $actor &&
-            $actor->exists &&
-            $actor->is_email_confirmed &&
+            $actor->can('fof.masquerade.have-profile') &&
             $this->settings->get('masquerade.force-profile-completion') &&
             !$this->fields->completed($actor->id)
         ) {
