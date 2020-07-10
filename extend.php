@@ -24,11 +24,12 @@ return [
         ->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', Api\UserProfileController::class)
         ->get('/masquerade/configure', 'masquerade.api.configure', Api\UserConfigureController::class)
         ->post('/masquerade/configure', 'masquerade.api.configure.save', Api\UserConfigureController::class),
+    (new Extend\Middleware('forum'))
+        ->add(Middleware\DemandProfileCompletion::class),
     (new Extend\Locales(__DIR__ . '/resources/locale')),
     function (Dispatcher $events) {
         $events->subscribe(Listeners\InjectPermissions::class);
         $events->subscribe(Listeners\InjectSettings::class);
-        $events->subscribe(Listeners\DemandProfileCompletion::class);
         $events->subscribe(Listeners\AddUserGambits::class);
         $events->subscribe(Listeners\AddUserBioRelationship::class);
     }
