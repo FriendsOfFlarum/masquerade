@@ -2,17 +2,22 @@
 
 namespace FoF\Masquerade\Middleware;
 
-use FoF\Masquerade\Repositories\FieldRepository;
 use Flarum\Http\UrlGenerator;
+use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use FoF\Masquerade\Repositories\FieldRepository;
+use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\RedirectResponse;
 
 class DemandProfileCompletion implements MiddlewareInterface
 {
+    /**
+     * @var SettingsRepositoryInterface
+     */
+    protected $settings;
     /**
      * @var FieldRepository
      */
@@ -26,8 +31,9 @@ class DemandProfileCompletion implements MiddlewareInterface
      */
     protected $configureProfilePathWithoutBase;
 
-    public function __construct(FieldRepository $fields, UrlGenerator $url)
+    public function __construct(SettingsRepositoryInterface $settings, FieldRepository $fields, UrlGenerator $url)
     {
+        $this->settings = $settings;
         $this->fields = $fields;
         $this->configureProfileUrl = $url->to('forum')->route('masquerade.profile.configure');
         $this->configureProfilePathWithoutBase = str_replace($url->to('forum')->base(), '', $this->configureProfileUrl);
@@ -40,9 +46,8 @@ class DemandProfileCompletion implements MiddlewareInterface
 
         if (
             $this->configureProfilePathWithoutBase != $request->getUri()->getPath() &&
-            $actor &&
-            $actor->exists &&
-            $actor->is_email_confirmed &&
+            $actor->can('fof.masquerade.have-profile') &&
+            $this->settings->get('masquerade.force-profile-completion') &&
             !$this->fields->completed($actor->id)
         ) {
             return new RedirectResponse(

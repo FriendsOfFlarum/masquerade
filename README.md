@@ -13,8 +13,6 @@ The user profile generator. Includes:
 
 ## Installation
 
-Use [Bazaar](https://discuss.flarum.org/d/5151) or install manually:
-
 ```bash
 composer require fof/masquerade
 ```

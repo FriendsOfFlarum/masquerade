@@ -1,3 +1,5 @@
+import sortable from 'html5sortable/dist/html5sortable.es.js';
+
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
 import Component from 'flarum/Component';
@@ -26,19 +28,17 @@ export default class ProfileConfigurePane extends Component {
      * Configures the component.
      */
     config() {
-        this.$('.js-sortable-fields')
-            .sortable({
-                cancel: '',
-            })
-            .on('sortupdate', (e, ui) => {
-                const sorting = this.$('.js-sortable-fields > .Field')
-                    .map(function () {
-                        return $(this).data('id');
-                    })
-                    .get();
+        sortable(this.element.querySelector('.js-sortable-fields'), {
+            handle: 'legend',
+        })[0].addEventListener('sortupdate', () => {
+            const sorting = this.$('.js-sortable-fields > .Field')
+                .map(function () {
+                    return $(this).data('id');
+                })
+                .get();
 
-                this.updateSort(sorting);
-            });
+            this.updateSort(sorting);
+        });
     }
 
     /**
