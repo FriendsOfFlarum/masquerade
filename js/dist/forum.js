@@ -297,9 +297,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global m */
 
-var ProfileConfigurePane =
-/*#__PURE__*/
-function (_UserPage) {
+var ProfileConfigurePane = /*#__PURE__*/function (_UserPage) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(ProfileConfigurePane, _UserPage);
 
   function ProfileConfigurePane() {
@@ -413,9 +411,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global m */
 
-var ProfileConfigurePane =
-/*#__PURE__*/
-function (_UserPage) {
+var ProfileConfigurePane = /*#__PURE__*/function (_UserPage) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(ProfileConfigurePane, _UserPage);
 
   function ProfileConfigurePane() {
@@ -504,9 +500,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* global m */
 
-var BaseField =
-/*#__PURE__*/
-function () {
+var BaseField = /*#__PURE__*/function () {
   function BaseField(_ref) {
     var field = _ref.field,
         set = _ref.set,
@@ -610,9 +604,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var BooleanField =
-/*#__PURE__*/
-function (_BaseField) {
+var BooleanField = /*#__PURE__*/function (_BaseField) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(BooleanField, _BaseField);
 
   function BooleanField() {
@@ -708,9 +700,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var EmailField =
-/*#__PURE__*/
-function (_BaseField) {
+var EmailField = /*#__PURE__*/function (_BaseField) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(EmailField, _BaseField);
 
   function EmailField() {
@@ -779,9 +769,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var NO_OPTION_SELECTED_KEY = 'fof_masquerade_no_option_selected';
 
-var EmailField =
-/*#__PURE__*/
-function (_BaseField) {
+var EmailField = /*#__PURE__*/function (_BaseField) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(EmailField, _BaseField);
 
   function EmailField() {
@@ -857,9 +845,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var TextField =
-/*#__PURE__*/
-function (_BaseField) {
+var TextField = /*#__PURE__*/function (_BaseField) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(TextField, _BaseField);
 
   function TextField() {
@@ -945,9 +931,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var TypeFactory =
-/*#__PURE__*/
-function () {
+var TypeFactory = /*#__PURE__*/function () {
   function TypeFactory() {}
 
   TypeFactory.typeForField = function typeForField(_ref) {
@@ -1039,9 +1023,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var UrlField =
-/*#__PURE__*/
-function (_BaseField) {
+var UrlField = /*#__PURE__*/function (_BaseField) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(UrlField, _BaseField);
 
   function UrlField() {
@@ -1108,9 +1090,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var Answer =
-/*#__PURE__*/
-function (_mixin) {
+var Answer = /*#__PURE__*/function (_mixin) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(Answer, _mixin);
 
   function Answer() {
@@ -1160,9 +1140,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var Field =
-/*#__PURE__*/
-function (_mixin) {
+var Field = /*#__PURE__*/function (_mixin) {
   Object(_babel_runtime_helpers_esm_inheritsLoose__WEBPACK_IMPORTED_MODULE_0__["default"])(Field, _mixin);
 
   function Field() {
