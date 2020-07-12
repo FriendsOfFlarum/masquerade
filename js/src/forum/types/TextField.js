@@ -32,7 +32,7 @@ export default class TextField extends BaseField {
     }
 
     answerContent() {
-        return m.trust(this.value());
+        return m.trust(this.value() || '');
     }
 
     editorInput() {

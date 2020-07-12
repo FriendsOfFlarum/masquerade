@@ -23,7 +23,7 @@ export default class ProfileConfigurePane extends UserPage {
                     // UserID check must be done with == because userId() is number while id() is string
                     if (field.answer() && field.answer().userId() == this.user.id()) {
                         if (field.type() === 'text') {
-                            content = field.answer().contentHtml()
+                            content = field.answer().contentHtml();
                         } else {
                             content = field.answer().content()
                         }

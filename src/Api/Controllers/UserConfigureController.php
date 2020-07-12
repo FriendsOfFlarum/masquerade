@@ -104,11 +104,7 @@ class UserConfigureController extends AbstractListController
     {
         // For Text field type, convert the values to XML
         if ($field->type === 'text') {
-            if ($content === '' || $content === null) {
-                $content = null;
-            } else {
-                $content = TextFormatter::parse($content);
-            }
+            $content = TextFormatter::parse($content ? $content : '');
         }
     }
 }

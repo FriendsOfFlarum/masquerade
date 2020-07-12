@@ -889,7 +889,7 @@ var TextField = /*#__PURE__*/function (_BaseField) {
   };
 
   _proto.answerContent = function answerContent() {
-    return m.trust(this.value());
+    return m.trust(this.value() || '');
   };
 
   _proto.editorInput = function editorInput() {
