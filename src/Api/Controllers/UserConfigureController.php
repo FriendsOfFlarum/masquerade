@@ -12,6 +12,7 @@ use Flarum\User\User;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
+use s9e\TextFormatter\Bundles\Fatdown as TextFormatter;
 
 class UserConfigureController extends AbstractListController
 {
@@ -69,6 +70,8 @@ class UserConfigureController extends AbstractListController
             $content = Arr::get($answers, $field->id);
 
             $this->processBoolean($field, $content);
+            
+            $this->processText($field, $content);
 
             $this->validator->setField($field);
 
@@ -93,6 +96,18 @@ class UserConfigureController extends AbstractListController
                 $content = null;
             } else {
                 $content = in_array(strtolower($content), ['yes', 'true']);
+            }
+        }
+    }
+    
+    protected function processText(Field $field, &$content)
+    {
+        // For Text field type, convert the values to XML
+        if ($field->type === 'text') {
+            if ($content === '' || $content === null) {
+                $content = null;
+            } else {
+                $content = TextFormatter::parse($content);
             }
         }
     }

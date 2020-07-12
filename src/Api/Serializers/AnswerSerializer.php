@@ -20,7 +20,8 @@ class AnswerSerializer extends AbstractSerializer
         $answer = $model->toArray();
         if ($answer['field']['type'] == 'text') {
             // render HTML for text field
-            $answer['content_html'] = nl2br(TextFormatter::render(TextFormatter::parse($answer['content'])));
+            $answer['content_html'] = nl2br(TextFormatter::render($answer['content']));
+            $answer['content'] = TextFormatter::unparse($answer['content']);
         }
         return $answer;
     }

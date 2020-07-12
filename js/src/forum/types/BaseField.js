@@ -74,13 +74,14 @@ export default class BaseField {
 
     answerField() {
         const iconName = this.readAttribute(this.field, 'icon');
+        const type = this.readAttribute(this.field, 'type');
 
         return m('.Masquerade-Bio-Set', [
             m('span.Masquerade-Bio-Field', [
                 iconName ? [icon(iconName), ' '] : null,
                 this.readAttribute(this.field, 'name') + ': ',
             ]),
-            m('span.Masquerade-Bio-Answer', this.answerContent()),
+            m('span.Masquerade-Bio-Answer' + (type ? '.Masquerade-Bio-Answer-' + this.capitalize(type) : ''), this.answerContent()),
         ]);
     }
 
@@ -93,4 +94,10 @@ export default class BaseField {
         // The value can be '' when the field does not exist on the user (the empty string is set in ProfileConfigurePane)
         return value === null || value === '';
     }
+
+    capitalize(s) {
+        if (typeof s !== 'string') return ''
+        return s.charAt(0).toUpperCase() + s.slice(1)
+    }
+
 }

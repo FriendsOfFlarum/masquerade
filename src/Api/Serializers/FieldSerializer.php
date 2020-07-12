@@ -6,7 +6,6 @@ use FoF\Masquerade\Field;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
-use s9e\TextFormatter\Bundles\Fatdown as TextFormatter;
 
 class FieldSerializer extends AbstractSerializer
 {
