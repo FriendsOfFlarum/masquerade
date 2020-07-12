@@ -566,7 +566,8 @@ var BaseField = /*#__PURE__*/function () {
 
   _proto.answerField = function answerField() {
     var iconName = this.readAttribute(this.field, 'icon');
-    return m('.Masquerade-Bio-Set', [m('span.Masquerade-Bio-Field', [iconName ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_0___default()(iconName), ' '] : null, this.readAttribute(this.field, 'name') + ': ']), m('span.Masquerade-Bio-Answer', this.answerContent())]);
+    var type = this.readAttribute(this.field, 'type');
+    return m('.Masquerade-Bio-Set', [m('span.Masquerade-Bio-Field', [iconName ? [flarum_helpers_icon__WEBPACK_IMPORTED_MODULE_0___default()(iconName), ' '] : null, this.readAttribute(this.field, 'name') + ': ']), m('span.Masquerade-Bio-Answer' + (type ? '.Masquerade-Bio-Answer-' + this.capitalize(type) : ''), this.answerContent())]);
   };
 
   _proto.answerContent = function answerContent() {
@@ -577,6 +578,11 @@ var BaseField = /*#__PURE__*/function () {
     // The value can be null when coming from the API
     // The value can be '' when the field does not exist on the user (the empty string is set in ProfileConfigurePane)
     return value === null || value === '';
+  };
+
+  _proto.capitalize = function capitalize(s) {
+    if (typeof s !== 'string') return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
   return BaseField;
