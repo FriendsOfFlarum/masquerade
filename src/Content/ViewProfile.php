@@ -3,15 +3,12 @@
 namespace FoF\Masquerade\Content;
 
 use Flarum\Frontend\Document;
-use Flarum\User\AssertPermissionTrait;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ViewProfile
 {
-    use AssertPermissionTrait;
-
-    public function __invoke(Document $document, Request $request)
+    public function __invoke(Document $document, ServerRequestInterface $request)
     {
-        $this->assertCan($request->getAttribute('actor'), 'fof.masquerade.view-profile');
+        $request->getAttribute('actor')->assertCan('fof.masquerade.view-profile');
     }
 }

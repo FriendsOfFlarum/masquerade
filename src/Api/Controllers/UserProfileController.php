@@ -6,15 +6,13 @@ use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 class UserProfileController extends AbstractListController
 {
-    use AssertPermissionTrait;
-
     public $serializer = FieldSerializer::class;
 
     public $include = ['answer'];
@@ -33,20 +31,13 @@ class UserProfileController extends AbstractListController
         $this->fields = $fields->all();
     }
 
-    /**
-     * Get the data to be serialized and assigned to the response document.
-     *
-     * @param ServerRequestInterface $request
-     * @param Document $document
-     * @return mixed
-     */
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = $request->getAttribute('actor');
 
-        $this->assertCan($actor, 'fof.masquerade.view-profile');
+        $actor->assertCan('fof.masquerade.view-profile');
 
-        $id = array_get($request->getQueryParams(), 'id');
+        $id = Arr::get($request->getQueryParams(), 'id');
 
         if (!$id) {
             throw new ModelNotFoundException();

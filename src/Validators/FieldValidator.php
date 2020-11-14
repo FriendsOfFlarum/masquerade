@@ -14,9 +14,9 @@ class FieldValidator extends AbstractValidator
             'description' => ['string'],
             'required' => ['boolean'],
             'type' => ['nullable', 'in:' . implode(',', TypeFactory::validTypes())],
-            'validation' => ['string'],
+            'validation' => ['nullable', 'string'],
             'icon' => ['string'],
-            'prefix' => ['string'],
+            'prefix' => ['nullable', 'string'],
             'on_bio' => ['boolean']
         ];
     }

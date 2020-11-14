@@ -5,7 +5,7 @@ import SelectField from './SelectField';
 import UrlField from './UrlField';
 
 export default class TypeFactory {
-    static typeForField({field, set, value}) {
+    static typeForField({ field, set, value }) {
         let className = BaseField;
 
         const type = this.identify(field);
@@ -53,7 +53,7 @@ export default class TypeFactory {
         }
 
         // If it's an advanced field with no type we then guess the best type
-        validation.forEach(rule => {
+        validation.forEach((rule) => {
             rule = rule.trim();
 
             if (typeof this.types()[rule] !== 'undefined') {

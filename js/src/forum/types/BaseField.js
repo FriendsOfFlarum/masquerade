@@ -3,7 +3,7 @@ import icon from 'flarum/helpers/icon';
 /* global m */
 
 export default class BaseField {
-    constructor({field, set, value}) {
+    constructor({ field, set, value }) {
         this.field = field;
         this.set = set;
         this.value = value;
@@ -33,7 +33,7 @@ export default class BaseField {
     validationRule(ruleName) {
         let ruleContent = null;
 
-        this.validationRules().forEach(rule => {
+        this.validationRules().forEach((rule) => {
             const split = rule.split(':', 2);
 
             if (split[0] === ruleName) {
@@ -46,11 +46,7 @@ export default class BaseField {
 
     editorField() {
         return m('fieldset.Field', [
-            m('legend', [
-                this.field.icon() ? [icon(this.field.icon()), ' '] : null,
-                this.field.name(),
-                this.field.required() ? ' *' : null,
-            ]),
+            m('legend', [this.field.icon() ? [icon(this.field.icon()), ' '] : null, this.field.name(), this.field.required() ? ' *' : null]),
             m('.FormField', [
                 this.field.prefix() ? m('.prefix', this.field.prefix()) : null,
                 this.editorInput(),
@@ -60,14 +56,16 @@ export default class BaseField {
     }
 
     editorInput() {
-        return m('input', this.editorInputProps());
+        return m('input', this.editorInputAttrs());
     }
 
-    editorInputProps() {
+    editorInputAttrs() {
         return {
             className: 'FormControl',
-            oninput: m.withAttr('value', this.set),
-            value: this.value(),
+            oninput: (event) => {
+                this.set(event.target.value);
+            },
+            value: this.value,
             required: this.field.required(),
         };
     }
@@ -76,16 +74,13 @@ export default class BaseField {
         const iconName = this.readAttribute(this.field, 'icon');
 
         return m('.Masquerade-Bio-Set', [
-            m('span.Masquerade-Bio-Field', [
-                iconName ? [icon(iconName), ' '] : null,
-                this.readAttribute(this.field, 'name') + ': ',
-            ]),
+            m('span.Masquerade-Bio-Field', [iconName ? [icon(iconName), ' '] : null, this.readAttribute(this.field, 'name') + ': ']),
             m('span.Masquerade-Bio-Answer', this.answerContent()),
         ]);
     }
 
     answerContent() {
-        return this.value();
+        return this.value;
     }
 
     static isNoOptionSelectedValue(value) {

@@ -6,15 +6,12 @@ use Flarum\Api\Controller\AbstractListController;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\OrderFieldValidator;
-use Flarum\User\AssertPermissionTrait;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 class OrderFieldController extends AbstractListController
 {
-    use AssertPermissionTrait;
-
     public $serializer = FieldSerializer::class;
 
     protected $validator;
@@ -28,7 +25,7 @@ class OrderFieldController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
         $attributes = $request->getParsedBody();
 

@@ -6,14 +6,12 @@ use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\FieldValidator;
 use Flarum\Api\Controller\AbstractShowController;
-use Flarum\User\AssertPermissionTrait;
+use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 class StoreFieldController extends AbstractShowController
 {
-    use AssertPermissionTrait;
-
     public $serializer = FieldSerializer::class;
 
     protected $validator;
@@ -27,14 +25,12 @@ class StoreFieldController extends AbstractShowController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $this->assertAdmin($request->getAttribute('actor'));
+        $request->getAttribute('actor')->assertAdmin();
 
-        $attributes = $request->getParsedBody();
+        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
         $this->validator->assertValid($attributes);
 
-        $field = $this->fields->store($attributes);
-
-        return $field;
+        return $this->fields->store($attributes);
     }
 }

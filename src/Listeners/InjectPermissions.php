@@ -15,7 +15,7 @@ class InjectPermissions
 
     public function permissions(Serializing $event)
     {
-        if ($event->serializer instanceof ForumSerializer) {
+        if ($event->isSerializer(ForumSerializer::class)) {
             $event->attributes['canViewMasquerade'] = $event->actor->can('fof.masquerade.view-profile');
             $event->attributes['canHaveMasquerade'] = $event->actor->can('fof.masquerade.have-profile');
         }

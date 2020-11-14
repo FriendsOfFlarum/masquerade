@@ -3,20 +3,17 @@
 namespace FoF\Masquerade\Content;
 
 use Flarum\Frontend\Document;
-use Flarum\User\AssertPermissionTrait;
 use Flarum\User\Exception\PermissionDeniedException;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ConfigureProfile
 {
-    use AssertPermissionTrait;
-
-    public function __invoke(Document $document, Request $request)
+    public function __invoke(Document $document, ServerRequestInterface $request)
     {
         if (!$request->getAttribute('session')->get('user_id')) {
             throw new PermissionDeniedException;
         }
 
-        $this->assertCan($request->getAttribute('actor'), 'fof.masquerade.have-profile');
+        $request->getAttribute('actor')->assertCan('fof.masquerade.have-profile');
     }
 }

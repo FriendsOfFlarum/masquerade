@@ -2,31 +2,27 @@ import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
-import Component from 'flarum/Component';
+import Page from 'flarum/components/Page';
 import Select from 'flarum/components/Select';
 import Switch from 'flarum/components/Switch';
 import Button from 'flarum/components/Button';
 import saveSettings from 'flarum/utils/saveSettings';
+import withAttr from 'flarum/utils/withAttr';
 import SelectFieldOptionEditor from '../components/SelectFieldOptionEditor';
 
-/* global m */
+/* global m, $ */
 
-export default class ProfileConfigurePane extends Component {
+export default class ProfileConfigurePane extends Page {
+    oninit(vnode) {
+        super.oninit(vnode);
 
-    /**
-     * Sets up the component.
-     */
-    init() {
         this.resetNew();
         this.loading = false;
         this.existing = [];
         this.loadExisting();
-        this.enforceProfileCompletion = m.prop(app.data.settings['masquerade.force-profile-completion'] == 1);
+        this.enforceProfileCompletion = app.data.settings['masquerade.force-profile-completion'] === '1';
     }
 
-    /**
-     * Configures the component.
-     */
     config() {
         sortable(this.element.querySelector('.js-sortable-fields'), {
             handle: 'legend',
@@ -41,47 +37,49 @@ export default class ProfileConfigurePane extends Component {
         });
     }
 
-    /**
-     * Generates the component view.
-     *
-     * @returns {*}
-     */
-    view() {
-        return m('.ProfileConfigurePane', m('.container', [
-            m('h1', app.translator.trans('fof-masquerade.admin.title')),
-            m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
-            m('form', [
-                m('.Form-group', Switch.component({
-                    state: this.enforceProfileCompletion(),
-                    onchange: this.updateSetting.bind(this, this.enforceProfileCompletion, 'masquerade.force-profile-completion'),
-                    children: app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion'),
-                })),
-            ]),
-            m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
-            m('form.js-sortable-fields', this.existing.map(field => {
-                // Build array of fields to show.
-                return this.addField(field);
-            })),
-            m('form', {
-                onsubmit: this.submitAddField.bind(this),
-            }, [
-                this.addField(this.new),
-            ]),
-        ]));
+    oncreate(vnode) {
+        super.oncreate(vnode);
+
+        this.config();
     }
 
-    /**
-     * Updates setting in database.
-     * @param prop
-     * @param setting
-     * @param value
-     */
-    updateSetting(prop, setting, value) {
-        saveSettings({
-            [setting]: value,
-        });
+    onupdate() {
+        this.config();
+    }
 
-        prop(value);
+    view() {
+        return m(
+            '.ProfileConfigurePane',
+            m('.container', [
+                m('h1', app.translator.trans('fof-masquerade.admin.title')),
+                m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
+                m(
+                    '.Form-group',
+                    Switch.component(
+                        {
+                            state: this.enforceProfileCompletion,
+                            onchange: (value) => {
+                                const saveValue = value ? '1' : '0';
+                                saveSettings({
+                                    'masquerade.force-profile-completion': saveValue,
+                                });
+                                this.enforceProfileCompletion = saveValue;
+                            },
+                        },
+                        app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')
+                    )
+                ),
+                m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
+                m(
+                    'form.js-sortable-fields',
+                    this.existing.map((field) => {
+                        // Build array of fields to show.
+                        return this.addField(field);
+                    })
+                ),
+                this.addField(this.new),
+            ])
+        );
     }
 
     /**
@@ -93,125 +91,158 @@ export default class ProfileConfigurePane extends Component {
     addField(field) {
         let exists = field.id();
 
-        return m('fieldset.Field', {
-            'data-id': field.id(),
-            key: field.id(),
-        }, [
-            m('legend', [
-                exists ? [Button.component({
-                    className: 'Button Button--icon Button--danger',
-                    icon: "fas fa-trash",
-                    onclick: this.deleteField.bind(this, field),
-                }), ' '] : null,
-                m('span.Field-toggle', {
-                    onclick: (e) => this.toggleField(e),
-                }, [
-                    app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                        field: field.name(),
-                    }),
-                    ' ',
-                    icon('fas fa-caret-down'),
-                ]),
-            ]),
-            m('.Field-body', [
-                m('.Form-group', [
-                    m('label', app.translator.trans('fof-masquerade.admin.fields.name')),
-                    m('input.FormControl', {
-                        value: field.name(),
-                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field)),
-                    }),
-                    m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.name-help')),
-                ]),
-                m('.Form-group', [
-                    m('label', app.translator.trans('fof-masquerade.admin.fields.description')),
-                    m('input.FormControl', {
-                        value: field.description(),
-                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field)),
-                    }),
-                    m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.description-help')),
-                ]),
-                m('.Form-group', [
-                    m('label', app.translator.trans('fof-masquerade.admin.fields.icon')),
-                    m('input.FormControl', {
-                        value: field.icon(),
-                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field)),
-                    }),
-                    m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.icon-help', {
-                        a: <a href="https://fontawesome.com/icons?m=free" target="_blank"/>,
-                    })),
-                ]),
-                m('.Form-group', Switch.component({
-                    state: field.on_bio(),
-                    onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
-                    children: app.translator.trans('fof-masquerade.admin.fields.on_bio'),
-                })),
-                m('.Form-group', Switch.component({
-                    state: field.required(),
-                    onchange: this.updateExistingFieldInput.bind(this, 'required', field),
-                    children: app.translator.trans('fof-masquerade.admin.fields.required'),
-                })),
-                m('.Form-group', [
-                    m('label', app.translator.trans('fof-masquerade.admin.fields.type')),
-                    Select.component({
-                        onchange: value => {
-                            if (value === 'null') {
-                                value = null;
-                            }
-
-                            this.updateExistingFieldInput('type', field, value);
+        return m(
+            'fieldset.Field',
+            {
+                'data-id': field.id(),
+                key: field.id(),
+            },
+            [
+                m('legend', [
+                    exists
+                        ? [
+                              Button.component({
+                                  className: 'Button Button--icon Button--danger',
+                                  icon: 'fas fa-trash',
+                                  onclick: this.deleteField.bind(this, field),
+                              }),
+                              ' ',
+                          ]
+                        : null,
+                    m(
+                        'span.Field-toggle',
+                        {
+                            onclick: (e) => this.toggleField(e),
                         },
-                        options: this.availableTypes(),
-                        value: field.type(),
-                    }),
+                        [
+                            app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+                                field: field.name(),
+                            }),
+                            ' ',
+                            icon('fas fa-caret-down'),
+                        ]
+                    ),
                 ]),
-                (field.type() === 'select' ? SelectFieldOptionEditor.component({
-                    onchange: value => {
-                        this.updateExistingFieldInput('validation', field, value);
-                    },
-                    value: field.validation(),
-                }) : null),
-                (field.type() === null ? m('.Form-group', [
-                    m('label', app.translator.trans('fof-masquerade.admin.fields.validation')),
-                    m('input.FormControl', {
-                        value: field.validation(),
-                        oninput: m.withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field)),
-                    }),
-                    m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.validation-help', {
-                        a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules"
-                              target="_blank"/>,
-                    })),
-                ]) : null),
-                m('.Form-group', m('.ButtonGroup', [
-                    Button.component({
-                        type: 'submit',
-                        className: 'Button Button--primary',
-                        children: app.translator.trans('fof-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field'),
-                        loading: this.loading,
-                        disabled: !this.readyToAdd(field),
-                        onclick: this.updateExistingField.bind(this, field)
-                    }),
-                    (exists ? Button.component({
-                        type: 'submit',
-                        className: 'Button Button--danger',
-                        children: app.translator.trans('fof-masquerade.admin.buttons.delete-field'),
-                        loading: this.loading,
-                        onclick: this.deleteField.bind(this, field),
-                    }) : null),
-                ])),
-            ]),
-        ]);
+                m('.Field-body', [
+                    m('.Form-group', [
+                        m('label', app.translator.trans('fof-masquerade.admin.fields.name')),
+                        m('input.FormControl', {
+                            value: field.name(),
+                            oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field)),
+                        }),
+                        m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.name-help')),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('fof-masquerade.admin.fields.description')),
+                        m('input.FormControl', {
+                            value: field.description(),
+                            oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field)),
+                        }),
+                        m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.description-help')),
+                    ]),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('fof-masquerade.admin.fields.icon')),
+                        m('input.FormControl', {
+                            value: field.icon(),
+                            oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field)),
+                        }),
+                        m(
+                            'span.helpText',
+                            app.translator.trans('fof-masquerade.admin.fields.icon-help', {
+                                a: <a href="https://fontawesome.com/icons?m=free" target="_blank" />,
+                            })
+                        ),
+                    ]),
+                    m(
+                        '.Form-group',
+                        Switch.component(
+                            {
+                                state: field.on_bio(),
+                                onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
+                            },
+                            app.translator.trans('fof-masquerade.admin.fields.on_bio')
+                        )
+                    ),
+                    m(
+                        '.Form-group',
+                        Switch.component(
+                            {
+                                state: field.required(),
+                                onchange: this.updateExistingFieldInput.bind(this, 'required', field),
+                            },
+                            app.translator.trans('fof-masquerade.admin.fields.required')
+                        )
+                    ),
+                    m('.Form-group', [
+                        m('label', app.translator.trans('fof-masquerade.admin.fields.type')),
+                        Select.component({
+                            onchange: (value) => {
+                                if (value === 'null') {
+                                    value = null;
+                                }
+
+                                this.updateExistingFieldInput('type', field, value);
+                            },
+                            options: this.availableTypes(),
+                            value: field.type(),
+                        }),
+                    ]),
+                    field.type() === 'select'
+                        ? SelectFieldOptionEditor.component({
+                              onchange: (value) => {
+                                  this.updateExistingFieldInput('validation', field, value);
+                              },
+                              value: field.validation(),
+                          })
+                        : null,
+                    field.type() === null
+                        ? m('.Form-group', [
+                              m('label', app.translator.trans('fof-masquerade.admin.fields.validation')),
+                              m('input.FormControl', {
+                                  value: field.validation(),
+                                  oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field)),
+                              }),
+                              m(
+                                  'span.helpText',
+                                  app.translator.trans('fof-masquerade.admin.fields.validation-help', {
+                                      a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules" target="_blank" />,
+                                  })
+                              ),
+                          ])
+                        : null,
+                    m(
+                        '.Form-group',
+                        m('.ButtonGroup', [
+                            Button.component(
+                                {
+                                    className: 'Button Button--primary',
+                                    loading: this.loading,
+                                    disabled: !this.readyToAdd(field),
+                                    onclick: exists ? this.updateExistingField.bind(this, field) : this.submitAddField.bind(this),
+                                },
+                                app.translator.trans('fof-masquerade.admin.buttons.' + (exists ? 'edit' : 'add') + '-field')
+                            ),
+                            exists
+                                ? Button.component(
+                                      {
+                                          className: 'Button Button--danger',
+                                          loading: this.loading,
+                                          onclick: this.deleteField.bind(this, field),
+                                      },
+                                      app.translator.trans('fof-masquerade.admin.buttons.delete-field')
+                                  )
+                                : null,
+                        ])
+                    ),
+                ]),
+            ]
+        );
     }
 
     updateExistingFieldInput(what, field, value) {
-        let exists = field.id();
-
-        if (exists) {
-            field.pushAttributes({
-                [what]: value
-            })
-        } else {
-            field[what](value);
-        }
+        field.pushAttributes({
+            [what]: value,
+        });
     }
 
     /**
@@ -220,17 +251,13 @@ export default class ProfileConfigurePane extends Component {
      * @param {Array} sorting
      */
     updateSort(sorting) {
-        let data = {
-            sort: sorting
-        };
-
         app.request({
             method: 'POST',
             url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
-            data
-        }).then(
-            this.requestSuccess.bind(this)
-        );
+            body: {
+                sort: sorting,
+            },
+        }).then(this.requestSuccess.bind(this));
     }
 
     /**
@@ -248,12 +275,7 @@ export default class ProfileConfigurePane extends Component {
      * @param field
      */
     deleteField(field) {
-        app.request({
-            method: 'DELETE',
-            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
-        }).then(
-            this.requestSuccess.bind(this)
-        );
+        field.delete().then(this.requestSuccess.bind(this));
     }
 
     /**
@@ -264,17 +286,12 @@ export default class ProfileConfigurePane extends Component {
     submitAddField(e) {
         e.preventDefault();
 
-        let data = this.new;
-
-        app.request({
-            method: 'POST',
-            url: app.forum.attribute('apiUrl') + '/masquerade/fields',
-            data,
-        }).then(
-            this.requestSuccess.bind(this)
-        );
-
-        this.resetNew();
+        this.new
+            .save(this.new.data.attributes)
+            .then(this.requestSuccess.bind(this))
+            .then(() => {
+                this.resetNew();
+            });
 
         m.redraw();
     }
@@ -287,32 +304,13 @@ export default class ProfileConfigurePane extends Component {
     updateExistingField(field) {
         if (!field.id()) return;
 
-        let data = field.data;
-
-        app.request({
-            // We use PATCH and not PUT because the endpoint allows filling only some of the fields
-            // (even if here we always pass all the attributes)
-            method: 'PATCH',
-            url: app.forum.attribute('apiUrl') + '/masquerade/fields/' + field.id(),
-            data,
-        }).then(
-            this.requestSuccess.bind(this)
-        );
+        field.save(field.data.attributes).then(this.requestSuccess.bind(this));
     }
 
     /**
      * Parses result to update DOM.
-     *
-     * @param result
      */
-    requestSuccess(result) {
-        let model = app.store.pushPayload(result);
-
-        // In case we've updated/deleted one instance delete it if necessary.
-        if (!(model instanceof Array) && model.deleted_at()) {
-            app.store.remove(model);
-        }
-
+    requestSuccess() {
         this.existing = app.store.all('masquerade-field');
 
         // Update order in case the store order doesn't reflect the true ordering
@@ -323,7 +321,7 @@ export default class ProfileConfigurePane extends Component {
         });
 
         this.loading = false;
-        m.redraw()
+        m.redraw();
     }
 
     /**
@@ -332,31 +330,34 @@ export default class ProfileConfigurePane extends Component {
     loadExisting() {
         this.loading = true;
 
-        return app.request({
-            method: 'GET',
-            url: app.forum.attribute('apiUrl') + '/masquerade/fields',
-        }).then(
-            this.requestSuccess.bind(this)
-        );
+        return app
+            .request({
+                method: 'GET',
+                url: app.forum.attribute('apiUrl') + '/masquerade/fields',
+            })
+            .then((result) => {
+                app.store.pushPayload(result);
+
+                this.requestSuccess();
+            });
     }
 
     /**
      * Resets the new field.
      */
     resetNew() {
-        this.new = {
-            // id() does not hold any value, but it's necessary to keep it because it's called to make the difference
-            // between the simple object holding the new field's value and the model holding an existing field's value
-            'id': m.prop(),
-            'name': m.prop(''),
-            'description': m.prop(''),
-            'prefix': m.prop(''),
-            'icon': m.prop(''),
-            'required': m.prop(false),
-            'on_bio': m.prop(false),
-            'type': m.prop(null),
-            'validation': m.prop(''),
-        };
+        this.new = app.store.createRecord('masquerade-field', {
+            attributes: {
+                name: '',
+                description: '',
+                prefix: '',
+                icon: '',
+                required: false,
+                on_bio: false,
+                type: null,
+                validation: '',
+            },
+        });
     }
 
     /**

@@ -6,8 +6,8 @@ import TypeFactory from './../types/TypeFactory';
 /* global m */
 
 export default class ProfileConfigurePane extends UserPage {
-    init() {
-        super.init();
+    oninit(vnode) {
+        super.oninit(vnode);
         this.loading = true;
 
         this.loadUser(app.session.user.username());
@@ -19,29 +19,37 @@ export default class ProfileConfigurePane extends UserPage {
     }
 
     content() {
-        return m('form.ProfileConfigurePane', {
-            onsubmit: this.update.bind(this),
-        }, [
-            (this.enforceProfileCompletion && !this.profileCompleted) ?
-                m('.Alert.Alert--Error', app.translator.trans('fof-masquerade.forum.alerts.profile-completion-required')) :
-                null,
-            m('.Fields', this.fields
-                .sort((a, b) => a.sort() - b.sort())
-                .map(field => {
-                    if (!this.answers.hasOwnProperty(field.id())) {
-                        this.answers[field.id()] = field.answer() ? m.prop(field.answer().content()) : m.prop('');
-                    }
+        return m(
+            'form.ProfileConfigurePane',
+            {
+                onsubmit: this.update.bind(this),
+            },
+            [
+                this.enforceProfileCompletion && !this.profileCompleted
+                    ? m('.Alert.Alert--Error', app.translator.trans('fof-masquerade.forum.alerts.profile-completion-required'))
+                    : null,
+                m(
+                    '.Fields',
+                    this.fields
+                        .sort((a, b) => a.sort() - b.sort())
+                        .map((field) => {
+                            if (!this.answers.hasOwnProperty(field.id())) {
+                                this.answers[field.id()] = field.answer() ? field.answer().content() : '';
+                            }
 
-                    return this.field(field);
-                })
-            ),
-            Button.component({
-                type: 'submit',
-                className: 'Button Button--primary',
-                children: app.translator.trans('fof-masquerade.forum.buttons.save-profile'),
-                loading: this.loading,
-            }),
-        ]);
+                            return this.field(field);
+                        })
+                ),
+                Button.component(
+                    {
+                        type: 'submit',
+                        className: 'Button Button--primary',
+                        loading: this.loading,
+                    },
+                    app.translator.trans('fof-masquerade.forum.buttons.save-profile')
+                ),
+            ]
+        );
     }
 
     field(field) {
@@ -58,35 +66,28 @@ export default class ProfileConfigurePane extends UserPage {
         app.request({
             method: 'GET',
             url: app.forum.attribute('apiUrl') + '/masquerade/configure',
-        }).then(
-            this.parseResponse.bind(this)
-        );
+        }).then(this.parseResponse.bind(this));
     }
 
     set(field, value) {
-        if (this.answers.hasOwnProperty(field.id())) {
-            this.answers[field.id()](value);
-        } else {
-            this.answers[field.id()] = m.prop(value);
-        }
+        this.answers[field.id()] = value;
     }
 
     update(e) {
         e.preventDefault();
 
         this.loading = true;
-        let data = this.answers;
 
         app.request({
             method: 'POST',
             url: app.forum.attribute('apiUrl') + '/masquerade/configure',
-            data,
-        }).then(
-            this.parseResponse.bind(this)
-        ).catch(() => {
-            this.loading = false;
-            m.redraw();
-        });
+            body: this.answers,
+        })
+            .then(this.parseResponse.bind(this))
+            .catch(() => {
+                this.loading = false;
+                m.redraw();
+            });
     }
 
     parseResponse(response) {

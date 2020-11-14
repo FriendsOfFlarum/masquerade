@@ -7,7 +7,6 @@ use FoF\Masquerade\Field;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
-use Flarum\User\AssertPermissionTrait;
 use Flarum\User\User;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,18 +14,11 @@ use Tobscure\JsonApi\Document;
 
 class UserConfigureController extends AbstractListController
 {
-    use AssertPermissionTrait;
-
     public $serializer = FieldSerializer::class;
 
     public $include = ['answer'];
-    /**
-     * @var AnswerValidator
-     */
+
     protected $validator;
-    /**
-     * @var FieldRepository
-     */
     protected $fields;
 
     function __construct(AnswerValidator $validator, FieldRepository $fields)
@@ -35,23 +27,16 @@ class UserConfigureController extends AbstractListController
         $this->fields = $fields;
     }
 
-    /**
-     * Get the data to be serialized and assigned to the response document.
-     *
-     * @param ServerRequestInterface $request
-     * @param Document $document
-     * @return mixed
-     */
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = $request->getAttribute('actor');
 
-        $this->assertRegistered($actor);
+        $actor->assertRegistered();
 
         /** @var \Illuminate\Database\Eloquent\Collection $fields */
         $fields = $this->fields->all();
 
-        if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() === 'POST') {
             $this->processUpdate($actor, $request->getParsedBody(), $fields);
         }
 

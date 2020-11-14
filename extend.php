@@ -2,6 +2,7 @@
 
 namespace FoF\Masquerade;
 
+use Flarum\User\User;
 use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -27,6 +28,13 @@ return [
     (new Extend\Middleware('forum'))
         ->add(Middleware\DemandProfileCompletion::class),
     (new Extend\Locales(__DIR__ . '/resources/locale')),
+    (new Extend\Model(User::class))
+        ->relationship('bioFields', function (User $model) {
+            return $model->hasMany(Answer::class)
+                ->whereHas('field', function ($q) {
+                    $q->where('on_bio', true);
+                });
+        }),
     function (Dispatcher $events) {
         $events->subscribe(Listeners\InjectPermissions::class);
         $events->subscribe(Listeners\InjectSettings::class);

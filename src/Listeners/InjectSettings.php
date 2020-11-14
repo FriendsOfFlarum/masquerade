@@ -27,7 +27,7 @@ class InjectSettings
 
     public function permissions(Serializing $event)
     {
-        if ($event->serializer instanceof ForumSerializer) {
+        if ($event->isSerializer(ForumSerializer::class)) {
             // Dispatcher not yet available if we're using IoC in construct.
             $fields = app(FieldRepository::class);
             $event->attributes['masquerade.force-profile-completion'] = (bool)$this->settings->get('masquerade.force-profile-completion', false);

@@ -5,63 +5,113 @@ import icon from 'flarum/helpers/icon';
 /* global m */
 
 export default class SelectFieldOptionEditor extends Component {
-    init() {
-        this.newOption = m.prop('');
+    oninit(vnode) {
+        super.oninit(vnode);
+
+        this.newOption = '';
     }
 
     view() {
         return m('.Form-group', [
             m('label', app.translator.trans('fof-masquerade.admin.fields.options')),
-            m('table', m('tbody', this.options().map((option, optionIndex) => m('tr', [
-                m('td', m('input[type=text].FormControl', {
-                    oninput: m.withAttr('value', value => {
-                        this.updateOption(optionIndex, value);
-                    }),
-                    value: option,
-                })),
-                m('td', m('button.Button', {
-                    onclick: () => {
-                        this.moveOption(optionIndex, -1);
-                    },
-                }, icon('fas fa-chevron-up'))),
-                m('td', m('button.Button', {
-                    onclick: () => {
-                        this.moveOption(optionIndex, 1);
-                    },
-                }, icon('fas fa-chevron-down'))),
-                m('td', m('button.Button.Button--danger', {
-                    onclick: () => {
-                        this.deleteOption(optionIndex);
-                    },
-                }, icon('fas fa-close'))),
-            ])))),
+            m(
+                'table',
+                m(
+                    'tbody',
+                    this.options().map((option, optionIndex) =>
+                        m('tr', [
+                            m(
+                                'td',
+                                m('input[type=text].FormControl', {
+                                    oninput: (event) => {
+                                        this.updateOption(optionIndex, event.target.value);
+                                    },
+                                    value: option,
+                                })
+                            ),
+                            m(
+                                'td',
+                                m(
+                                    'button.Button',
+                                    {
+                                        onclick: () => {
+                                            this.moveOption(optionIndex, -1);
+                                        },
+                                    },
+                                    icon('fas fa-chevron-up')
+                                )
+                            ),
+                            m(
+                                'td',
+                                m(
+                                    'button.Button',
+                                    {
+                                        onclick: () => {
+                                            this.moveOption(optionIndex, 1);
+                                        },
+                                    },
+                                    icon('fas fa-chevron-down')
+                                )
+                            ),
+                            m(
+                                'td',
+                                m(
+                                    'button.Button.Button--danger',
+                                    {
+                                        onclick: () => {
+                                            this.deleteOption(optionIndex);
+                                        },
+                                    },
+                                    icon('fas fa-times')
+                                )
+                            ),
+                        ])
+                    )
+                )
+            ),
             m('.helpText', app.translator.trans('fof-masquerade.admin.fields.option-comma-warning')),
-            m('table', m('tbody'), m('tr', [
-                m('td', m('input[type=text].FormControl', {
-                    onchange: m.withAttr('value', this.newOption),
-                    value: this.newOption(),
-                    placeholder: app.translator.trans('fof-masquerade.admin.fields.option-new'),
-                })),
-                m('td', m('button.Button.Button--primary', {
-                    onclick: () => {
-                        this.addOption();
-                    },
-                }, icon('fas fa-plus'))),
-            ])),
+            m(
+                'table',
+                m('tbody'),
+                m('tr', [
+                    m(
+                        'td',
+                        m('input[type=text].FormControl', {
+                            onchange: (event) => {
+                                this.newOption = event.target.value;
+                            },
+                            value: this.newOption,
+                            placeholder: app.translator.trans('fof-masquerade.admin.fields.option-new'),
+                        })
+                    ),
+                    m(
+                        'td',
+                        m(
+                            'button.Button.Button--primary',
+                            {
+                                onclick: () => {
+                                    this.addOption();
+                                },
+                            },
+                            icon('fas fa-plus')
+                        )
+                    ),
+                ])
+            ),
         ]);
     }
 
     updateRules(options) {
         // We ignore other existing rules, they would probably be leftovers from another field type when changing types
-        this.props.onchange('in:' + options.join(','));
+        this.attrs.onchange('in:' + options.join(','));
     }
 
     options() {
-        const rules = this.props.value.split('|');
+        const rules = this.attrs.value.split('|');
 
         let options = [];
 
-        rules.forEach(rule => {
+        rules.forEach((rule) => {
             const parts = rule.split(':', 2);
 
             if (parts[0] === 'in') {
@@ -105,15 +155,15 @@ export default class SelectFieldOptionEditor extends Component {
     }
 
     addOption() {
-        if (this.newOption() === '') {
+        if (this.newOption === '') {
             return;
         }
 
         let options = this.options();
 
-        options.push(this.newOption());
+        options.push(this.newOption);
 
-        this.newOption('');
+        this.newOption = '';
 
         this.updateRules(options);
     }
