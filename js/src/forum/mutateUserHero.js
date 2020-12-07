@@ -14,9 +14,7 @@ export default function () {
                     const field = answer.attribute('field');
                     const type = TypeFactory.typeForField({
                         field,
-                        value() {
-                            return answer.content();
-                        },
+                        value: answer.content(),
                     });
 
                     return type.answerField();
