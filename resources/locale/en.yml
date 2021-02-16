@@ -14,7 +14,6 @@ fof-masquerade:
                 yes: Yes
                 no: No
     admin:
-        title: Masquerade
         general-options: General options
         buttons:
             add-field: Create field
@@ -23,9 +22,6 @@ fof-masquerade:
         permissions:
             have-profile: Have masquerade profile
             view-profile: View masquerade profile
-        menu:
-            description: >
-                Configure user profile fields.
         fields:
             title: Fields
             add: Add field {field}

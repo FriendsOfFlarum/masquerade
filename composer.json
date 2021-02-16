@@ -14,7 +14,7 @@
         {
             "name": "Daniël Klabbers",
             "email": "daniel@klabbers.email",
-            "homepage": "http://luceos.com"
+            "homepage": "https://luceos.com/"
         },
         {
             "name": "Clark Winkelmann",
@@ -22,8 +22,13 @@
             "homepage": "https://clarkwinkelmann.com/"
         }
     ],
+    "support": {
+        "issues": "https://github.com/FriendsOfFlarum/masquerade/issues",
+        "source": "https://github.com/FriendsOfFlarum/masquerade",
+        "forum": "https://discuss.flarum.org/d/5791"
+    },
     "require": {
-        "flarum/core": "^0.1.0-beta.14"
+        "flarum/core": "^0.1.0-beta.15"
     },
     "replace": {
         "flagrow/masquerade": "*"
@@ -31,6 +36,7 @@
     "extra": {
         "flarum-extension": {
             "title": "FoF Masquerade",
+            "category": "feature",
             "icon": {
                 "image": "resources/logo.svg",
                 "backgroundColor": "#e74c3c",

@@ -2,10 +2,17 @@
 
 namespace FoF\Masquerade;
 
+use Flarum\Api\Controller\CreateUserController;
+use Flarum\Api\Controller\ListUsersController;
+use Flarum\Api\Controller\ShowUserController;
+use Flarum\Api\Controller\UpdateUserController;
+use Flarum\Api\Serializer\BasicUserSerializer;
+use Flarum\Api\Serializer\ForumSerializer;
+use Flarum\Event\ConfigureUserGambits;
 use Flarum\User\User;
 use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
-use Illuminate\Contracts\Events\Dispatcher;
+use FoF\Masquerade\Api\Serializers\AnswerSerializer;
 
 return [
     (new Extend\Frontend('forum'))
@@ -28,6 +35,15 @@ return [
     (new Extend\Middleware('forum'))
         ->add(Middleware\DemandProfileCompletion::class),
     (new Extend\Locales(__DIR__ . '/resources/locale')),
+
+    (new Extend\ApiController(ShowUserController::class))
+        ->addInclude('bioFields.field'),
+    (new Extend\ApiController(UpdateUserController::class))
+        ->addInclude('bioFields.field'),
+    (new Extend\ApiController(CreateUserController::class))
+        ->addInclude('bioFields.field'),
+    (new Extend\ApiController(ListUsersController::class))
+        ->addInclude('bioFields.field'),
     (new Extend\Model(User::class))
         ->relationship('bioFields', function (User $model) {
             return $model->hasMany(Answer::class)
@@ -35,10 +51,21 @@ return [
                     $q->where('on_bio', true);
                 });
         }),
-    function (Dispatcher $events) {
-        $events->subscribe(Listeners\InjectPermissions::class);
-        $events->subscribe(Listeners\InjectSettings::class);
-        $events->subscribe(Listeners\AddUserGambits::class);
-        $events->subscribe(Listeners\AddUserBioRelationship::class);
-    }
+    (new Extend\ApiSerializer(BasicUserSerializer::class))
+        ->hasMany('bioFields', AnswerSerializer::class)
+        ->mutate(function (BasicUserSerializer $serializer, User $user): array {
+            if ($serializer->getActor()->cannot('fof.masquerade.view-profile')) {
+                // When the relationships are auto-loaded later,
+                // this one will be skipped because it has already been set to null
+                $user->setRelation('bioFields', null);
+            }
+
+            return [];
+        }),
+
+    (new Extend\ApiSerializer(ForumSerializer::class))
+        ->mutate(ForumAttributes::class),
+
+    (new Extend\Event())
+        ->listen(ConfigureUserGambits::class, Listeners\AddUserGambits::class),
 ];

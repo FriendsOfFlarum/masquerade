@@ -2,17 +2,17 @@ import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/app';
 import icon from 'flarum/helpers/icon';
-import Page from 'flarum/components/Page';
+import ExtensionPage from 'flarum/components/ExtensionPage';
 import Select from 'flarum/components/Select';
 import Switch from 'flarum/components/Switch';
 import Button from 'flarum/components/Button';
 import saveSettings from 'flarum/utils/saveSettings';
 import withAttr from 'flarum/utils/withAttr';
-import SelectFieldOptionEditor from '../components/SelectFieldOptionEditor';
+import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 
 /* global m, $ */
 
-export default class ProfileConfigurePane extends Page {
+export default class MasqueradePage extends ExtensionPage {
     oninit(vnode) {
         super.oninit(vnode);
 
@@ -47,11 +47,10 @@ export default class ProfileConfigurePane extends Page {
         this.config();
     }
 
-    view() {
+    content() {
         return m(
-            '.ProfileConfigurePane',
+            '.ExtensionPage-settings.ProfileConfigurePane',
             m('.container', [
-                m('h1', app.translator.trans('fof-masquerade.admin.title')),
                 m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
                 m(
                     '.Form-group',

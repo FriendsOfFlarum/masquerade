@@ -33,6 +33,6 @@ class DeleteFieldController extends AbstractShowController
             return $deleted;
         }
 
-        abort(500, "Could not delete Field");
+        throw new \RuntimeException('Could not delete Field');
     }
 }
