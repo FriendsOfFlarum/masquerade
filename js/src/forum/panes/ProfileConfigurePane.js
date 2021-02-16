@@ -1,6 +1,7 @@
 import app from 'flarum/app';
 import UserPage from 'flarum/components/UserPage';
 import Button from 'flarum/components/Button';
+import Link from 'flarum/components/Link';
 import TypeFactory from './../types/TypeFactory';
 
 /* global m */
@@ -13,9 +14,14 @@ export default class ProfileConfigurePane extends UserPage {
         this.loadUser(app.session.user.username());
         this.enforceProfileCompletion = app.forum.attribute('masquerade.force-profile-completion') || false;
         this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
+        this.profileNowCompleted = false; // Show "after required" text
         this.fields = [];
         this.answers = {};
         this.load();
+
+        // Show disabled state if everything is saved
+        // Unless the profile isn't complete, in which case show enabled button so it's obvious you will need to save
+        this.dirty = !this.profileCompleted;
     }
 
     content() {
@@ -45,9 +51,20 @@ export default class ProfileConfigurePane extends UserPage {
                         type: 'submit',
                         className: 'Button Button--primary',
                         loading: this.loading,
+                        disabled: !this.dirty,
                     },
                     app.translator.trans('fof-masquerade.forum.buttons.save-profile')
                 ),
+                this.profileNowCompleted
+                    ? m(
+                          'span.Masquerade-NowCompleted',
+                          app.translator.trans('fof-masquerade.forum.alerts.profile-completed', {
+                              a: m(Link, {
+                                  href: app.route('index'),
+                              }),
+                          })
+                      )
+                    : null,
             ]
         );
     }
@@ -71,6 +88,7 @@ export default class ProfileConfigurePane extends UserPage {
 
     set(field, value) {
         this.answers[field.id()] = value;
+        this.dirty = true;
     }
 
     update(e) {
@@ -83,7 +101,15 @@ export default class ProfileConfigurePane extends UserPage {
             url: app.forum.attribute('apiUrl') + '/masquerade/configure',
             body: this.answers,
         })
-            .then(this.parseResponse.bind(this))
+            .then((response) => {
+                this.dirty = false;
+                if (!this.profileCompleted) {
+                    this.profileCompleted = true;
+                    this.profileNowCompleted = true;
+                }
+
+                this.parseResponse(response);
+            })
             .catch(() => {
                 this.loading = false;
                 m.redraw();

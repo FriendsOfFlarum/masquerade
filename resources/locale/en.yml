@@ -3,6 +3,7 @@ fof-masquerade:
         alerts:
             profile-completion-required: >
                 Please complete the necessary profile fields below.
+            profile-completed: Profile completed! <a>Proceed to homepage</a>
         buttons:
             view-profile: View profile
             save-profile: Save

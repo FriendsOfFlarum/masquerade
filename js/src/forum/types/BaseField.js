@@ -45,8 +45,8 @@ export default class BaseField {
     }
 
     editorField() {
-        return m('fieldset.Field', [
-            m('legend', [this.field.icon() ? [icon(this.field.icon()), ' '] : null, this.field.name(), this.field.required() ? ' *' : null]),
+        return m('.Form-group.Field', [
+            m('label', [this.field.icon() ? [icon(this.field.icon()), ' '] : null, this.field.name(), this.field.required() ? ' *' : null]),
             m('.FormField', [
                 this.field.prefix() ? m('.prefix', this.field.prefix()) : null,
                 this.editorInput(),
