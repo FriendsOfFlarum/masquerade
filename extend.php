@@ -3,7 +3,9 @@
 namespace FoF\Masquerade;
 
 use Flarum\Api\Controller\CreateUserController;
+use Flarum\Api\Controller\ListPostsController;
 use Flarum\Api\Controller\ListUsersController;
+use Flarum\Api\Controller\ShowDiscussionController;
 use Flarum\Api\Controller\ShowUserController;
 use Flarum\Api\Controller\UpdateUserController;
 use Flarum\Api\Serializer\BasicUserSerializer;
@@ -44,6 +46,10 @@ return [
         ->addInclude('bioFields.field'),
     (new Extend\ApiController(ListUsersController::class))
         ->addInclude('bioFields.field'),
+    (new Extend\ApiController(ListPostsController::class))
+        ->addInclude('user.bioFields.field'),
+    (new Extend\ApiController(ShowDiscussionController::class))
+        ->addInclude('posts.user.bioFields.field'),
     (new Extend\Model(User::class))
         ->relationship('bioFields', function (User $model) {
             return $model->hasMany(Answer::class)
