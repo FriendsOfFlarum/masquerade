@@ -1,4 +1,4 @@
-import Select from 'flarum/components/Select';
+import Select from 'flarum/common/components/Select';
 import BaseField from './BaseField';
 
 const NO_OPTION_SELECTED_KEY = 'fof_masquerade_no_option_selected';

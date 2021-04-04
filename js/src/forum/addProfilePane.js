@@ -1,7 +1,7 @@
-import { extend } from 'flarum/extend';
+import { extend } from 'flarum/common/extend';
 import app from 'flarum/app';
-import LinkButton from 'flarum/components/LinkButton';
-import UserPage from 'flarum/components/UserPage';
+import LinkButton from 'flarum/common/components/LinkButton';
+import UserPage from 'flarum/forum/components/UserPage';
 import ProfileConfigurePane from './panes/ProfileConfigurePane';
 import ProfilePane from './panes/ProfilePane';
 

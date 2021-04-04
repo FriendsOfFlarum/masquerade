@@ -1,4 +1,4 @@
-import Button from 'flarum/components/Button';
+import Button from 'flarum/common/components/Button';
 import BaseField from './BaseField';
 
 export default class UrlField extends BaseField {

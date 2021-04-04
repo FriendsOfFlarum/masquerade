@@ -1,13 +1,13 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
 import app from 'flarum/app';
-import icon from 'flarum/helpers/icon';
-import ExtensionPage from 'flarum/components/ExtensionPage';
-import Select from 'flarum/components/Select';
-import Switch from 'flarum/components/Switch';
-import Button from 'flarum/components/Button';
-import saveSettings from 'flarum/utils/saveSettings';
-import withAttr from 'flarum/utils/withAttr';
+import icon from 'flarum/common/helpers/icon';
+import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import Select from 'flarum/common/components/Select';
+import Switch from 'flarum/common/components/Switch';
+import Button from 'flarum/common/components/Button';
+import saveSettings from 'flarum/admin/utils/saveSettings';
+import withAttr from 'flarum/common/utils/withAttr';
 import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 
 /* global m, $ */

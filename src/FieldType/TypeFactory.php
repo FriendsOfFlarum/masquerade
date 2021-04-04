@@ -42,7 +42,7 @@ class TypeFactory
 
         $class = self::classForType($type);
 
-        return app($class);
+        return resolve($class);
     }
 
     /**

@@ -10,7 +10,8 @@ use Flarum\Api\Controller\ShowUserController;
 use Flarum\Api\Controller\UpdateUserController;
 use Flarum\Api\Serializer\BasicUserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
-use Flarum\Event\ConfigureUserGambits;
+use Flarum\User\Filter\UserFilterer;
+use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
 use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
@@ -59,7 +60,7 @@ return [
         }),
     (new Extend\ApiSerializer(BasicUserSerializer::class))
         ->hasMany('bioFields', AnswerSerializer::class)
-        ->mutate(function (BasicUserSerializer $serializer, User $user): array {
+        ->attributes(function (BasicUserSerializer $serializer, User $user): array {
             if ($serializer->getActor()->cannot('fof.masquerade.view-profile')) {
                 // When the relationships are auto-loaded later,
                 // this one will be skipped because it has already been set to null
@@ -70,8 +71,10 @@ return [
         }),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
-        ->mutate(ForumAttributes::class),
+        ->attributes(ForumAttributes::class),
 
-    (new Extend\Event())
-        ->listen(ConfigureUserGambits::class, Listeners\AddUserGambits::class),
+    (new Extend\SimpleFlarumSearch(UserSearcher::class))
+        ->addGambit(Gambits\AnswerGambit::class),
+    (new Extend\Filter(UserFilterer::class))
+        ->addFilter(Gambits\AnswerGambit::class),
 ];

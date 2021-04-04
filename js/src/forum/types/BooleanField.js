@@ -1,4 +1,4 @@
-import icon from 'flarum/helpers/icon';
+import icon from 'flarum/common/helpers/icon';
 import BaseField from './BaseField';
 
 export default class BooleanField extends BaseField {

@@ -1,5 +1,5 @@
-import { extend } from 'flarum/extend';
-import UserCard from 'flarum/components/UserCard';
+import { extend } from 'flarum/common/extend';
+import UserCard from 'flarum/forum/components/UserCard';
 import TypeFactory from './types/TypeFactory';
 
 export default function () {

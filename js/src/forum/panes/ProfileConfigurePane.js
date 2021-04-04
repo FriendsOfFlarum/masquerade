@@ -1,7 +1,7 @@
 import app from 'flarum/app';
-import UserPage from 'flarum/components/UserPage';
-import Button from 'flarum/components/Button';
-import Link from 'flarum/components/Link';
+import UserPage from 'flarum/forum/components/UserPage';
+import Button from 'flarum/common/components/Button';
+import Link from 'flarum/common/components/Link';
 import TypeFactory from './../types/TypeFactory';
 
 /* global m */
