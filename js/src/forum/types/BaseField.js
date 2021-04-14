@@ -73,14 +73,33 @@ export default class BaseField {
     answerField() {
         const iconName = this.readAttribute(this.field, 'icon');
 
-        return m('.Masquerade-Bio-Set', [
-            m('span.Masquerade-Bio-Field', [iconName ? [icon(iconName), ' '] : null, this.readAttribute(this.field, 'name') + ': ']),
-            m('span.Masquerade-Bio-Answer', this.answerContent()),
-        ]);
+        return (
+            <div className={`Masquerade-Bio-Set${this.hasAnswer() ? '' : ' Masquerade-Bio-Set--empty'}`}>
+                <span className="Masquerade-Bio-Field">
+                    {iconName && [icon(iconName), ' ']}
+                    {this.readAttribute(this.field, 'name')}:{' '}
+                </span>
+                <span className="Masquerade-Bio-Answer">{this.answerContent()}</span>
+            </div>
+        );
     }
 
     answerContent() {
         return this.value;
+    }
+
+    hasAnswer() {
+        const answerContent = this.answerContent();
+
+        if (answerContent === null) {
+            return false;
+        }
+
+        if (typeof answerContent === 'object') {
+            return Boolean(Object.keys(answerContent).length);
+        }
+
+        return Boolean(answerContent?.length);
     }
 
     static isNoOptionSelectedValue(value) {
