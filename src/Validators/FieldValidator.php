@@ -7,7 +7,7 @@ use Flarum\Foundation\AbstractValidator;
 
 class FieldValidator extends AbstractValidator
 {
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'name' => ['required', 'string'],

@@ -2,6 +2,7 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Http\RequestUtil;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\FieldValidator;
@@ -25,7 +26,7 @@ class StoreFieldController extends AbstractShowController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 

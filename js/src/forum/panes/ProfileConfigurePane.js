@@ -1,4 +1,4 @@
-import app from 'flarum/app';
+import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';

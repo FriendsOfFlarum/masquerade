@@ -1,6 +1,6 @@
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 
-import app from 'flarum/app';
+import app from 'flarum/admin/app';
 import icon from 'flarum/common/helpers/icon';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Select from 'flarum/common/components/Select';

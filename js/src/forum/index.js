@@ -1,4 +1,4 @@
-import app from 'flarum/app';
+import app from 'flarum/forum/app';
 import User from 'flarum/common/models/User';
 import Field from './../lib/models/Field';
 import Answer from './../lib/models/Answer';

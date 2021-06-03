@@ -6,7 +6,7 @@ use Flarum\Foundation\AbstractValidator;
 
 class OrderFieldValidator extends AbstractValidator
 {
-    protected function getRules()
+    protected function getRules(): array
     {
         return [
             'sort' => ['required', 'array'],

@@ -3,6 +3,7 @@
 namespace FoF\Masquerade\Api\Controllers;
 
 use Flarum\Api\Controller\AbstractListController;
+use Flarum\Http\RequestUtil;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\OrderFieldValidator;
@@ -25,7 +26,7 @@ class OrderFieldController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         $attributes = $request->getParsedBody();
 

@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -21,6 +22,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
  * @property \Illuminate\Database\Eloquent\Collection|Answer[] $answers
+ *
+ * @property int $for A property used to pass the actor ID between the controller and serializer. Not actually in the DB
  */
 class Field extends AbstractModel
 {
@@ -59,10 +62,7 @@ class Field extends AbstractModel
         'deleted_at', // Used to know if an API response was about deletion
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function answers()
+    public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
     }

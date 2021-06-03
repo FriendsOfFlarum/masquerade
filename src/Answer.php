@@ -5,6 +5,7 @@ namespace FoF\Masquerade;
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
 use Flarum\User\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -32,18 +33,12 @@ class Answer extends AbstractModel
         'field', // Used for the bio feature TODO: should use a relationship
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function field()
+    public function field(): BelongsTo
     {
         return $this->belongsTo(Field::class);
     }

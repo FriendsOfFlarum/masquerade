@@ -11,12 +11,12 @@ use Illuminate\Database\Query\Expression;
 
 class AnswerGambit extends AbstractRegexGambit implements FilterInterface
 {
-    protected function getGambitPattern()
+    protected function getGambitPattern(): string
     {
         return 'answer:(.+)';
     }
 
-    public function apply(SearchState $search, $bit)
+    public function apply(SearchState $search, $bit): bool
     {
         if (!$search->getActor()->hasPermission('fof.masquerade.view-profile')) {
             return false;
