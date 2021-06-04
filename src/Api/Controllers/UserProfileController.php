@@ -2,7 +2,9 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Http\RequestUtil;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use FoF\Masquerade\Field;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
@@ -33,7 +35,7 @@ class UserProfileController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $actor = $request->getAttribute('actor');
+        $actor = RequestUtil::getActor($request);
 
         $actor->assertCan('fof.masquerade.view-profile');
 
@@ -43,11 +45,8 @@ class UserProfileController extends AbstractListController
             throw new ModelNotFoundException();
         }
 
-        /** @var \Illuminate\Database\Eloquent\Collection $fields */
-        $fields = $this->fields->each(function ($field) use ($id) {
+        return $this->fields->each(function (Field $field) use ($id) {
             $field->for = $id;
         });
-
-        return $fields;
     }
 }

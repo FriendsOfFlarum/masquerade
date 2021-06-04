@@ -1,5 +1,5 @@
 import { extend } from 'flarum/common/extend';
-import app from 'flarum/app';
+import app from 'flarum/forum/app';
 import LinkButton from 'flarum/common/components/LinkButton';
 import UserPage from 'flarum/forum/components/UserPage';
 import ProfileConfigurePane from './panes/ProfileConfigurePane';

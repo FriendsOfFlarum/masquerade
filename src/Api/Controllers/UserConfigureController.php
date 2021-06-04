@@ -2,6 +2,7 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Http\RequestUtil;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Repositories\FieldRepository;
@@ -29,7 +30,7 @@ class UserConfigureController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $actor = $request->getAttribute('actor');
+        $actor = RequestUtil::getActor($request);
 
         $actor->assertRegistered();
 

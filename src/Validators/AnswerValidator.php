@@ -9,9 +9,9 @@ class AnswerValidator extends AbstractValidator
 {
     /**
      * @param Field $field
-     * @return $this
+     * @return self
      */
-    public function setField(Field $field)
+    public function setField(Field $field): self
     {
         $rules = [];
 

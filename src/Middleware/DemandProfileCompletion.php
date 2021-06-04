@@ -2,9 +2,9 @@
 
 namespace FoF\Masquerade\Middleware;
 
+use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\User;
 use FoF\Masquerade\Repositories\FieldRepository;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -41,8 +41,7 @@ class DemandProfileCompletion implements MiddlewareInterface
 
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
-        /** @var User $actor */
-        $actor = $request->getAttribute('actor');
+        $actor = RequestUtil::getActor($request);
 
         if (
             $this->configureProfilePathWithoutBase != $request->getUri()->getPath() &&

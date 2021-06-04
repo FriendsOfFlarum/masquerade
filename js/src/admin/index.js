@@ -1,4 +1,4 @@
-import app from 'flarum/app';
+import app from 'flarum/admin/app';
 import Field from './../lib/models/Field';
 import MasqueradePage from './components/MasqueradePage';
 

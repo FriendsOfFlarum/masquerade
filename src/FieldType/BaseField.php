@@ -4,7 +4,7 @@ namespace FoF\Masquerade\FieldType;
 
 class BaseField
 {
-    public function overrideAttributes()
+    public function overrideAttributes(): array
     {
         return [];
     }

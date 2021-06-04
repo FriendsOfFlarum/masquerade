@@ -2,6 +2,7 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Http\RequestUtil;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use Flarum\Api\Controller\AbstractListController;
@@ -21,7 +22,7 @@ class FieldIndexController extends AbstractListController
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        $request->getAttribute('actor')->assertAdmin();
+        RequestUtil::getActor($request)->assertAdmin();
 
         return $this->fields->all();
     }

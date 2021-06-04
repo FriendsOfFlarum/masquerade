@@ -14,21 +14,15 @@ The user profile generator. Includes:
 ## Installation
 
 ```bash
-composer require fof/masquerade
+composer require fof/masquerade:*
 ```
 
-## Updating
-
-To the next minor version:
+## Update
 
 ```sh
-composer update fof/masquerade
-```
-
-To the latest compatible version:
-
-```sh
-composer require fof/masquerade
+composer require fof/masquerade:*
+php flarum migrate
+php flarum cache:clear
 ```
 
 ## Configuration
@@ -59,7 +53,7 @@ Then upgrade from the old extension to the new one:
 
 ```sh
 composer remove flagrow/masquerade
-composer require fof/masquerade
+composer require fof/masquerade:*
 ```
 
 When you enable the new extension, the permissions and the data from Flagrow Masquerade will be moved to FoF Masquerade.
@@ -68,7 +62,6 @@ When you enable the new extension, the permissions and the data from Flagrow Mas
 
 - [Flarum Discuss post](https://discuss.flarum.org/d/5791)
 - [Source code on GitHub](https://github.com/FriendsOfFlarum/masquerade)
-- [Changelog](https://github.com/FriendsOfFlarum/masquerade/blob/master/CHANGELOG.md)
 - [Report an issue](https://github.com/FriendsOfFlarum/masquerade/issues)
 - [Download via Packagist](https://packagist.org/packages/fof/masquerade)
 
