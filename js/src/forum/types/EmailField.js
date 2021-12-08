@@ -2,40 +2,40 @@ import Button from 'flarum/common/components/Button';
 import BaseField from './BaseField';
 
 export default class EmailField extends BaseField {
-    editorInputAttrs() {
-        let attrs = super.editorInputAttrs();
+  editorInputAttrs() {
+    let attrs = super.editorInputAttrs();
 
-        attrs.type = 'email';
-        attrs.placeholder = 'you@example.com';
+    attrs.type = 'email';
+    attrs.placeholder = 'you@example.com';
 
-        return attrs;
+    return attrs;
+  }
+
+  answerContent() {
+    const value = this.value;
+
+    if (!value) {
+      return null;
     }
 
-    answerContent() {
-        const value = this.value;
+    const email = value
+      .split(/@|\./)
+      .map((segment) => {
+        return segment.replace(/(.{2})./g, '$1*');
+      })
+      .join('*');
 
-        if (!value) {
-            return null;
-        }
+    return Button.component(
+      {
+        onclick: () => this.mailTo(),
+        className: 'Button Button--text',
+        icon: 'far fa-envelope',
+      },
+      email
+    );
+  }
 
-        const email = value
-            .split(/@|\./)
-            .map((segment) => {
-                return segment.replace(/(.{2})./g, '$1*');
-            })
-            .join('*');
-
-        return Button.component(
-            {
-                onclick: () => this.mailTo(),
-                className: 'Button Button--text',
-                icon: 'far fa-envelope',
-            },
-            email
-        );
-    }
-
-    mailTo() {
-        window.location = 'mailto:' + this.value;
-    }
+  mailTo() {
+    window.location = 'mailto:' + this.value;
+  }
 }

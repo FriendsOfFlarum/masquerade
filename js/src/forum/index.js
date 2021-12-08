@@ -8,12 +8,12 @@ import addProfilePane from './addProfilePane';
 import mutateUserHero from './mutateUserHero';
 
 app.initializers.add('fof-masquerade', (app) => {
-    app.store.models['masquerade-field'] = Field;
-    app.store.models['masquerade-answer'] = Answer;
+  app.store.models['masquerade-field'] = Field;
+  app.store.models['masquerade-answer'] = Answer;
 
-    User.prototype.bioFields = Model.hasMany('bioFields');
+  User.prototype.bioFields = Model.hasMany('bioFields');
 
-    addProfilePane();
+  addProfilePane();
 
-    mutateUserHero();
+  mutateUserHero();
 });
