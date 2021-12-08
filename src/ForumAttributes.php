@@ -25,7 +25,6 @@ class ForumAttributes
             'masquerade.force-profile-completion' => (bool)$this->settings->get('masquerade.force-profile-completion', false),
             'masquerade.profile-completed' => $actor->isGuest() ? false : $this->fields->completed($actor->id),
             'canViewMasquerade' => $actor->can('fof.masquerade.view-profile'),
-            'canHaveMasquerade' => $actor->can('fof.masquerade.have-profile'),
         ];
     }
 }

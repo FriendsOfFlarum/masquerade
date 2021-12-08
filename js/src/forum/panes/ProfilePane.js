@@ -1,7 +1,6 @@
+import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import TypeFactory from './../types/TypeFactory';
-
-/* global m */
 
 export default class ProfileConfigurePane extends UserPage {
   oninit(vnode) {
@@ -15,19 +14,20 @@ export default class ProfileConfigurePane extends UserPage {
   }
 
   content() {
-    return m('.Masquerade-Bio', [
-      m(
-        '.Fields',
-        this.fields
-          .sort((a, b) => a.sort() - b.sort())
-          .map((field) => {
-            // UserID check must be done with == because userId() is number while id() is string
-            this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
+    return (
+      <div class="Masquerade-Bio">
+        <div class="Fields">
+          {this.fields
+            .sort((a, b) => a.sort() - b.sort())
+            .map((field) => {
+              // UserID check must be done with == because userId() is number while id() is string
+              this.answers[field.id()] = field.answer() && field.answer().userId() == this.user.id() ? field.answer().content() : null;
 
-            return this.field(field);
-          })
-      ),
-    ]);
+              return this.field(field);
+            })}
+        </div>
+      </div>
+    );
   }
 
   field(field) {

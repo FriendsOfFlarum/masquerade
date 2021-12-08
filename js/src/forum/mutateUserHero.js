@@ -2,15 +2,14 @@ import { extend } from 'flarum/common/extend';
 import UserCard from 'flarum/forum/components/UserCard';
 import TypeFactory from './types/TypeFactory';
 
-export default function () {
+export default function mutateUserHero() {
   extend(UserCard.prototype, 'infoItems', function (items) {
-    let answers = app.forum.attribute('canViewMasquerade') ? this.attrs.user.bioFields() || [] : [];
+    const answers = app.forum.attribute('canViewMasquerade') ? this.attrs.user.bioFields() || [] : [];
 
     items.add(
       'masquerade-bio',
-      m(
-        'div',
-        answers.map((answer) => {
+      <div>
+        {answers.map((answer) => {
           const field = answer.attribute('field');
           const type = TypeFactory.typeForField({
             field,
@@ -18,8 +17,8 @@ export default function () {
           });
 
           return type.answerField();
-        })
-      )
+        })}
+      </div>
     );
   });
 }

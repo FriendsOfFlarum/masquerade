@@ -62,7 +62,7 @@ class FieldRepository
 
     public function update($id, array $attributes): Field
     {
-        /** @var $field Field */
+        /** @var Field */
         $field = $this->field->findOrFail($id);
 
         $type = TypeFactory::typeForField($attributes);

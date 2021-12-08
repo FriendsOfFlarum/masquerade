@@ -1,37 +1,34 @@
-import { extend } from 'flarum/common/extend';
 import app from 'flarum/forum/app';
+import { extend } from 'flarum/common/extend';
 import LinkButton from 'flarum/common/components/LinkButton';
 import UserPage from 'flarum/forum/components/UserPage';
 import ProfileConfigurePane from './panes/ProfileConfigurePane';
 import ProfilePane from './panes/ProfilePane';
 
-export default function () {
-  // The configure route must be registered first because otherwise there's a conflict between the two routes
-  app.routes['fof-masquerade-configure-profile'] = {
-    path: '/masquerade/configure',
-    component: ProfileConfigurePane,
-  };
-  app.routes['fof-masquerade-view-profile'] = {
-    path: '/masquerade/:username',
-    component: ProfilePane,
+export default function addProfilePane() {
+  app.routes['fof-masquerade'] = {
+    path: '/u/:username/masquerade',
+    resolver: {
+      onmatch(args) {
+        const user = app.store.getBy('users', 'slug', args.username);
+        debugger;
+
+        if (user.canEditMasqueradeProfile()) return ProfileConfigurePane;
+        else return ProfilePane;
+      },
+    },
   };
 
   extend(UserPage.prototype, 'navItems', function (items) {
-    const isOwnProfileAndCanHaveMasquerade = app.forum.attribute('canHaveMasquerade') && app.session.user.id() === this.user.id();
-
-    if (app.forum.attribute('canViewMasquerade') || isOwnProfileAndCanHaveMasquerade) {
-      const href = isOwnProfileAndCanHaveMasquerade
-        ? app.route('fof-masquerade-configure-profile')
-        : app.route('fof-masquerade-view-profile', { username: this.user.username() });
-
+    if (app.forum.attribute('canViewMasquerade') || this.user.canEditMasqueradeProfile()) {
       items.add(
         'masquerade',
         LinkButton.component(
           {
-            href,
+            href: app.route('fof-masquerade', { username: this.user.slug() }),
             icon: 'far fa-id-card',
           },
-          app.translator.trans(`fof-masquerade.forum.buttons.${isOwnProfileAndCanHaveMasquerade ? 'edit' : 'view'}-profile`)
+          app.translator.trans(`fof-masquerade.forum.buttons.${this.user.canEditMasqueradeProfile() ? 'edit' : 'view'}-profile`)
         ),
         200
       );

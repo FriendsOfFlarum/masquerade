@@ -9,6 +9,7 @@ use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\User;
+use Flarum\User\UserRepository;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -19,39 +20,59 @@ class UserConfigureController extends AbstractListController
 
     public $include = ['answer'];
 
+    /**
+     * @var AnswerValidator
+     */
     protected $validator;
+    /**
+     * @var FieldRepository
+     */
     protected $fields;
+    /**
+     * @var UserRepository
+     */
+    protected $users;
 
-    function __construct(AnswerValidator $validator, FieldRepository $fields)
+    function __construct(AnswerValidator $validator, FieldRepository $fields, UserRepository $users)
     {
         $this->validator = $validator;
         $this->fields = $fields;
+        $this->users = $users;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
         $actor = RequestUtil::getActor($request);
+        $user = $this->users->findOrFail(Arr::get($request->getQueryParams(), 'id'));
 
-        $actor->assertRegistered();
+        if ($actor->id !== $user->id) {
+            $actor->assertCan('fof.masquerade.edit-others-profile');
+        } else {
+            $actor->assertCan('fof.masquerade.have-profile');
+        }
 
         /** @var \Illuminate\Database\Eloquent\Collection $fields */
         $fields = $this->fields->all();
 
+        // Checked in the FieldSerializer to find the appropriate Answer models
+        foreach ($fields as $field) {
+            $field->for = $user->id;
+        }
+
         if ($request->getMethod() === 'POST') {
-            $this->processUpdate($actor, $request->getParsedBody(), $fields);
+            $this->processUpdate($user, $request->getParsedBody(), $fields);
         }
 
         return $fields;
     }
 
     /**
-     * @param User $actor
-     * @param $answers
+     * @param mixed $answers
      * @param \Illuminate\Database\Eloquent\Collection $fields
      */
-    protected function processUpdate(User $actor, $answers, &$fields)
+    protected function processUpdate(User $user, $answers, &$fields)
     {
-        $fields->each(function (Field $field) use ($answers, $actor) {
+        $fields->each(function (Field $field) use ($answers, $user) {
             $content = Arr::get($answers, $field->id);
 
             $this->processBoolean($field, $content);
@@ -65,7 +86,7 @@ class UserConfigureController extends AbstractListController
             $this->fields->addOrUpdateAnswer(
                 $field,
                 $content,
-                $actor
+                $user
             );
         });
     }

@@ -11,7 +11,7 @@ export default class ProfileConfigurePane extends UserPage {
     super.oninit(vnode);
     this.loading = true;
 
-    this.loadUser(app.session.user.username());
+    this.loadUser(m.route.param('username'));
     this.enforceProfileCompletion = app.forum.attribute('masquerade.force-profile-completion') || false;
     this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
     this.profileNowCompleted = false; // Show "after required" text
@@ -83,7 +83,7 @@ export default class ProfileConfigurePane extends UserPage {
     app
       .request({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/masquerade/configure',
+        url: app.forum.attribute('apiUrl') + '/masquerade/configure/' + this.user.id(),
       })
       .then(this.parseResponse.bind(this));
   }
@@ -101,7 +101,7 @@ export default class ProfileConfigurePane extends UserPage {
     app
       .request({
         method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/masquerade/configure',
+        url: app.forum.attribute('apiUrl') + '/masquerade/configure/' + this.user.id(),
         body: this.answers,
       })
       .then((response) => {
