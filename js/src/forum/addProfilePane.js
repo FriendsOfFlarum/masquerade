@@ -23,6 +23,7 @@ export default function () {
       const href = isOwnProfileAndCanHaveMasquerade
         ? app.route('fof-masquerade-configure-profile')
         : app.route('fof-masquerade-view-profile', { username: this.user.username() });
+
       items.add(
         'masquerade',
         LinkButton.component(
@@ -30,7 +31,7 @@ export default function () {
             href,
             icon: 'far fa-id-card',
           },
-          app.translator.trans('fof-masquerade.forum.buttons.view-profile')
+          app.translator.trans(`fof-masquerade.forum.buttons.${isOwnProfileAndCanHaveMasquerade ? 'edit' : 'view'}-profile`)
         ),
         200
       );

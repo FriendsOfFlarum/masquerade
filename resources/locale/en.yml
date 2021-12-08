@@ -6,6 +6,7 @@ fof-masquerade:
             profile-completed: Profile completed! <a>Proceed to homepage</a>
         buttons:
             view-profile: View profile
+            edit-profile: Edit profile
             save-profile: Save
         fields:
             select:
