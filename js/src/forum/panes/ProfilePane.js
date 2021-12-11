@@ -1,19 +1,21 @@
 import app from 'flarum/forum/app';
-import UserPage from 'flarum/forum/components/UserPage';
+
+import Component from 'flarum/common/Component';
 import TypeFactory from './../types/TypeFactory';
 
-export default class ProfileConfigurePane extends UserPage {
+export default class ProfilePane extends Component {
   oninit(vnode) {
     super.oninit(vnode);
     this.loading = true;
 
     this.fields = [];
     this.answers = {};
+    this.user = this.attrs.user;
 
-    this.loadUser(m.route.param('username'));
+    this.load(this.user);
   }
 
-  content() {
+  view() {
     return (
       <div class="Masquerade-Bio">
         <div class="Fields">
@@ -46,12 +48,6 @@ export default class ProfileConfigurePane extends UserPage {
         url: app.forum.attribute('apiUrl') + '/masquerade/profile/' + user.id(),
       })
       .then(this.parseResponse.bind(this));
-  }
-
-  show(user) {
-    this.load(user);
-
-    super.show(user);
   }
 
   parseResponse(response) {

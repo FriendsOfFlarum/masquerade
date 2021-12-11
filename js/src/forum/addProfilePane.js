@@ -1,20 +1,18 @@
 import app from 'flarum/forum/app';
+
 import { extend } from 'flarum/common/extend';
 import LinkButton from 'flarum/common/components/LinkButton';
 import UserPage from 'flarum/forum/components/UserPage';
-import ProfileConfigurePane from './panes/ProfileConfigurePane';
-import ProfilePane from './panes/ProfilePane';
+import RootMasqueradePane from './panes/RootMasqueradePane';
 
 export default function addProfilePane() {
   app.routes['fof-masquerade'] = {
     path: '/u/:username/masquerade',
     resolver: {
-      onmatch(args) {
-        const user = app.store.getBy('users', 'slug', args.username);
-        debugger;
+      onmatch() {
+        if (!app.forum.attribute('canViewMasquerade')) throw new Error();
 
-        if (user.canEditMasqueradeProfile()) return ProfileConfigurePane;
-        else return ProfilePane;
+        return RootMasqueradePane;
       },
     },
   };
