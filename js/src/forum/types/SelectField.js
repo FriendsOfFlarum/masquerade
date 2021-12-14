@@ -3,7 +3,7 @@ import BaseField from './BaseField';
 
 const NO_OPTION_SELECTED_KEY = 'fof_masquerade_no_option_selected';
 
-export default class EmailField extends BaseField {
+export default class SelectField extends BaseField {
   editorInput() {
     return Select.component({
       onchange: (value) => {

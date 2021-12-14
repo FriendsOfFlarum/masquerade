@@ -3,8 +3,10 @@
 namespace FoF\Masquerade\Middleware;
 
 use Flarum\Http\RequestUtil;
+use Flarum\Http\SlugManager;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\User;
 use FoF\Masquerade\Repositories\FieldRepository;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -23,35 +25,43 @@ class DemandProfileCompletion implements MiddlewareInterface
      */
     protected $fields;
     /**
-     * @var string
+     * @var UrlGenerator
      */
-    protected $configureProfileUrl;
+    protected $url;
     /**
-     * @var string
+     * @var SlugManager
      */
-    protected $configureProfilePathWithoutBase;
+    protected $slugManager;
 
-    public function __construct(SettingsRepositoryInterface $settings, FieldRepository $fields, UrlGenerator $url)
+    public function __construct(SettingsRepositoryInterface $settings, FieldRepository $fields, UrlGenerator $url, SlugManager $slugManager)
     {
         $this->settings = $settings;
         $this->fields = $fields;
-        $this->configureProfileUrl = $url->to('forum')->route('masquerade.profile.configure');
-        $this->configureProfilePathWithoutBase = str_replace($url->to('forum')->base(), '', $this->configureProfileUrl);
+        $this->url = $url;
+        $this->slugManager = $slugManager;
     }
 
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         $actor = RequestUtil::getActor($request);
 
-        if (
-            $this->configureProfilePathWithoutBase != $request->getUri()->getPath() &&
-            $actor->can('fof.masquerade.have-profile') &&
-            $this->settings->get('masquerade.force-profile-completion') &&
-            !$this->fields->completed($actor->id)
-        ) {
-            return new RedirectResponse(
-                $this->configureProfileUrl
-            );
+        if (!$actor->isGuest()) {
+
+            $configureProfileUrl = $this->url->to('forum')->route('user', [
+                'username' => $this->slugManager->forResource(User::class)->toSlug($actor),
+                'filter' => 'masquerade'
+            ]);
+
+            $configureProfilePathWithoutBase = str_replace($this->url->to('forum')->base(), '', $configureProfileUrl);
+
+            if (
+                $configureProfilePathWithoutBase !== $request->getUri()->getPath() &&
+                $actor->can('fof.masquerade.have-profile') &&
+                $this->settings->get('masquerade.force-profile-completion') &&
+                !$this->fields->completed($actor->id)
+            ) {
+                return new RedirectResponse($configureProfileUrl);
+            }
         }
 
         return $handler->handle($request);

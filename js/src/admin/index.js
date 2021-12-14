@@ -24,5 +24,13 @@ app.initializers.add('fof-masquerade', () => {
         permission: 'fof.masquerade.have-profile',
       },
       'start'
+    )
+    .registerPermission(
+      {
+        icon: 'far fa-id-card',
+        label: app.translator.trans('fof-masquerade.admin.permissions.edit-others-profile'),
+        permission: 'fof.masquerade.edit-others-profile',
+      },
+      'moderate'
     );
 });

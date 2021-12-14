@@ -45,18 +45,23 @@ export default class BaseField {
   }
 
   editorField() {
-    return m('.Form-group.Field', [
-      m('label', [this.field.icon() ? [icon(this.field.icon()), ' '] : null, this.field.name(), this.field.required() ? ' *' : null]),
-      m('.FormField', [
-        this.field.prefix() ? m('.prefix', this.field.prefix()) : null,
-        this.editorInput(),
-        this.field.description() ? m('.helpText', this.field.description()) : null,
-      ]),
-    ]);
+    return (
+      <div class="Form-group Field">
+        <label>
+          {this.field.icon() ? [icon(this.field.icon()), ' '] : null} {this.field.name()} {this.field.required() ? '*' : null}
+        </label>
+
+        <div class="FormField">
+          {this.field.prefix() ? m('.prefix', this.field.prefix()) : null}
+          {this.editorInput()}
+          {this.field.description() ? <div class="helpText">{this.field.description()}</div> : null}
+        </div>
+      </div>
+    );
   }
 
   editorInput() {
-    return m('input', this.editorInputAttrs());
+    return <input {...this.editorInputAttrs()} />;
   }
 
   editorInputAttrs() {
@@ -75,11 +80,11 @@ export default class BaseField {
 
     return (
       <div className={`Masquerade-Bio-Set${this.hasAnswer() ? '' : ' Masquerade-Bio-Set--empty'}`}>
-        <span className="Masquerade-Bio-Field">
-          {iconName && [icon(iconName), ' ']}
+        <span class="Masquerade-Bio-Field">
+          {iconName && <>{icon(iconName)} </>}
           {this.readAttribute(this.field, 'name')}:{' '}
         </span>
-        <span className="Masquerade-Bio-Answer">{this.answerContent()}</span>
+        <span class="Masquerade-Bio-Answer">{this.answerContent()}</span>
       </div>
     );
   }
@@ -96,10 +101,10 @@ export default class BaseField {
     }
 
     if (typeof answerContent === 'object') {
-      return Boolean(Object.keys(answerContent).length);
+      return !!Object.keys(answerContent).length;
     }
 
-    return Boolean(answerContent?.length);
+    return !!answerContent?.length;
   }
 
   static isNoOptionSelectedValue(value) {
