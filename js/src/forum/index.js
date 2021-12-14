@@ -15,7 +15,6 @@ import BaseField from './types/BaseField';
 import BooleanField from './types/BooleanField';
 import EmailField from './types/EmailField';
 import SelectField from './types/SelectField';
-import SelectField from './types/SelectField';
 import TypeFactory from './types/TypeFactory';
 import UrlField from './types/UrlField';
 
