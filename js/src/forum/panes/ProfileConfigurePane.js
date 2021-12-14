@@ -49,9 +49,7 @@ export default class ProfileConfigurePane extends Component {
         {!!this.profileNowCompleted && (
           <span class="Masquerade-NowCompleted">
             {app.translator.trans('fof-masquerade.forum.alerts.profile-completed', {
-              a: m(Link, {
-                href: app.route('index'),
-              }),
+              a: <Link href={app.route('index')} />,
             })}
           </span>
         )}
