@@ -19,14 +19,17 @@ export default function addProfilePane() {
 
   extend(UserPage.prototype, 'navItems', function (items) {
     if (app.forum.attribute('canViewMasquerade') || this.user.canEditMasqueradeProfile()) {
+      const edit = this.user.canEditMasqueradeProfile();
+
       items.add(
         'masquerade',
         LinkButton.component(
           {
             href: app.route('fof-masquerade', { username: this.user.slug() }),
             icon: 'far fa-id-card',
+            'data-editProfile': edit,
           },
-          app.translator.trans(`fof-masquerade.forum.buttons.${this.user.canEditMasqueradeProfile() ? 'edit' : 'view'}-profile`)
+          app.translator.trans(`fof-masquerade.forum.buttons.${edit ? 'edit' : 'view'}-profile`)
         ),
         200
       );
