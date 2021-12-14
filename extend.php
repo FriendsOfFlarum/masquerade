@@ -10,6 +10,7 @@ use Flarum\Api\Controller\ShowUserController;
 use Flarum\Api\Controller\UpdateUserController;
 use Flarum\Api\Serializer\BasicUserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
+use Flarum\Api\Serializer\UserSerializer;
 use Flarum\User\Filter\UserFilterer;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
@@ -69,7 +70,7 @@ return [
 
     (new Extend\ApiSerializer(BasicUserSerializer::class))
         ->hasMany('bioFields', AnswerSerializer::class)
-        ->attributes(function (BasicUserSerializer $serializer, User $user, $attributes): array {
+        ->attributes(function (BasicUserSerializer $serializer, User $user): array {
             $actor = $serializer->getActor();
 
             if ($actor->cannot('fof.masquerade.view-profile')) {
@@ -78,19 +79,14 @@ return [
                 $user->setRelation('bioFields', null);
             }
 
-            if ($actor->id === $user->id) {
-                // Own profile
-                $attributes['canEditMasqueradeProfile'] = $actor->can('fof.masquerade.have-profile');
-            } else {
-                // Other's profile
-                $attributes['canEditMasqueradeProfile'] = $actor->can('fof.masquerade.edit-others-profile');
-            }
-
-            return $attributes;
+            return [];
         }),
 
     (new Extend\ApiSerializer(ForumSerializer::class))
         ->attributes(ForumAttributes::class),
+
+    (new Extend\ApiSerializer(UserSerializer::class))
+        ->attributes(UserAttributes::class),
 
     (new Extend\SimpleFlarumSearch(UserSearcher::class))
         ->addGambit(Gambits\AnswerGambit::class),
