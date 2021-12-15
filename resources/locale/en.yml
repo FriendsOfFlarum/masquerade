@@ -22,6 +22,7 @@ fof-masquerade:
             edit-field: Save changes
             delete-field: Delete field
         permissions:
+            edit-others-profile: Edit the profile of other users
             have-profile: Have masquerade profile
             view-profile: View masquerade profile
         fields:
