@@ -16,7 +16,7 @@ export default class ProfileConfigurePane extends Component {
     this.answers = [];
     this.answerValues = {};
     this.user = this.attrs.user;
-    this.load.call(this);
+    this.load();
 
     // Show disabled state if everything is saved
     // Unless the profile isn't complete, in which case show enabled button so it's obvious you will need to save
@@ -56,7 +56,7 @@ export default class ProfileConfigurePane extends Component {
 
   field(field) {
     const type = TypeFactory.typeForField({
-      field: field,
+      field,
       set: this.set.bind(this, field),
       value: this.answerValues[field.id()],
     });

@@ -39,7 +39,7 @@ export default class ProfilePane extends Component {
 
   field(field: Field, content) {
     const type = TypeFactory.typeForField({
-      field: field,
+      field,
       value: content,
     });
 
