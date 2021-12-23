@@ -2,7 +2,7 @@ import app from 'flarum/forum/app';
 
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
-import TypeFactory from './../types/TypeFactory';
+import TypeFactory from '../types/TypeFactory';
 import Component from 'flarum/common/Component';
 
 export default class ProfileConfigurePane extends Component {
@@ -13,8 +13,8 @@ export default class ProfileConfigurePane extends Component {
     this.enforceProfileCompletion = app.forum.attribute('masquerade.force-profile-completion') || false;
     this.profileCompleted = app.forum.attribute('masquerade.profile-completed') || false;
     this.profileNowCompleted = false; // Show "after required" text
-    this.fields = [];
-    this.answers = {};
+    this.answers = [];
+    this.answerValues = {};
     this.user = this.attrs.user;
     this.load();
 
@@ -31,13 +31,10 @@ export default class ProfileConfigurePane extends Component {
         )}
 
         <div class="Fields">
-          {this.fields
+          {app.store
+            .all('masquerade-field')
             .sort((a, b) => a.sort() - b.sort())
             .map((field) => {
-              if (!this.answers.hasOwnProperty(field.id())) {
-                this.answers[field.id()] = field.answer() ? field.answer().content() : '';
-              }
-
               return this.field(field);
             })}
         </div>
@@ -61,23 +58,45 @@ export default class ProfileConfigurePane extends Component {
     const type = TypeFactory.typeForField({
       field,
       set: this.set.bind(this, field),
-      value: this.answers[field.id()],
+      value: this.answerValues[field.id()],
     });
 
     return type.editorField();
   }
 
   load() {
-    app
-      .request({
-        method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/masquerade/configure/' + this.user.id(),
-      })
-      .then(this.parseResponse.bind(this));
+    this.answers = this.user.masqueradeAnswers();
+
+    if (this.answers === false) {
+      this.answers = [];
+      app.store.find('users', this.user.id(), { include: 'masqueradeAnswers' }).then(() => {
+        this.answers = this.user.masqueradeAnswers();
+        this.answerValues = {};
+
+        app.store.all('masquerade-field').forEach((field) => {
+          const answer = this.answers.find((a) => a.field().id() === field.id());
+
+          this.answerValues[field.id()] = answer ? answer.content() : '';
+        });
+
+        this.loading = false;
+        m.redraw();
+      });
+    } else {
+      this.loading = false;
+
+      app.store.all('masquerade-field').forEach((field) => {
+        const answer = this.answers.find((a) => a.field().id() === field.id());
+
+        this.answerValues[field.id()] = answer ? answer.content() : '';
+      });
+    }
+
+    m.redraw();
   }
 
   set(field, value) {
-    this.answers[field.id()] = value;
+    this.answerValues[field.id()] = value;
     this.dirty = true;
   }
 
@@ -90,10 +109,11 @@ export default class ProfileConfigurePane extends Component {
       .request({
         method: 'POST',
         url: app.forum.attribute('apiUrl') + '/masquerade/configure/' + this.user.id(),
-        body: this.answers,
+        body: this.answerValues,
       })
       .then((response) => {
         this.dirty = false;
+
         if (!this.profileCompleted) {
           this.profileCompleted = true;
           this.profileNowCompleted = true;
@@ -108,7 +128,8 @@ export default class ProfileConfigurePane extends Component {
   }
 
   parseResponse(response) {
-    this.fields = app.store.pushPayload(response);
+    console.log(response);
+    this.answers = app.store.pushPayload(response);
     this.loading = false;
     m.redraw();
   }
