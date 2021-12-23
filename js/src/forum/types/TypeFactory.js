@@ -5,7 +5,7 @@ import SelectField from './SelectField';
 import UrlField from './UrlField';
 
 export default class TypeFactory {
-  static typeForField({ field, set, value }) {
+  static typeForField({ field, set = undefined, value }) {
     let className = BaseField;
 
     const type = this.identify(field);

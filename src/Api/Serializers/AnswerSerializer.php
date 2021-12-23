@@ -7,9 +7,14 @@ use Tobscure\JsonApi\Relationship;
 
 class AnswerSerializer extends AbstractSerializer
 {
+    /**
+     * @param \FoF\Masquerade\Answer $model
+     */
     protected function getDefaultAttributes($model): array
     {
-        return $model->toArray();
+        return array_merge($model->toArray(), [
+            'fieldId' => $model->field_id
+        ]);
     }
 
     public function getType($model): string

@@ -1,4 +1,5 @@
 import { extend } from 'flarum/common/extend';
+import app from 'flarum/forum/app';
 import UserCard from 'flarum/forum/components/UserCard';
 import TypeFactory from './types/TypeFactory';
 

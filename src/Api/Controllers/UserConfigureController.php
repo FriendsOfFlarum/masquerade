@@ -10,13 +10,14 @@ use FoF\Masquerade\Validators\AnswerValidator;
 use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\User;
 use Flarum\User\UserRepository;
+use FoF\Masquerade\Api\Serializers\AnswerSerializer;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
 class UserConfigureController extends AbstractListController
 {
-    public $serializer = FieldSerializer::class;
+    public $serializer = AnswerSerializer::class;
 
     public $include = ['answer'];
 
@@ -63,7 +64,11 @@ class UserConfigureController extends AbstractListController
             $this->processUpdate($user, $request->getParsedBody(), $fields);
         }
 
-        return $fields;
+        return $fields->map(function (Field $field) use ($actor) {
+            return $field->answers()->firstOrNew([
+                'user_id' => $actor->id,
+            ]);
+        });
     }
 
     /**

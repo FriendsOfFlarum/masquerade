@@ -23,6 +23,7 @@ app.initializers.add('fof-masquerade', (app) => {
   app.store.models['masquerade-answer'] = Answer;
 
   User.prototype.bioFields = Model.hasMany('bioFields');
+  User.prototype.masqueradeAnswers = Model.hasMany('masqueradeAnswers');
   User.prototype.canEditMasqueradeProfile = Model.attribute('canEditMasqueradeProfile');
 
   addProfilePane();

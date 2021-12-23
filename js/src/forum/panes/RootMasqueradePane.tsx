@@ -14,7 +14,6 @@ export default class RootMasqueradePane extends UserPage {
 
   pageContentComponent() {
     if (!this.user) return null;
-    
 
     if (this.user.canEditMasqueradeProfile()) return <ProfileConfigurePane user={this.user} />;
     else return <ProfilePane user={this.user} />;
