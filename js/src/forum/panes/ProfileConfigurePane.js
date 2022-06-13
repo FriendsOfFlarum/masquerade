@@ -74,7 +74,7 @@ export default class ProfileConfigurePane extends Component {
         this.answerValues = {};
 
         app.store.all('masquerade-field').forEach((field) => {
-          const answer = this.answers.find((a) => a.field().id() === field.id());
+          const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
           this.answerValues[field.id()] = answer ? answer.content() : '';
         });
@@ -86,7 +86,7 @@ export default class ProfileConfigurePane extends Component {
       this.loading = false;
 
       app.store.all('masquerade-field').forEach((field) => {
-        const answer = this.answers.find((a) => a.field().id() === field.id());
+        const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
         this.answerValues[field.id()] = answer ? answer.content() : '';
       });

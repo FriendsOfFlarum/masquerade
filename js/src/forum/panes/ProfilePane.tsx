@@ -28,7 +28,7 @@ export default class ProfilePane extends Component {
             .all('masquerade-field')
             .sort((a, b) => a.sort() - b.sort())
             .map((field) => {
-              const answer = this.answers.find((a) => a.field().id() === field.id());
+              const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
               return this.field(field, answer?.content() || '');
             })}
