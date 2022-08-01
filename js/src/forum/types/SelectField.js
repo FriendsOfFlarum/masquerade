@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import Select from 'flarum/common/components/Select';
 import BaseField from './BaseField';
 
@@ -8,7 +9,7 @@ export default class SelectField extends BaseField {
     return Select.component({
       onchange: (value) => {
         if (value === NO_OPTION_SELECTED_KEY) {
-          value = null;
+          value = '';
         }
 
         this.set(value);
