@@ -100,15 +100,11 @@ class FieldRepository
     {
         $field = $this->field->findOrFail($id);
 
-        if ($field) {
-            $field->delete();
+        $field->delete();
 
-            $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
 
-            return $field;
-        }
-
-        return false;
+        return $field;
     }
 
     /**
@@ -120,18 +116,18 @@ class FieldRepository
      */
     public function completed($userId)
     {
-//      return $this->cache->rememberForever(sprintf(
-//          static::CACHE_KEY_UNCOMPLETED,
-//          $userId
-//      ), function () use ($userId) {
+        //      return $this->cache->rememberForever(sprintf(
+        //          static::CACHE_KEY_UNCOMPLETED,
+        //          $userId
+        //      ), function () use ($userId) {
         return $this->field
-                ->where('required', true)
-                ->whereDoesntHave('answers', function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                })
-                ->count() == 0;
+            ->where('required', true)
+            ->whereDoesntHave('answers', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->count() == 0;
 
-//      });
+        //      });
     }
 
     /**
@@ -167,9 +163,10 @@ class FieldRepository
 
     protected function highestSort(): int
     {
-        /** @var $max Field */
-        $max = Field::orderBy('sort', 'desc')->first();
+        /** @var Field $max */
+        $max = Field::query()->orderBy('sort', 'desc')->first();
 
+        /** @phpstan-ignore-next-line */
         return $max ? $max->sort + 1 : 0;
     }
 }

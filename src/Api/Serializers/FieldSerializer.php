@@ -3,11 +3,16 @@
 namespace FoF\Masquerade\Api\Serializers;
 
 use Flarum\Api\Serializer\AbstractSerializer;
+use FoF\Masquerade\Field;
 use Tobscure\JsonApi\Relationship;
 use Tobscure\JsonApi\Resource;
 
 class FieldSerializer extends AbstractSerializer
 {
+    /**
+     * @param Field $model
+     * @return array
+     */
     protected function getDefaultAttributes($model): array
     {
         return $model->toArray();
@@ -20,7 +25,7 @@ class FieldSerializer extends AbstractSerializer
 
     public function answer($model): ?Relationship
     {
-        if (!$this->getActor()) {
+        if ($this->getActor()->isGuest()) {
             return null;
         }
 
