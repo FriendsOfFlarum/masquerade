@@ -76,18 +76,22 @@ export default class BaseField {
   }
 
   answerField() {
-    const iconName = this.readAttribute(this.field, 'icon');
-
-    return (
-      <div className={`Masquerade-Bio-Set${this.hasAnswer() ? '' : ' Masquerade-Bio-Set--empty'}`}>
-        <span class="Masquerade-Bio-Field">
-          {iconName && <>{icon(iconName)} </>}
-          {this.readAttribute(this.field, 'name')}:{' '}
-        </span>
-        <span class="Masquerade-Bio-Answer">{this.answerContent()}</span>
-      </div>
-    );
+  if (!this.hasAnswer()) {
+    return null;
   }
+
+  const iconName = this.readAttribute(this.field, 'icon');
+
+  return (
+    <div className={`Masquerade-Bio-Set`}>
+      <span class="Masquerade-Bio-Field">
+        {iconName && <>{icon(iconName)} </>}
+        {this.readAttribute(this.field, 'name')}:{' '}
+      </span>
+      <span class="Masquerade-Bio-Answer">{this.answerContent()}</span>
+    </div>
+  );
+}
 
   answerContent() {
     return this.value;
