@@ -12,145 +12,112 @@ export default class FieldEdit {
     const { field, loading, onUpdate } = vnode.attrs;
     const exists = field.id();
 
-    return m(
-      'fieldset.Field',
-      {
-        'data-id': field.id(),
-        key: field.id(),
-      },
-      [
-        m('legend', [
-          exists
-            ? [
-                Button.component({
-                  className: 'Button Button--icon Button--danger',
-                  icon: 'fas fa-trash',
-                  onclick: () => this.deleteField(field, onUpdate),
-                }),
-                ' ',
-              ]
-            : null,
-          m(
-            'span.Field-toggle',
-            {
-              onclick: (e) => this.toggleField(e),
-            },
-            [
-              app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
-                field: field.name(),
-              }),
-              ' ',
-              icon('fas fa-caret-down'),
-            ]
-          ),
-        ]),
-        m('.Field-body', [this.fieldItems(field).toArray()]),
-      ]
+    return (
+      <fieldset className="Field" data-id={field.id()} key={field.id()}>
+        <legend>
+          {exists ? (
+            <Button className="Button Button--icon Button--danger" icon="fas fa-trash" onclick={() => this.deleteField(field, onUpdate)} />
+          ) : null}
+          <span className="Field-toggle" onclick={(e) => this.toggleField(e)}>
+            {app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
+              field: field.name(),
+            })}
+            {icon('fas fa-caret-down')}
+          </span>
+        </legend>
+        <div className="Field-body">{this.fieldItems(field, onUpdate).toArray()}</div>
+      </fieldset>
     );
   }
 
-  fieldItems(field) {
+  fieldItems(field, onUpdate) {
     const fields = new ItemList();
 
     fields.add(
       'name',
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-masquerade.admin.fields.name')),
-        m('input.FormControl', {
-          value: field.name(),
-          oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field)),
-        }),
-        m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.name-help')),
-      ]),
+      <div className="Form-group">
+        <label>{app.translator.trans('fof-masquerade.admin.fields.name')}</label>
+        <input className="FormControl" value={field.name()} oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))} />
+        <span className="helpText">{app.translator.trans('fof-masquerade.admin.fields.name-help')}</span>
+      </div>,
       100
     );
 
     fields.add(
       'description',
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-masquerade.admin.fields.description')),
-        m('input.FormControl', {
-          value: field.description(),
-          oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field)),
-        }),
-        m('span.helpText', app.translator.trans('fof-masquerade.admin.fields.description-help')),
-      ]),
+      <div className="Form-group">
+        <label>{app.translator.trans('fof-masquerade.admin.fields.description')}</label>
+        <input
+          className="FormControl"
+          value={field.description()}
+          oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))}
+        />
+        <span className="helpText">{app.translator.trans('fof-masquerade.admin.fields.description-help')}</span>
+      </div>,
       90
     );
 
     fields.add(
       'icon',
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-masquerade.admin.fields.icon')),
-        m('input.FormControl', {
-          value: field.icon(),
-          oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field)),
-        }),
-        m(
-          'span.helpText',
-          app.translator.trans('fof-masquerade.admin.fields.icon-help', {
+      <div className="Form-group">
+        <label>{app.translator.trans('fof-masquerade.admin.fields.icon')}</label>
+        <input className="FormControl" value={field.icon()} oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))} />
+        <span className="helpText">
+          {app.translator.trans('fof-masquerade.admin.fields.icon-help', {
             a: <a href="https://fontawesome.com/icons?m=free" target="_blank" />,
-          })
-        ),
-      ]),
+          })}
+        </span>
+      </div>,
       80
     );
 
     fields.add(
       'on_bio',
-      m('.Form-group', [
-        Switch.component(
-          {
-            state: field.on_bio(),
-            onchange: this.updateExistingFieldInput.bind(this, 'on_bio', field),
-          },
-          app.translator.trans('fof-masquerade.admin.fields.on_bio')
-        ),
-      ]),
+      <div className="Form-group">
+        <Switch state={field.on_bio()} onchange={this.updateExistingFieldInput.bind(this, 'on_bio', field)}>
+          {app.translator.trans('fof-masquerade.admin.fields.on_bio')}
+        </Switch>
+      </div>,
       70
     );
 
     fields.add(
       'required',
-      m('.Form-group', [
-        Switch.component(
-          {
-            state: field.required(),
-            onchange: this.updateExistingFieldInput.bind(this, 'required', field),
-          },
-          app.translator.trans('fof-masquerade.admin.fields.required')
-        ),
-      ]),
+      <div className="Form-group">
+        <Switch state={field.required()} onchange={this.updateExistingFieldInput.bind(this, 'required', field)}>
+          {app.translator.trans('fof-masquerade.admin.fields.required')}
+        </Switch>
+      </div>,
       60
     );
 
     fields.add(
       'type',
-      m('.Form-group', [
-        m('label', app.translator.trans('fof-masquerade.admin.fields.type')),
-        Select.component({
-          onchange: (value) => {
+      <div className="Form-group">
+        <label>{app.translator.trans('fof-masquerade.admin.fields.type')}</label>
+        <Select
+          onchange={(value) => {
             if (value === 'null') {
               value = null;
             }
             this.updateExistingFieldInput('type', field, value);
-          },
-          options: this.availableTypes(),
-          value: field.type(),
-        }),
-      ]),
+          }}
+          options={this.availableTypes()}
+          value={field.type()}
+        />
+      </div>,
       50
     );
 
     if (field.type() === 'select') {
       fields.add(
         'select_options',
-        SelectFieldOptionEditor.component({
-          onchange: (value) => {
+        <SelectFieldOptionEditor
+          onchange={(value) => {
             this.updateExistingFieldInput('validation', field, value);
-          },
-          value: field.validation(),
-        }),
+          }}
+          value={field.validation()}
+        />,
         40
       );
     }
@@ -158,48 +125,42 @@ export default class FieldEdit {
     if (field.type() === null) {
       fields.add(
         'validation',
-        m('.Form-group', [
-          m('label', app.translator.trans('fof-masquerade.admin.fields.validation')),
-          m('input.FormControl', {
-            value: field.validation(),
-            oninput: withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field)),
-          }),
-          m(
-            'span.helpText',
-            app.translator.trans('fof-masquerade.admin.fields.validation-help', {
+        <div className="Form-group">
+          <label>{app.translator.trans('fof-masquerade.admin.fields.validation')}</label>
+          <input
+            className="FormControl"
+            value={field.validation()}
+            oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))}
+          />
+          <span className="helpText">
+            {app.translator.trans('fof-masquerade.admin.fields.validation-help', {
               a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules" target="_blank" />,
-            })
-          ),
-        ]),
+            })}
+          </span>
+        </div>,
         30
       );
     }
 
     fields.add(
       'actions',
-      m('.Form-group', [
-        m('.ButtonGroup', [
-          Button.component(
-            {
-              className: 'Button Button--primary',
-              loading: this.loading,
-              disabled: !this.readyToAdd(field),
-              onclick: field.id() ? this.updateExistingField.bind(this, field, this.onUpdate) : this.submitAddField.bind(this, field, this.onUpdate),
-            },
-            app.translator.trans('fof-masquerade.admin.buttons.' + (field.id() ? 'edit' : 'add') + '-field')
-          ),
-          field.id()
-            ? Button.component(
-                {
-                  className: 'Button Button--danger',
-                  loading: this.loading,
-                  onclick: this.deleteField.bind(this, field, this.onUpdate),
-                },
-                app.translator.trans('fof-masquerade.admin.buttons.delete-field')
-              )
-            : null,
-        ]),
-      ]),
+      <div className="Form-group">
+        <div className="ButtonGroup">
+          <Button
+            className="Button Button--primary"
+            loading={this.loading}
+            disabled={!this.readyToAdd(field)}
+            onclick={field.id() ? this.updateExistingField.bind(this, field, onUpdate) : this.submitAddField.bind(this, field, onUpdate)}
+          >
+            {app.translator.trans('fof-masquerade.admin.buttons.' + (field.id() ? 'edit' : 'add') + '-field')}
+          </Button>
+          {field.id() ? (
+            <Button className="Button Button--danger" loading={this.loading} onclick={this.deleteField.bind(this, field, onUpdate)}>
+              {app.translator.trans('fof-masquerade.admin.buttons.delete-field')}
+            </Button>
+          ) : null}
+        </div>
+      </div>,
       20
     );
 
