@@ -64,7 +64,7 @@ export default class MasqueradePage extends ExtensionPage {
           )
         ),
         m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
-        m(FieldList, { existing: this.existing, new: this.new, loading: this.loading, onUpdate: this.requestSuccess.bind(this) }),
+        m(FieldList, { existing: this.existing, new: this.newField, loading: this.loading, onUpdate: this.requestSuccess.bind(this) }),
       ])
     );
   }
@@ -82,15 +82,8 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   requestSuccess() {
-    this.existing = app.store.all('masquerade-field');
-
-    this.existing.sort((a, b) => {
-      if (a.sort() < b.sort()) return -1;
-      if (a.sort() > b.sort()) return 1;
-      return 0;
-    });
-
-    this.loading = false;
+    this.loadExisting();
+    this.resetNew();
     m.redraw();
   }
 
@@ -104,12 +97,15 @@ export default class MasqueradePage extends ExtensionPage {
       })
       .then((result) => {
         app.store.pushPayload(result);
-        this.requestSuccess();
+        this.existing = app.store.all('masquerade-field');
+        this.existing.sort((a, b) => a.sort() - b.sort());
+        this.loading = false;
+        m.redraw();
       });
   }
 
   resetNew() {
-    this.new = app.store.createRecord('masquerade-field', {
+    this.newField = app.store.createRecord('masquerade-field', {
       attributes: {
         name: '',
         description: '',

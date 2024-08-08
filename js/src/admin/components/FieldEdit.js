@@ -176,12 +176,10 @@ export default class FieldEdit {
   submitAddField(field, onUpdate, e) {
     e.preventDefault();
 
-    field
-      .save(field.data.attributes)
-      .then(onUpdate)
-      .then(() => {
-        this.resetNew();
-      });
+    field.save(field.data.attributes).then(() => {
+      onUpdate();
+      this.resetNewField();
+    });
 
     m.redraw();
   }
@@ -190,6 +188,22 @@ export default class FieldEdit {
     if (!field.id()) return;
 
     field.save(field.data.attributes).then(onUpdate);
+  }
+
+  resetNewField() {
+    this.newField = app.store.createRecord('masquerade-field', {
+      attributes: {
+        name: '',
+        description: '',
+        prefix: '',
+        icon: '',
+        required: false,
+        on_bio: false,
+        type: null,
+        validation: '',
+      },
+    });
+    m.redraw();
   }
 
   readyToAdd(field) {
