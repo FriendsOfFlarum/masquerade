@@ -1,5 +1,5 @@
 import Extend from 'flarum/common/extenders';
-import Field from '../common/models/Field';
+import Field from '../lib/models/Field';
 
 export default [
   new Extend.Store() //

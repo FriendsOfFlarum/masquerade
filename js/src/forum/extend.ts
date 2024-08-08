@@ -1,7 +1,7 @@
 import Extend from 'flarum/common/extenders';
 import User from 'flarum/common/models/User';
-import Field from '../common/models/Field';
-import Answer from '../common/models/Answer';
+import Field from '../lib/models/Field';
+import Answer from '../lib/models/Answer';
 
 import { default as commonExtend } from '../common/extend';
 
