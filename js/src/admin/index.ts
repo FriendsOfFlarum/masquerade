@@ -1,10 +1,7 @@
 import app from 'flarum/admin/app';
-import Field from './../lib/models/Field';
 import MasqueradePage from './components/MasqueradePage';
 
 app.initializers.add('fof-masquerade', () => {
-  app.store.models['masquerade-field'] = Field;
-
   app.extensionData
     .for('fof-masquerade')
     .registerPage(MasqueradePage)
@@ -34,3 +31,5 @@ app.initializers.add('fof-masquerade', () => {
       'moderate'
     );
 });
+
+export { default as extend } from './extend';
