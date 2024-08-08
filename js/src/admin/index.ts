@@ -33,3 +33,4 @@ app.initializers.add('fof-masquerade', () => {
 });
 
 export { default as extend } from './extend';
+export * from './components';
