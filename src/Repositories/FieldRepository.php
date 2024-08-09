@@ -42,7 +42,7 @@ class FieldRepository
         $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
     }
 
-    public function findOrFail(string $id): Field
+    public function findOrFail(string $id)
     {
         return $this->field->newQuery()->findOrFail($id);
     }
