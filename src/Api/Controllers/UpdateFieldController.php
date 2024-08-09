@@ -2,38 +2,37 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
+use Flarum\User\Exception\PermissionDeniedException;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
-use FoF\Masquerade\Validators\FieldValidator;
-use Flarum\Api\Controller\AbstractShowController;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class UpdateFieldController extends AbstractShowController
+class UpdateFieldController extends AbstractCreateController
 {
     public $serializer = FieldSerializer::class;
 
-    protected $validator;
-    protected $fields;
-
-    public function __construct(FieldValidator $validator, FieldRepository $fields)
+    public function __construct (
+        protected FieldRepository $field
+    )
     {
-        $this->validator = $validator;
-        $this->fields = $fields;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        RequestUtil::getActor($request)->assertAdmin();
+        $actor = RequestUtil::getActor($request);
+        $actor->assertAdmin();
 
         $id = Arr::get($request->getQueryParams(), 'id');
 
-        $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
+       $field = $this->field->findOrFail($id);
 
-        $this->validator->assertValid($attributes);
+       $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
-        return $this->fields->update($id, $attributes);
+       return $this->field->update($actor, $field, $attributes);
     }
 }

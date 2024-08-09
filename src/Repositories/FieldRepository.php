@@ -5,6 +5,7 @@ namespace FoF\Masquerade\Repositories;
 use FoF\Masquerade\Answer;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Events\FieldCreated;
+use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\FieldType\TypeFactory;
 use FoF\Masquerade\Validators\FieldValidator;
@@ -60,22 +61,19 @@ class FieldRepository
         return $field;
     }
 
-    public function update($id, array $attributes): Field
+    public function update(User $actor, Field $field, array $attributes): Field
     {
-        /** @var Field */
-        $field = $this->field->findOrFail($id);
-
-        $type = TypeFactory::typeForField($attributes);
-
-        $attributes = array_merge($attributes, $type->overrideAttributes());
+        $this->validator->assertValid($attributes);
 
         $field->fill($attributes);
 
         if ($field->isDirty()) {
             $field->save();
-        }
 
-        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+            $this->events->dispatch(new FieldUpdated($field, $actor, $attributes));
+
+            $this->clearCacheAllFields();
+        }
 
         return $field;
     }
