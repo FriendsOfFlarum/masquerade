@@ -4,11 +4,9 @@ namespace FoF\Masquerade\Api\Controllers;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
-use Flarum\User\Exception\PermissionDeniedException;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
 use Illuminate\Support\Arr;
-use Illuminate\Validation\ValidationException;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
