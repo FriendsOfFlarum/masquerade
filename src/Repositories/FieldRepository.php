@@ -60,7 +60,7 @@ class FieldRepository
         return $field;
     }
 
-    public function update(User $actor, $id, array $attributes): Field
+    public function update($id, array $attributes): Field
     {
         /** @var Field */
         $field = $this->field->findOrFail($id);
