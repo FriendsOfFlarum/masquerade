@@ -4,32 +4,24 @@ namespace FoF\Masquerade\Repositories;
 
 use FoF\Masquerade\Answer;
 use FoF\Masquerade\Field;
+use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\User\User;
 use Illuminate\Cache\Repository;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class FieldRepository
 {
     const CACHE_KEY_ALL_FIELDS = 'fof.masquerade.fields.all';
     const CACHE_KEY_UNCOMPLETED = 'fof.masquerade.uncompleted.u.%d';
 
-    /**
-     * @var Field
-     */
-    protected $field;
-    /**
-     * @var Repository
-     */
-    protected $cache;
-
-    /**
-     * FieldRepository constructor.
-     * @param Field $field
-     * @param Repository $cache
-     */
-    public function __construct(Field $field, Repository $cache)
+    public function __construct (
+        protected Field $field,
+        protected FieldValidator $validator,
+        protected Repository $cache,
+        protected Dispatcher $events
+    )
     {
-        $this->field = $field;
         $this->cache = $cache;
     }
 
@@ -92,19 +84,15 @@ class FieldRepository
         $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
     }
 
-    /**
-     * @param $id
-     * @return bool|Field
-     */
-    public function delete($id)
+    public function delete(User $actor, Field $field)
     {
-        $field = $this->field->findOrFail($id);
+        $response = $field->delete();
 
-        $field->delete();
+        $this->events->dispatch(new FieldDeleted($field, $actor, []));
 
-        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+        $this->clearCacheAllFields();
 
-        return $field;
+        return $response;
     }
 
     /**
