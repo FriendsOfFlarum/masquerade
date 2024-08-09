@@ -51,6 +51,9 @@ class FieldRepository
     {
         $this->validator->assertValid($attributes);
 
+        $type = TypeFactory::typeForField($attributes);
+        $attributes = array_merge($attributes, $type->overrideAttributes());
+
         $field = new Field($attributes);
         $field->save();
 
@@ -64,6 +67,9 @@ class FieldRepository
     public function update(User $actor, Field $field, array $attributes): Field
     {
         $this->validator->assertValid($attributes);
+
+        $type = TypeFactory::typeForField($attributes);
+        $attributes = array_merge($attributes, $type->overrideAttributes());
 
         $field->fill($attributes);
 
