@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class FieldStoreController extends AbstractCreateController
+class StoreFieldController extends AbstractCreateController
 {
     public $serializer = FieldSerializer::class;
 
