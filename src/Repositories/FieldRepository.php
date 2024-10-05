@@ -4,33 +4,27 @@ namespace FoF\Masquerade\Repositories;
 
 use FoF\Masquerade\Answer;
 use FoF\Masquerade\Field;
+use FoF\Masquerade\Events\FieldCreated;
+use FoF\Masquerade\Events\FieldUpdated;
+use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\FieldType\TypeFactory;
+use FoF\Masquerade\Validators\FieldValidator;
 use Flarum\User\User;
 use Illuminate\Cache\Repository;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class FieldRepository
 {
     const CACHE_KEY_ALL_FIELDS = 'fof.masquerade.fields.all';
     const CACHE_KEY_UNCOMPLETED = 'fof.masquerade.uncompleted.u.%d';
 
-    /**
-     * @var Field
-     */
-    protected $field;
-    /**
-     * @var Repository
-     */
-    protected $cache;
-
-    /**
-     * FieldRepository constructor.
-     * @param Field $field
-     * @param Repository $cache
-     */
-    public function __construct(Field $field, Repository $cache)
+    public function __construct (
+        protected Field $field,
+        protected FieldValidator $validator,
+        protected Repository $cache,
+        protected Dispatcher $events
+    )
     {
-        $this->field = $field;
-        $this->cache = $cache;
     }
 
     /**
@@ -43,39 +37,49 @@ class FieldRepository
         });
     }
 
-    public function store(array $attributes): Field
+    public function clearCacheAllFields()
     {
-        $field = $this->field->newInstance();
-        $field->sort = $this->highestSort();
+        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+    }
+
+    public function findOrFail(string $id)
+    {
+        return $this->field->newQuery()->findOrFail($id);
+    }
+
+    public function store(User $actor, array $attributes): Field
+    {
+        $this->validator->assertValid($attributes);
 
         $type = TypeFactory::typeForField($attributes);
-
         $attributes = array_merge($attributes, $type->overrideAttributes());
 
-        $field->fill($attributes);
+        $field = new Field($attributes);
         $field->save();
 
-        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+        $this->events->dispatch(new FieldCreated($field, $actor, $attributes));
+
+        $this->clearCacheAllFields();
 
         return $field;
     }
 
-    public function update($id, array $attributes): Field
+    public function update(User $actor, Field $field, array $attributes): Field
     {
-        /** @var Field */
-        $field = $this->field->findOrFail($id);
+        $this->validator->assertValid($attributes);
 
         $type = TypeFactory::typeForField($attributes);
-
         $attributes = array_merge($attributes, $type->overrideAttributes());
 
         $field->fill($attributes);
 
         if ($field->isDirty()) {
             $field->save();
-        }
 
-        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+            $this->events->dispatch(new FieldUpdated($field, $actor, $attributes));
+
+            $this->clearCacheAllFields();
+        }
 
         return $field;
     }
@@ -92,19 +96,15 @@ class FieldRepository
         $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
     }
 
-    /**
-     * @param $id
-     * @return bool|Field
-     */
-    public function delete($id)
+    public function delete(User $actor, Field $field)
     {
-        $field = $this->field->findOrFail($id);
+        $response = $field->delete();
 
-        $field->delete();
+        $this->events->dispatch(new FieldDeleted($field, $actor, []));
 
-        $this->cache->forget(static::CACHE_KEY_ALL_FIELDS);
+        $this->clearCacheAllFields();
 
-        return $field;
+        return $response;
     }
 
     /**

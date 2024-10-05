@@ -3,7 +3,6 @@
 namespace FoF\Masquerade\Api\Controllers;
 
 use Flarum\Http\RequestUtil;
-use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
