@@ -2,36 +2,31 @@
 
 namespace FoF\Masquerade\Api\Controllers;
 
+use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
-use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use FoF\Masquerade\Repositories\FieldRepository;
-use FoF\Masquerade\Validators\FieldValidator;
-use Flarum\Api\Controller\AbstractShowController;
+use FoF\Masquerade\Api\Serializers\FieldSerializer;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 
-class StoreFieldController extends AbstractShowController
+class StoreFieldController extends AbstractCreateController
 {
     public $serializer = FieldSerializer::class;
 
-    protected $validator;
-    protected $fields;
-
-    public function __construct(FieldValidator $validator, FieldRepository $fields)
+    public function __construct(
+        protected FieldRepository $fields
+    )
     {
-        $this->validator = $validator;
-        $this->fields = $fields;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        RequestUtil::getActor($request)->assertAdmin();
+       $actor = RequestUtil::getActor($request);
+       $actor->assertAdmin();
 
         $attributes = Arr::get($request->getParsedBody(), 'data.attributes', []);
 
-        $this->validator->assertValid($attributes);
-
-        return $this->fields->store($attributes);
+        return $this->fields->store($actor, $attributes);
     }
 }
