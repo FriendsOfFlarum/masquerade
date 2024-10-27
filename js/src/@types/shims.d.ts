@@ -1,3 +1,5 @@
+import 'flarum/common/models/User';
+
 import type Field from '../lib/models/Field';
 import type Answer from '../lib/models/Answer';
 
