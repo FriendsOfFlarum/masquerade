@@ -1,23 +1,32 @@
 import app from 'flarum/forum/app';
 
-import Component from 'flarum/common/Component';
+import Component, { ComponentAttrs } from 'flarum/common/Component';
 import TypeFactory from '../types/TypeFactory';
+
 import type Answer from '../../lib/models/Answer';
 import type Field from 'src/lib/models/Field';
 import type User from 'flarum/common/models/User';
+import type Mithril from 'mithril';
 
-export default class ProfilePane extends Component {
+export interface ProfilePaneAttrs extends ComponentAttrs {
+  answers: Answer[];
+  user: User;
+  loading: boolean;
+}
+
+export default class ProfilePane extends Component<ProfilePaneAttrs> {
   answers!: Answer[];
   user!: User;
+  loading!: boolean;
 
-  oninit(vnode) {
+  oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
     this.loading = true;
 
     this.answers = [];
     this.user = this.attrs.user;
 
-    this.load(this.user);
+    this.load();
   }
 
   view() {
@@ -49,9 +58,15 @@ export default class ProfilePane extends Component {
   load() {
     this.answers = this.user.masqueradeAnswers();
 
+    const userId = this.user.id();
+
+    console.log('test', userId);
+    if (!userId) return;
+
+    console.log('THis answers: ', this.answers);
     if (this.answers === false) {
       this.answers = [];
-      app.store.find('users', this.user.id(), { include: 'masqueradeAnswers' }).then(() => {
+      app.store.find('users', userId, { include: 'masqueradeAnswers' }).then(() => {
         this.answers = this.user.masqueradeAnswers();
         m.redraw();
       });
