@@ -35,18 +35,18 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
         <div class="Fields">
           {app.store
             .all('masquerade-field')
-            .sort((a, b) => a.sort() - b.sort())
+            .sort((a, b) => (a as Field).sort() - (b as Field).sort())
             .map((field) => {
               const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-              return this.field(field, answer?.content() || '');
+              return this.field(field as Field, (answer?.content() as Answer) || null);
             })}
         </div>
       </div>
     );
   }
 
-  field(field: Field, content) {
+  field(field: Field, content: Answer | null) {
     const type = TypeFactory.typeForField({
       field,
       value: content,
@@ -57,20 +57,17 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
 
   load() {
     this.answers = this.user.masqueradeAnswers();
-
     const userId = this.user.id();
 
-    console.log('test', userId);
     if (!userId) return;
 
-    console.log('THis answers: ', this.answers);
-    if (this.answers === false) {
-      this.answers = [];
-      app.store.find('users', userId, { include: 'masqueradeAnswers' }).then(() => {
-        this.answers = this.user.masqueradeAnswers();
-        m.redraw();
-      });
-    }
+    if (this.answers) return;
+
+    this.answers = [];
+    app.store.find<User>('users', userId, { include: 'masqueradeAnswers' }).then(() => {
+      this.answers = this.user.masqueradeAnswers();
+      m.redraw();
+    });
 
     m.redraw();
   }
