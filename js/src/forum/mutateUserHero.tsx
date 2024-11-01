@@ -10,7 +10,7 @@ import type User from 'flarum/common/models/User';
 export default function mutateUserHero() {
   extend(UserCard.prototype, 'infoItems', function (items: ItemList<Mithril.Children>) {
     const user = (this.attrs as { user: User }).user;
-    const answers = app.forum.attribute('canViewMasquerade') ? user.bioFields() || [] : [];
+    const answers = app.forum.attribute<boolean>('canViewMasquerade') ? user.bioFields() || [] : [];
 
     items.add(
       'masquerade-bio',
