@@ -55,7 +55,7 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
     return type.answerField();
   }
 
-  load() {
+  async load() {
     this.answers = this.user.masqueradeAnswers();
     const userId = this.user.id();
 
