@@ -21,7 +21,7 @@ export default function addProfilePane() {
   };
 
   extend(UserPage.prototype, 'navItems', function (items: ItemList<Mithril.Children>) {
-    if (app.forum.attribute('canViewMasquerade') || this.user?.canEditMasqueradeProfile()) {
+    if (app.forum.attribute<boolean>('canViewMasquerade') || this.user?.canEditMasqueradeProfile()) {
       const edit = this.user?.canEditMasqueradeProfile();
 
       items.add(
