@@ -128,7 +128,6 @@ export default class ProfileConfigurePane extends Component {
   }
 
   parseResponse(response) {
-    console.log(response);
     this.answers = app.store.pushPayload(response);
     this.loading = false;
     m.redraw();

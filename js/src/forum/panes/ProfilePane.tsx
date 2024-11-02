@@ -1,23 +1,32 @@
 import app from 'flarum/forum/app';
 
-import Component from 'flarum/common/Component';
+import Component, { ComponentAttrs } from 'flarum/common/Component';
 import TypeFactory from '../types/TypeFactory';
+
 import type Answer from '../../lib/models/Answer';
 import type Field from 'src/lib/models/Field';
 import type User from 'flarum/common/models/User';
+import type Mithril from 'mithril';
 
-export default class ProfilePane extends Component {
+export interface ProfilePaneAttrs extends ComponentAttrs {
+  answers: Answer[];
+  user: User;
+  loading: boolean;
+}
+
+export default class ProfilePane extends Component<ProfilePaneAttrs> {
   answers!: Answer[];
   user!: User;
+  loading!: boolean;
 
-  oninit(vnode) {
+  oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
     this.loading = true;
 
     this.answers = [];
     this.user = this.attrs.user;
 
-    this.load(this.user);
+    this.load();
   }
 
   view() {
@@ -26,18 +35,18 @@ export default class ProfilePane extends Component {
         <div class="Fields">
           {app.store
             .all('masquerade-field')
-            .sort((a, b) => a.sort() - b.sort())
+            .sort((a, b) => (a as Field).sort() - (b as Field).sort())
             .map((field) => {
               const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-              return this.field(field, answer?.content() || '');
+              return this.field(field as Field, (answer?.content() as Answer) || null);
             })}
         </div>
       </div>
     );
   }
 
-  field(field: Field, content) {
+  field(field: Field, content: Answer | null) {
     const type = TypeFactory.typeForField({
       field,
       value: content,
@@ -46,16 +55,19 @@ export default class ProfilePane extends Component {
     return type.answerField();
   }
 
-  load() {
+  async load() {
     this.answers = this.user.masqueradeAnswers();
+    const userId = this.user.id();
 
-    if (this.answers === false) {
-      this.answers = [];
-      app.store.find('users', this.user.id(), { include: 'masqueradeAnswers' }).then(() => {
-        this.answers = this.user.masqueradeAnswers();
-        m.redraw();
-      });
-    }
+    if (!userId) return;
+
+    if (this.answers) return;
+
+    this.answers = [];
+    app.store.find<User>('users', userId, { include: 'masqueradeAnswers' }).then(() => {
+      this.answers = this.user.masqueradeAnswers();
+      m.redraw();
+    });
 
     m.redraw();
   }

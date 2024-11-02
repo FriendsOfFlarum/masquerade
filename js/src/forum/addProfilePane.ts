@@ -5,6 +5,9 @@ import LinkButton from 'flarum/common/components/LinkButton';
 import UserPage from 'flarum/forum/components/UserPage';
 import RootMasqueradePane from './panes/RootMasqueradePane';
 
+import type ItemList from 'flarum/common/utils/ItemList';
+import type Mithril from 'mithril';
+
 export default function addProfilePane() {
   app.routes['fof-masquerade'] = {
     path: '/u/:username/masquerade',
@@ -17,15 +20,15 @@ export default function addProfilePane() {
     },
   };
 
-  extend(UserPage.prototype, 'navItems', function (items) {
-    if (app.forum.attribute('canViewMasquerade') || this.user.canEditMasqueradeProfile()) {
-      const edit = this.user.canEditMasqueradeProfile();
+  extend(UserPage.prototype, 'navItems', function (items: ItemList<Mithril.Children>) {
+    if (app.forum.attribute<boolean>('canViewMasquerade') || this.user?.canEditMasqueradeProfile()) {
+      const edit = this.user?.canEditMasqueradeProfile();
 
       items.add(
         'masquerade',
         LinkButton.component(
           {
-            href: app.route('fof-masquerade', { username: this.user.slug() }),
+            href: app.route('fof-masquerade', { username: this.user?.slug() }),
             icon: 'far fa-id-card',
             'data-editProfile': edit,
           },

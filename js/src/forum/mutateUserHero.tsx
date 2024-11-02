@@ -3,9 +3,14 @@ import app from 'flarum/forum/app';
 import UserCard from 'flarum/forum/components/UserCard';
 import TypeFactory from './types/TypeFactory';
 
+import type ItemList from 'flarum/common/utils/ItemList';
+import type Mithril from 'mithril';
+import type User from 'flarum/common/models/User';
+
 export default function mutateUserHero() {
-  extend(UserCard.prototype, 'infoItems', function (items) {
-    const answers = app.forum.attribute('canViewMasquerade') ? this.attrs.user.bioFields() || [] : [];
+  extend(UserCard.prototype, 'infoItems', function (items: ItemList<Mithril.Children>) {
+    const user = (this.attrs as { user: User }).user;
+    const answers = app.forum.attribute<boolean>('canViewMasquerade') ? user.bioFields() || [] : [];
 
     items.add(
       'masquerade-bio',
@@ -14,7 +19,7 @@ export default function mutateUserHero() {
           const field = answer.attribute('field');
           const type = TypeFactory.typeForField({
             field,
-            value: answer.content(),
+            value: answer.attribute('content'),
           });
 
           return type.answerField();
