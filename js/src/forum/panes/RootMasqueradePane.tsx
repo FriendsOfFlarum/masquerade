@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import ProfilePane from './ProfilePane';
@@ -11,6 +12,10 @@ export default class RootMasqueradePane extends UserPage {
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
+
+    if (!app.forum.attribute('canViewMasquerade')) {
+      m.route.set(app.route('index'));
+    }
 
     this.loadUser(m.route.param('username'));
   }
