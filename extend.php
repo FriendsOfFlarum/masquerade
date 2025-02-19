@@ -12,6 +12,7 @@ use Flarum\Api\Controller\UpdateUserController;
 use Flarum\Api\Serializer\BasicUserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Api\Serializer\UserSerializer;
+use Flarum\Gdpr\Extend\UserData;
 use Flarum\User\Filter\UserFilterer;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
@@ -109,4 +110,10 @@ return [
 
     (new Extend\Filter(UserFilterer::class))
         ->addFilter(Gambits\AnswerGambit::class),
+
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-gdpr', fn () => [
+            (new UserData())
+                ->addType(Data\MasqueradeAnswers::class),
+        ]),
 ];

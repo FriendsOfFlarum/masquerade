@@ -44,7 +44,10 @@
                 "backgroundSize": "90%",
                 "backgroundRepeat": "no-repeat",
                 "backgroundPosition": "center"
-            }
+            },
+            "optional-dependencies": [
+                "flarum/gdpr"
+            ]
         },
         "flagrow": {
             "discuss": "https://discuss.flarum.org/d/5791"
@@ -61,7 +64,8 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "*"
+        "flarum/phpstan": "*",
+        "flarum/gdpr": "^1.0.0@beta"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
