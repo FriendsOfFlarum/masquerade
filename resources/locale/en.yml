@@ -60,3 +60,11 @@ fof-masquerade:
             email: Email
             select: Dropdown
             url: URL
+
+flarum-gdpr:
+    lib:
+        data:
+            masqueradeanswers:
+                export_description: Exports the user's profile field answers
+                delete_description: Removes all profile field answers from the user's account
+                anonymize_description: => flarum-gdpr.lib.data.masqueradeanswers.delete_description
