@@ -1,3 +1,5 @@
+.idea
+.vscode
 js/node_modules
 vendor/
 composer.lock
