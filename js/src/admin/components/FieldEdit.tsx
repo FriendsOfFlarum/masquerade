@@ -37,7 +37,7 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
             {app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
               field: field.name(),
             })}
-            {icon('fas fa-caret-down')}
+            {icon(`fas fa-caret-${this.active ? 'up' : 'down'}`)}
           </span>
         </legend>
         <div className="Field-body">{this.fieldItems(field, onUpdate).toArray()}</div>
