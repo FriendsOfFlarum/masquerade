@@ -1,20 +1,15 @@
 <?php
 
-namespace FoF\Masquerade\Gambits;
+namespace FoF\Masquerade\Filters;
 
-use Flarum\Filter\FilterInterface;
-use Flarum\Filter\FilterState;
+use Flarum\Search\Filter\FilterInterface;
 use Flarum\Search\AbstractRegexGambit;
 use Flarum\Search\SearchState;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Expression;
 
-class AnswerGambit extends AbstractRegexGambit implements FilterInterface
+class AnswerFilter implements FilterInterface
 {
-    protected function getGambitPattern(): string
-    {
-        return 'answer:(.+)';
-    }
 
     public function apply(SearchState $search, $bit): bool
     {
@@ -25,24 +20,17 @@ class AnswerGambit extends AbstractRegexGambit implements FilterInterface
         return parent::apply($search, $bit);
     }
 
-    protected function conditions(SearchState $search, array $matches, $negate)
-    {
-        $bit = $matches[1];
-
-        $this->constrain($search->getQuery(), $bit, $negate);
-    }
-
     public function getFilterKey(): string
     {
         return 'answer';
     }
 
-    public function filter(FilterState $filterState, string $filterValue, bool $negate)
+    public function filter(SearchState $state, array|string $value, bool $negate): void
     {
-        $this->constrain($filterState->getQuery(), $filterValue, $negate);
+        $this->constrain($state->getQuery(), $value, $negate);
     }
 
-    protected function constrain(Builder $query, string $bit, bool $negate)
+    protected function constrain(\Illuminate\Database\Eloquent\Builder $query, string $actor, bool $negate): void
     {
         $query->whereExists(function (Builder $query) use ($bit) {
             $query->select($query->raw(1))

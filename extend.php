@@ -107,7 +107,8 @@ return [
                 $user->setRelation('masqueradeAnswers', null);
             }
 
-            return [];
+            return [(new Extend\SearchDriver(\Flarum\Search\Database\DatabaseSearchDriver::class))
+        ->addFilter(UserSearcher::class, Filters\AnswerFilter::class)];
         }),
 
     // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
@@ -130,4 +131,6 @@ return [
             (new UserData())
                 ->addType(Data\MasqueradeAnswers::class),
         ]),
+    (new Extend\SearchDriver(\Flarum\Search\Database\DatabaseSearchDriver::class))
+        ->addFilter(UserSearcher::class, Filters\AnswerFilter::class),
 ];

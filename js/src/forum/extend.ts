@@ -1,3 +1,4 @@
+import commonExtend from '../common/extend';
 import Extend from 'flarum/common/extenders';
 import User from 'flarum/common/models/User';
 import Field from '../lib/models/Field';
