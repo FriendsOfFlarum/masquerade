@@ -1,4 +1,3 @@
-/// <reference types="flarum/@types/translator-icu-rich" />
 export default class FieldEdit {
     view(vnode: any): JSX.Element;
     fieldItems(field: any, onUpdate: any): ItemList<any>;
@@ -18,4 +17,4 @@ export default class FieldEdit {
         null: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
     };
 }
-import ItemList from "flarum/common/utils/ItemList";
+import ItemList from 'flarum/common/utils/ItemList';

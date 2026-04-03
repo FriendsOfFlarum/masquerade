@@ -10,4 +10,4 @@ export default class SelectFieldOptionEditor extends Component<any, undefined> {
     deleteOption(index: any): void;
     addOption(): void;
 }
-import Component from "flarum/common/Component";
+import Component from 'flarum/common/Component';

@@ -17,8 +17,8 @@ export default class TypeFactory {
      */
     static identify(field: any): null | string;
 }
-import BaseField from "./BaseField";
-import BooleanField from "./BooleanField";
-import EmailField from "./EmailField";
-import SelectField from "./SelectField";
-import UrlField from "./UrlField";
+import BaseField from './BaseField';
+import BooleanField from './BooleanField';
+import EmailField from './EmailField';
+import SelectField from './SelectField';
+import UrlField from './UrlField';

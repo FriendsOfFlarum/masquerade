@@ -16,4 +16,4 @@ export default class ProfileConfigurePane extends Component<any, undefined> {
     update(e: any): void;
     parseResponse(response: any): void;
 }
-import Component from "flarum/common/Component";
+import Component from 'flarum/common/Component';

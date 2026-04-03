@@ -11,4 +11,4 @@ export default class Field extends Model {
     answer: () => false | Model;
     on_bio: () => any;
 }
-import Model from "flarum/common/Model";
+import Model from 'flarum/common/Model';

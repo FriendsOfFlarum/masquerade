@@ -13,6 +13,6 @@ export default class BooleanField extends BaseField {
         key: any;
         label: string;
     })[];
-    answerContent(): any[] | "";
+    answerContent(): "" | any[];
 }
-import BaseField from "./BaseField";
+import BaseField from './BaseField';
