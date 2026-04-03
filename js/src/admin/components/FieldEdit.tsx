@@ -6,19 +6,33 @@ import withAttr from 'flarum/common/utils/withAttr';
 import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 import icon from 'flarum/common/helpers/icon';
 import ItemList from 'flarum/common/utils/ItemList';
+import Component, { type ComponentAttrs } from 'flarum/common/Component';
+import clsx from 'flarum/common/utils/classList';
+import type { Vnode } from 'mithril';
+import Field from '../../lib/models/Field';
 
-export default class FieldEdit {
-  view(vnode) {
-    const { field, loading, onUpdate } = vnode.attrs;
+export interface FieldEditAttrs extends ComponentAttrs {
+  field: Field;
+  loading: boolean;
+  onUpdate: () => void;
+}
+
+export default class FieldEdit extends Component<FieldEditAttrs> {
+  active: boolean = false;
+  newField!: Field;
+  loading: boolean = false;
+
+  view(vnode: Vnode<FieldEditAttrs, this>) {
+    const { field, onUpdate } = vnode.attrs;
     const exists = field.id();
 
     return (
-      <fieldset className="Field" data-id={field.id()} key={field.id()}>
+      <fieldset className={clsx(`Field`, { active: this.active })} data-id={field.id()} key={field.id()}>
         <legend>
           {exists ? (
             <Button className="Button Button--icon Button--danger" icon="fas fa-trash" onclick={() => this.deleteField(field, onUpdate)} />
           ) : null}
-          <span className="Field-toggle" onclick={(e) => this.toggleField(e)}>
+          <span className="Field-toggle" onclick={() => this.toggleField()}>
             {app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
               field: field.name(),
             })}
@@ -30,7 +44,7 @@ export default class FieldEdit {
     );
   }
 
-  fieldItems(field, onUpdate) {
+  fieldItems(field: Field, onUpdate: FieldEditAttrs['onUpdate']) {
     const fields = new ItemList();
 
     fields.add(
@@ -96,7 +110,7 @@ export default class FieldEdit {
       <div className="Form-group">
         <label>{app.translator.trans('fof-masquerade.admin.fields.type')}</label>
         <Select
-          onchange={(value) => {
+          onchange={(value: string | null) => {
             if (value === 'null') {
               value = null;
             }
@@ -113,7 +127,7 @@ export default class FieldEdit {
       fields.add(
         'select_options',
         <SelectFieldOptionEditor
-          onchange={(value) => {
+          onchange={(value: string) => {
             this.updateExistingFieldInput('validation', field, value);
           }}
           value={field.validation()}
@@ -167,23 +181,24 @@ export default class FieldEdit {
     return fields;
   }
 
-  updateExistingFieldInput(what, field, value) {
+  updateExistingFieldInput(what: keyof Field, field: Field, value: any) {
     field.pushAttributes({
       [what]: value,
     });
   }
 
-  deleteField(field, onUpdate) {
+  deleteField(field: Field, onUpdate: FieldEditAttrs['onUpdate']) {
     field.delete().then(onUpdate);
   }
 
-  toggleField(e) {
-    $(e.target).parents('.Field').toggleClass('active');
+  toggleField() {
+    this.active = !this.active;
   }
 
-  submitAddField(field, onUpdate, e) {
+  submitAddField(field: Field, onUpdate: FieldEditAttrs['onUpdate'], e: MouseEvent) {
     e.preventDefault();
 
+    // @ts-ignore
     field.save(field.data.attributes).then(() => {
       onUpdate();
       this.resetNewField();
@@ -192,9 +207,10 @@ export default class FieldEdit {
     m.redraw();
   }
 
-  updateExistingField(field, onUpdate) {
+  updateExistingField(field: Field, onUpdate: FieldEditAttrs['onUpdate']) {
     if (!field.id()) return;
 
+    // @ts-ignore
     field.save(field.data.attributes).then(onUpdate);
   }
 
@@ -214,7 +230,7 @@ export default class FieldEdit {
     m.redraw();
   }
 
-  readyToAdd(field) {
+  readyToAdd(field: Field) {
     return !!field.name();
   }
 

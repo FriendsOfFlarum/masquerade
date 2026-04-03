@@ -100,6 +100,7 @@ export default class MasqueradePage extends ExtensionPage {
         url: app.forum.attribute('apiUrl') + '/masquerade/fields',
       })
       .then((result) => {
+        // @ts-ignore
         app.store.pushPayload(result);
         this.existing = app.store.all<Field>('masquerade-field');
         this.existing.sort((a, b) => a.sort() - b.sort());
