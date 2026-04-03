@@ -1,13 +1,17 @@
-export default class SelectFieldOptionEditor extends Component<any, undefined> {
-    constructor();
-    oninit(vnode: any): void;
-    newOption: any;
-    view(): any;
-    updateRules(options: any): void;
-    options(): any[];
-    updateOption(index: any, value: any): void;
-    moveOption(index: any, moveIndex: any): void;
-    deleteOption(index: any): void;
+import Component, { ComponentAttrs } from 'flarum/common/Component';
+import { Vnode } from 'mithril';
+export interface SelectFieldOptionEditorAttrs extends ComponentAttrs {
+    value: string;
+    onchange: (rules: string) => void;
+}
+export default class SelectFieldOptionEditor extends Component<SelectFieldOptionEditorAttrs> {
+    protected newOption: string;
+    oninit(vnode: Vnode<SelectFieldOptionEditorAttrs, this>): void;
+    view(): JSX.Element;
+    updateRules(options: string[]): void;
+    options(): string[];
+    updateOption(index: number, value: string): void;
+    moveOption(index: number, moveIndex: number): void;
+    deleteOption(index: number): void;
     addOption(): void;
 }
-import Component from 'flarum/common/Component';

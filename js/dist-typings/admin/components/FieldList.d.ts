@@ -1,4 +1,4 @@
-import type { Vnode } from 'mithril';
+import Component from 'flarum/common/Component';
 import type Field from '../../lib/models/Field';
 interface FieldListAttrs {
     existing: Field[];
@@ -6,7 +6,7 @@ interface FieldListAttrs {
     loading: boolean;
     onUpdate: () => void;
 }
-export default class FieldList {
-    view(vnode: Vnode<FieldListAttrs>): any;
+export default class FieldList extends Component<FieldListAttrs> {
+    view(): JSX.Element;
 }
 export {};
