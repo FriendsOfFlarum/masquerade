@@ -8,7 +8,6 @@ export default class MasqueradePage extends ExtensionPage {
     enforceProfileCompletion: Stream<boolean>;
     newField: Field;
     oninit(vnode: Vnode): void;
-    config(): void;
     oncreate(vnode: Vnode): void;
     onupdate(): void;
     content(): JSX.Element;
