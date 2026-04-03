@@ -16,12 +16,14 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
   }
 
   view() {
+    const options = this.options();
+
     return (
       <div className="Form-group">
         <label>{app.translator.trans('fof-masquerade.admin.fields.options')}</label>
         <table>
           <tbody>
-            {this.options().map((option, optionIndex) => (
+            {options.map((option, optionIndex) => (
               <tr>
                 <td>
                   <input
@@ -38,6 +40,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
                     onclick={() => {
                       this.moveOption(optionIndex, -1);
                     }}
+                    disabled={optionIndex === 0}
                   />
                 </td>
                 <td>
@@ -47,6 +50,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
                     onclick={() => {
                       this.moveOption(optionIndex, 1);
                     }}
+                    disabled={optionIndex === options.length - 1}
                   />
                 </td>
                 <td>
@@ -78,7 +82,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
                 />
               </td>
               <td>
-                <Button className="Button Button--primary Button--icon" icon="fas fa-plus" onclick={() => this.addOption()} />
+                <Button className="Button Button--icon" icon="fas fa-plus" onclick={() => this.addOption()} />
               </td>
             </tr>
           </tbody>
