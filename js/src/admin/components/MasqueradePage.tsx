@@ -1,22 +1,24 @@
+// @ts-ignore
 import sortable from 'html5sortable/dist/html5sortable.es.js';
-
 import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Switch from 'flarum/common/components/Switch';
-import FieldList from './FieldList';
 import saveSettings from 'flarum/admin/utils/saveSettings';
-
-/* global m, $ */
+import type { Vnode } from 'mithril';
+import FieldList from './FieldList';
+import Field from '../../lib/models/Field';
 
 export default class MasqueradePage extends ExtensionPage {
-  oninit(vnode) {
+  loading: boolean = false;
+  existing: Field[] = [];
+  enforceProfileCompletion: boolean = app.data.settings['masquerade.force-profile-completion'] === '1';
+  newField!: Field;
+
+  oninit(vnode: Vnode) {
     super.oninit(vnode);
 
     this.resetNew();
-    this.loading = false;
-    this.existing = [];
     this.loadExisting();
-    this.enforceProfileCompletion = app.data.settings['masquerade.force-profile-completion'] === '1';
   }
 
   config() {
@@ -27,13 +29,13 @@ export default class MasqueradePage extends ExtensionPage {
         .map(function () {
           return $(this).data('id');
         })
-        .get();
+        .get() as number[];
 
       this.updateSort(sorting);
     });
   }
 
-  oncreate(vnode) {
+  oncreate(vnode: Vnode) {
     super.oncreate(vnode);
     this.config();
   }
@@ -43,33 +45,33 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   content() {
-    return m(
-      '.ExtensionPage-settings.ProfileConfigurePane',
-      m('.container', [
-        m('h2', app.translator.trans('fof-masquerade.admin.general-options')),
-        m(
-          '.Form-group',
-          Switch.component(
-            {
-              state: this.enforceProfileCompletion,
-              onchange: (value) => {
+    return (
+      <div className="ExtensionPage-settings ProfileConfigurePane">
+        <div className="container">
+          <h2>{app.translator.trans('fof-masquerade.admin.general-options')}</h2>
+          <div className="Form-group">
+            <Switch
+              state={this.enforceProfileCompletion}
+              onchange={(value: boolean) => {
                 const saveValue = value ? '1' : '0';
                 saveSettings({
                   'masquerade.force-profile-completion': saveValue,
                 });
                 this.enforceProfileCompletion = saveValue;
-              },
-            },
-            app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')
-          )
-        ),
-        m('h2', app.translator.trans('fof-masquerade.admin.fields.title')),
-        m(FieldList, { existing: this.existing, new: this.newField, loading: this.loading, onUpdate: this.requestSuccess.bind(this) }),
-      ])
+              }}
+            >
+              {app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
+            </Switch>
+          </div>
+
+          <h2>{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
+          <FieldList existing={this.existing} new={this.newField} loading={this.loading} onUpdate={this.requestSuccess.bind(this)} />
+        </div>
+      </div>
     );
   }
 
-  updateSort(sorting) {
+  updateSort(sorting: number[]) {
     app
       .request({
         method: 'POST',
@@ -97,7 +99,7 @@ export default class MasqueradePage extends ExtensionPage {
       })
       .then((result) => {
         app.store.pushPayload(result);
-        this.existing = app.store.all('masquerade-field');
+        this.existing = app.store.all<Field>('masquerade-field');
         this.existing.sort((a, b) => a.sort() - b.sort());
         this.loading = false;
         m.redraw();
@@ -105,7 +107,7 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   resetNew() {
-    this.newField = app.store.createRecord('masquerade-field', {
+    this.newField = app.store.createRecord<Field>('masquerade-field', {
       attributes: {
         name: '',
         description: '',
