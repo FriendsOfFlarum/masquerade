@@ -1,6 +1,6 @@
 import Component, { ComponentAttrs } from 'flarum/common/Component';
 import type Answer from '../../lib/models/Answer';
-import type Field from 'src/lib/models/Field';
+import type Field from '../../lib/models/Field';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 export interface ProfilePaneAttrs extends ComponentAttrs {

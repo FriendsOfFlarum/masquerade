@@ -1,8 +1,8 @@
 import Model from 'flarum/common/Model';
 import type Field from './Field';
 export default class Answer extends Model {
-    content: () => unknown;
-    fieldId: () => unknown;
+    content: () => string;
+    fieldId: () => string;
     field: () => Field;
-    userId: () => unknown;
+    userId: () => string;
 }
