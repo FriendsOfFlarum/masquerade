@@ -2,7 +2,7 @@ import app from 'flarum/admin/app';
 import MasqueradePage from './components/MasqueradePage';
 
 app.initializers.add('fof-masquerade', () => {
-  app.extensionData
+  app.registry
     .for('fof-masquerade')
     .registerPage(MasqueradePage)
     .registerPermission(

@@ -1,4 +1,4 @@
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import BaseField from './BaseField';
 
 export default class BooleanField extends BaseField {
@@ -60,7 +60,19 @@ export default class BooleanField extends BaseField {
     }
 
     return [1, '1', true, 'true', 'yes'].indexOf(this.value) !== -1
-      ? [icon('far fa-check-square'), ' ', app.translator.trans('fof-masquerade.forum.fields.boolean.yes')]
-      : [icon('far fa-square'), ' ', app.translator.trans('fof-masquerade.forum.fields.boolean.no')];
+      ? [
+          Icon.component({
+            name: 'far fa-check-square',
+          }),
+          ' ',
+          app.translator.trans('fof-masquerade.forum.fields.boolean.yes'),
+        ]
+      : [
+          Icon.component({
+            name: 'far fa-square',
+          }),
+          ' ',
+          app.translator.trans('fof-masquerade.forum.fields.boolean.no'),
+        ];
   }
 }

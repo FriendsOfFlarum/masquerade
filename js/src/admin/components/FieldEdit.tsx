@@ -4,7 +4,7 @@ import Switch from 'flarum/common/components/Switch';
 import Select from 'flarum/common/components/Select';
 import withAttr from 'flarum/common/utils/withAttr';
 import SelectFieldOptionEditor from './SelectFieldOptionEditor';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import clsx from 'flarum/common/utils/classList';
@@ -37,7 +37,7 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
             {app.translator.trans('fof-masquerade.admin.fields.' + (exists ? 'edit' : 'add'), {
               field: field.name(),
             })}
-            {icon(`fas fa-caret-${this.active ? 'up' : 'down'}`)}
+            <Icon name={`fas fa-caret-${this.active ? 'up' : 'down'}`} />
           </span>
         </legend>
         <div className="Field-body">{this.fieldItems(field, onUpdate).toArray()}</div>
