@@ -22,27 +22,31 @@ export default class MasqueradePage extends ExtensionPage {
     this.loadExisting();
   }
 
-  config() {
+  oncreate(vnode: Vnode) {
+    super.oncreate(vnode);
+
     sortable(this.element.querySelector('.js-sortable-fields'), {
       handle: 'legend',
     })[0].addEventListener('sortupdate', () => {
-      const sorting = this.$('.js-sortable-fields > .Field')
-        .map(function () {
-          return $(this).data('id');
-        })
-        .get() as number[];
+      const sorting: number[] = [];
 
+      this.element.querySelectorAll<HTMLFieldSetElement>('.js-sortable-fields > .Field').forEach((el, index) => {
+        const id = Number(el.dataset.id);
+        const field = app.store.getById<Field>('masquerade-field', String(id));
+
+        if (field) field.pushAttributes({ sort: index });
+        sorting.push(id);
+      });
+
+      this.existing.sort((a, b) => a.sort() - b.sort());
       this.updateSort(sorting);
     });
   }
 
-  oncreate(vnode: Vnode) {
-    super.oncreate(vnode);
-    this.config();
-  }
-
   onupdate() {
-    this.config();
+    sortable(this.element.querySelector('.js-sortable-fields'), {
+      handle: 'legend',
+    });
   }
 
   content() {
@@ -65,22 +69,20 @@ export default class MasqueradePage extends ExtensionPage {
           </div>
 
           <h2>{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
-          <FieldList existing={this.existing} new={this.newField} loading={this.loading} onUpdate={this.requestSuccess.bind(this)} />
+          <FieldList existing={this.existing} new={this.newField} loading={this.loading()} onUpdate={this.requestSuccess.bind(this)} />
         </div>
       </div>
     );
   }
 
   updateSort(sorting: number[]) {
-    app
-      .request({
-        method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
-        body: {
-          sort: sorting,
-        },
-      })
-      .then(this.requestSuccess.bind(this));
+    app.request({
+      method: 'POST',
+      url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
+      body: {
+        sort: sorting,
+      },
+    });
   }
 
   requestSuccess() {
@@ -90,7 +92,7 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   loadExisting() {
-    this.loading = true;
+    this.loading(true);
 
     return app
       .request({
@@ -101,7 +103,9 @@ export default class MasqueradePage extends ExtensionPage {
         app.store.pushPayload(result);
         this.existing = app.store.all<Field>('masquerade-field');
         this.existing.sort((a, b) => a.sort() - b.sort());
-        this.loading = false;
+      })
+      .finally(() => {
+        this.loading(false);
         m.redraw();
       });
   }
