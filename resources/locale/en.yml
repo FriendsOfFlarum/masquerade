@@ -29,6 +29,7 @@ fof-masquerade:
             title: Fields
             add: Add field {field}
             edit: Edit field {field}
+            delete-confirmation: Are you sure you want to delete the field {field}? This cannot be undone.
             name: Field name
             name-help: >
                 The publicly visible (non-translatable) field label.

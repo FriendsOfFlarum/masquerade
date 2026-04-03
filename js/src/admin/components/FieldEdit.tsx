@@ -10,6 +10,7 @@ import Component, { type ComponentAttrs } from 'flarum/common/Component';
 import clsx from 'flarum/common/utils/classList';
 import type { Vnode } from 'mithril';
 import Field from '../../lib/models/Field';
+import extractText from 'flarum/common/utils/extractText';
 
 export interface FieldEditAttrs extends ComponentAttrs {
   field: Field;
@@ -188,7 +189,9 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
   }
 
   deleteField(field: Field, onUpdate: FieldEditAttrs['onUpdate']) {
-    field.delete().then(onUpdate);
+    if (confirm(extractText(app.translator.trans('fof-masquerade.admin.fields.delete-confirmation', { field: field.name() })))) {
+      field.delete().then(onUpdate);
+    }
   }
 
   toggleField() {
