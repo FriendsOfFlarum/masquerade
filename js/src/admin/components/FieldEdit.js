@@ -64,7 +64,7 @@ export default class FieldEdit {
         <input className="FormControl" value={field.icon()} oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))} />
         <span className="helpText">
           {app.translator.trans('fof-masquerade.admin.fields.icon-help', {
-            a: <a href="https://fontawesome.com/icons?m=free" target="_blank" />,
+            a: <a href={app.refs.fontawesome} target="_blank" />,
           })}
         </span>
       </div>,
