@@ -20,6 +20,10 @@ use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
 use FoF\Masquerade\Api\Serializers\AnswerSerializer;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource;
+use Flarum\Api\Schema;
 
 return [
     (new Extend\Frontend('forum'))
@@ -45,30 +49,37 @@ return [
 
     (new Extend\Locales(__DIR__ . '/resources/locale')),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ShowForumController::class))
         ->prepareDataForSerialization(LoadAllMasqueradeFieldsRelationship::class)
         ->addInclude('masqueradeFields'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ShowUserController::class))
         ->addInclude('bioFields.field')
         ->addInclude('masqueradeAnswers'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(UpdateUserController::class))
         ->addInclude('bioFields.field')
         ->addInclude('masqueradeAnswers'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(CreateUserController::class))
         ->addInclude('bioFields.field')
         ->addInclude('masqueradeAnswers'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ListUsersController::class))
         ->addInclude('bioFields.field')
         ->addInclude('masqueradeAnswers'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ListPostsController::class))
         ->addInclude('user.bioFields.field')
         ->addInclude('user.masqueradeAnswers'),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiController(ShowDiscussionController::class))
         ->addInclude('posts.user.bioFields.field')
         ->addInclude('posts.user.masqueradeAnswers'),
@@ -82,6 +93,7 @@ return [
         })
         ->hasMany('masqueradeAnswers', Answer::class),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(BasicUserSerializer::class))
         ->hasMany('bioFields', AnswerSerializer::class)
         ->hasMany('masqueradeAnswers', AnswerSerializer::class)
@@ -98,10 +110,12 @@ return [
             return [];
         }),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(ForumSerializer::class))
         ->attributes(ForumAttributes::class)
         ->hasMany('masqueradeFields', FieldSerializer::class),
 
+    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
     (new Extend\ApiSerializer(UserSerializer::class))
         ->attributes(UserAttributes::class),
 
