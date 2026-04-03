@@ -1,6 +1,7 @@
 // @ts-ignore
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 import app from 'flarum/admin/app';
+import Stream from 'flarum/common/utils/Stream';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Switch from 'flarum/common/components/Switch';
 import saveSettings from 'flarum/admin/utils/saveSettings';
@@ -9,9 +10,9 @@ import FieldList from './FieldList';
 import Field from '../../lib/models/Field';
 
 export default class MasqueradePage extends ExtensionPage {
-  loading: boolean = false;
+  loading: Stream<boolean> = Stream(false);
   existing: Field[] = [];
-  enforceProfileCompletion: boolean = app.data.settings['masquerade.force-profile-completion'] === '1';
+  enforceProfileCompletion: Stream<boolean> = Stream(app.data.settings['masquerade.force-profile-completion'] === '1');
   newField!: Field;
 
   oninit(vnode: Vnode) {
@@ -51,13 +52,12 @@ export default class MasqueradePage extends ExtensionPage {
           <h2>{app.translator.trans('fof-masquerade.admin.general-options')}</h2>
           <div className="Form-group">
             <Switch
-              state={this.enforceProfileCompletion}
+              state={this.enforceProfileCompletion()}
               onchange={(value: boolean) => {
-                const saveValue = value ? '1' : '0';
                 saveSettings({
-                  'masquerade.force-profile-completion': saveValue,
+                  'masquerade.force-profile-completion': value ? '1' : '0',
                 });
-                this.enforceProfileCompletion = saveValue;
+                this.enforceProfileCompletion(value);
               }}
             >
               {app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
