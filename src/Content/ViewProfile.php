@@ -10,14 +10,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ViewProfile
 {
-    /**
-     * @var UserRepository
-     */
-    protected $users;
-
-    function __construct(UserRepository $users)
+    function __construct(protected UserRepository $users)
     {
-        $this->users = $users;
     }
 
     public function __invoke(Document $document, ServerRequestInterface $request)

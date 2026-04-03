@@ -8,13 +8,8 @@ use FoF\Masquerade\Repositories\FieldRepository;
 
 class ForumAttributes
 {
-    protected $settings;
-    protected $fields;
-
-    public function __construct(SettingsRepositoryInterface $settings, FieldRepository $fields)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected FieldRepository $fields)
     {
-        $this->settings = $settings;
-        $this->fields = $fields;
     }
 
     public function __invoke(ForumSerializer $serializer): array

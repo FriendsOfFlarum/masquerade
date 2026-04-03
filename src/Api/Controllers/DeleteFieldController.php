@@ -16,7 +16,7 @@ class DeleteFieldController extends AbstractDeleteController
     {
     }
 
-    protected function delete(ServerRequestInterface $request)
+    protected function delete(ServerRequestInterface $request): void
     {
         $actor = RequestUtil::getActor($request);
         $actor->assertAdmin();

@@ -16,29 +16,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class DemandProfileCompletion implements MiddlewareInterface
 {
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-    /**
-     * @var FieldRepository
-     */
-    protected $fields;
-    /**
-     * @var UrlGenerator
-     */
-    protected $url;
-    /**
-     * @var SlugManager
-     */
-    protected $slugManager;
-
-    public function __construct(SettingsRepositoryInterface $settings, FieldRepository $fields, UrlGenerator $url, SlugManager $slugManager)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected FieldRepository $fields, protected UrlGenerator $url, protected SlugManager $slugManager)
     {
-        $this->settings = $settings;
-        $this->fields = $fields;
-        $this->url = $url;
-        $this->slugManager = $slugManager;
     }
 
     public function process(Request $request, RequestHandlerInterface $handler): Response

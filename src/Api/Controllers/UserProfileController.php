@@ -19,17 +19,12 @@ class UserProfileController extends AbstractListController
 
     public $include = ['answer'];
     /**
-     * @var AnswerValidator
-     */
-    protected $validator;
-    /**
      * @var \Illuminate\Database\Eloquent\Collection
      */
     protected $fields;
 
-    function __construct(AnswerValidator $validator, FieldRepository $fields)
+    function __construct(protected AnswerValidator $validator, FieldRepository $fields)
     {
-        $this->validator = $validator;
         $this->fields = $fields->all();
     }
 

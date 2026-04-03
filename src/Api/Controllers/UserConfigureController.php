@@ -20,24 +20,8 @@ class UserConfigureController extends AbstractListController
 
     public $include = ['answer'];
 
-    /**
-     * @var AnswerValidator
-     */
-    protected $validator;
-    /**
-     * @var FieldRepository
-     */
-    protected $fields;
-    /**
-     * @var UserRepository
-     */
-    protected $users;
-
-    function __construct(AnswerValidator $validator, FieldRepository $fields, UserRepository $users)
+    function __construct(protected AnswerValidator $validator, protected FieldRepository $fields, protected UserRepository $users)
     {
-        $this->validator = $validator;
-        $this->fields = $fields;
-        $this->users = $users;
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
