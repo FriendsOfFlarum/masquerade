@@ -134,7 +134,7 @@ export default class FieldEdit {
           />
           <span className="helpText">
             {app.translator.trans('fof-masquerade.admin.fields.validation-help', {
-              a: <a href="https://laravel.com/docs/5.2/validation#available-validation-rules" target="_blank" />,
+              a: <a href="https://laravel.com/docs/8.x/validation#available-validation-rules" target="_blank" />,
             })}
           </span>
         </div>,
