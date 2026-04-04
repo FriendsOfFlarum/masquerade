@@ -32,7 +32,7 @@ export default class ProfileConfigurePane extends Component {
 
         <div class="Fields">
           {app.store
-            .all('masquerade-field')
+            .all('masquerade-fields')
             .sort((a, b) => a.sort() - b.sort())
             .map((field) => {
               return this.field(field);
@@ -73,7 +73,7 @@ export default class ProfileConfigurePane extends Component {
         this.answers = this.user.masqueradeAnswers();
         this.answerValues = {};
 
-        app.store.all('masquerade-field').forEach((field) => {
+        app.store.all('masquerade-fields').forEach((field) => {
           const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
           this.answerValues[field.id()] = answer ? answer.content() : '';
@@ -85,7 +85,7 @@ export default class ProfileConfigurePane extends Component {
     } else {
       this.loading = false;
 
-      app.store.all('masquerade-field').forEach((field) => {
+      app.store.all('masquerade-fields').forEach((field) => {
         const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
         this.answerValues[field.id()] = answer ? answer.content() : '';

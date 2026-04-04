@@ -34,7 +34,7 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
       <div class="Masquerade-Bio">
         <div class="Fields">
           {app.store
-            .all('masquerade-field')
+            .all('masquerade-fields')
             .sort((a, b) => (a as Field).sort() - (b as Field).sort())
             .map((field) => {
               const answer = this.answers.find((a) => a.field()?.id() === field.id());

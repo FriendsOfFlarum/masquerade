@@ -7,6 +7,6 @@ import type Field from './Field';
 export default class Answer extends Model {
   content = Model.attribute<string>('content');
   fieldId = Model.attribute<string>('fieldId');
-  field = computed<Field>('fieldId', (fieldId) => app.store.getById<Field>('masquerade-field', fieldId as string)!);
+  field = computed<Field>('fieldId', (fieldId) => app.store.getById<Field>('masquerade-fields', fieldId as string)!);
   userId = Model.attribute<string>('user_id');
 }

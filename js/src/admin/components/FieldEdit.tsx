@@ -218,7 +218,7 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
   }
 
   resetNewField() {
-    this.newField = app.store.createRecord('masquerade-field', {
+    this.newField = app.store.createRecord('masquerade-fields', {
       attributes: {
         name: '',
         description: '',

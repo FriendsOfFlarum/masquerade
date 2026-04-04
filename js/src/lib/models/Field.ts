@@ -15,6 +15,6 @@ export default class Field extends Model {
   on_bio = Model.attribute<boolean>('on_bio');
 
   apiEndpoint() {
-    return '/masquerade/fields' + (this.exists ? `/${this.id()}` : '');
+    return '/masquerade-fields' + (this.exists ? `/${this.id()}` : '');
   }
 }

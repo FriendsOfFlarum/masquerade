@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|Answer[] $answers
+ * @property Collection|Answer[] $answers
  *
  * @property int $for A property used to pass the actor ID between the controller and serializer. Not actually in the DB
  */

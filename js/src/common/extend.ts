@@ -4,6 +4,6 @@ import Field from '../lib/models/Field';
 
 export default [
   new Extend.Store() //
-    .add('masquerade-field', Field),
+    .add('masquerade-fields', Field),
   new Extend.Search().gambit('users', AnswerGambit),
 ];

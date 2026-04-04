@@ -32,7 +32,7 @@ export default class MasqueradePage extends ExtensionPage {
 
       this.element.querySelectorAll<HTMLFieldSetElement>('.js-sortable-fields > .Field').forEach((el, index) => {
         const id = Number(el.dataset.id);
-        const field = app.store.getById<Field>('masquerade-field', String(id));
+        const field = app.store.getById<Field>('masquerade-fields', String(id));
 
         if (field) field.pushAttributes({ sort: index });
         sorting.push(id);
@@ -78,7 +78,7 @@ export default class MasqueradePage extends ExtensionPage {
   updateSort(sorting: number[]) {
     app.request({
       method: 'POST',
-      url: app.forum.attribute('apiUrl') + '/masquerade/fields/order',
+      url: app.forum.attribute('apiUrl') + '/masquerade-fields/order',
       body: {
         sort: sorting,
       },
@@ -97,12 +97,12 @@ export default class MasqueradePage extends ExtensionPage {
     return app
       .request({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/masquerade/fields',
+        url: app.forum.attribute('apiUrl') + '/masquerade-fields',
       })
       .then((result) => {
         // @ts-ignore
         app.store.pushPayload(result);
-        this.existing = app.store.all<Field>('masquerade-field');
+        this.existing = app.store.all<Field>('masquerade-fields');
         this.existing.sort((a, b) => a.sort() - b.sort());
       })
       .finally(() => {
@@ -112,7 +112,7 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   resetNew() {
-    this.newField = app.store.createRecord<Field>('masquerade-field', {
+    this.newField = app.store.createRecord<Field>('masquerade-fields', {
       attributes: {
         name: '',
         description: '',
