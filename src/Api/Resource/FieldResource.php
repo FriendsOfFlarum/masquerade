@@ -6,11 +6,13 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use FoF\Masquerade\Field;
+use FoF\Masquerade\FieldType\TypeFactory;
 use FoF\Masquerade\Repositories\FieldRepository;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Tobyz\JsonApiServer\Context;
 
+/** @extends AbstractDatabaseResource<Field> */
 class FieldResource extends AbstractDatabaseResource
 {
     public function type(): string
@@ -69,6 +71,7 @@ class FieldResource extends AbstractDatabaseResource
                 ->writable(),
             Schema\Str::make('type')
                 ->nullable()
+                ->rule('in:'.implode(',', TypeFactory::validTypes()))
                 ->writable(),
             Schema\Boolean::make('required')
                 ->writable(),

@@ -108,7 +108,7 @@ export default class ProfileConfigurePane extends Component {
     app
       .request({
         method: 'POST',
-        url: app.forum.attribute('apiUrl') + '/masquerade/configure/' + this.user.id(),
+        url: app.forum.attribute('apiUrl') + '/masquerade-answers/configure/' + this.user.id(),
         body: this.answerValues,
       })
       .then((response) => {
