@@ -51,7 +51,7 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
       'name',
       <FormGroup
         label={app.translator.trans('fof-masquerade.admin.fields.name')}
-        alue={field.name()}
+        value={field.name()}
         oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))}
         help={app.translator.trans('fof-masquerade.admin.fields.name-help')}
       />,
