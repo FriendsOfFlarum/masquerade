@@ -12,7 +12,6 @@ use Flarum\Gdpr\Extend\UserData;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
-use FoF\Masquerade\Repositories\FieldRepository;
 
 return [
     (new Extend\Locales(__DIR__.'/resources/locale')),
@@ -41,7 +40,7 @@ return [
                 ->get(fn(
                     object $forum,
                     Context $context
-                ) => !$context->getActor()->isGuest() && resolve(FieldRepository::class)->completed($context->getActor()->id)),
+                ) => !$context->getActor()->isGuest() && Field::allRequiredCompletedFor($context->getActor()->id)),
             Schema\Boolean::make('canViewMasquerade')
                 ->get(fn(object $forum, Context $context) => $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Relationship\ToMany::make('masquerade-fields')

@@ -7,7 +7,6 @@ use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
-use FoF\Masquerade\Repositories\FieldRepository;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Tobyz\JsonApiServer\Context;
@@ -46,9 +45,10 @@ class FieldResource extends AbstractDatabaseResource
                 ->route('POST', '/order')
                 ->action(function (Context $context) {
                     $order = Arr::get($context->request->getParsedBody(), 'sort', []);
-                    $repository = resolve(FieldRepository::class);
-                    $repository->sorting($order);
-                    return $repository->all();
+                    foreach ($order as $i => $fieldId) {
+                        Field::where('id', $fieldId)->update(['sort' => $i]);
+                    }
+                    return Field::orderBy('sort', 'ASC')->get();
                 })
                 ->response(fn() => new EmptyResponse()),
         ];
@@ -87,5 +87,12 @@ class FieldResource extends AbstractDatabaseResource
                 ->nullable()
                 ->writable(),
         ];
+    }
+
+    public function mutateDataBeforeValidation(Context $context, array $data): array
+    {
+        $typeStr = $data['type'] ?? ($context->model ? $context->model->type : null);
+        $type = TypeFactory::typeForField(['type' => $typeStr]);
+        return array_merge($data, $type->overrideAttributes());
     }
 }

@@ -7,7 +7,7 @@ use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use Flarum\User\UserRepository;
 use FoF\Masquerade\Answer;
-use FoF\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Field;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
@@ -51,9 +51,8 @@ class AnswerResource extends AbstractDatabaseResource
                     }
 
                     $answersData = $context->request->getParsedBody();
-                    $fields = resolve(FieldRepository::class)->all();
+                    $fields = Field::all();
                     $validator = resolve(AnswerValidator::class);
-                    $fieldRepo = resolve(FieldRepository::class);
 
                     foreach ($fields as $field) {
                         if (!array_key_exists($field->id, $answersData)) {
@@ -74,7 +73,12 @@ class AnswerResource extends AbstractDatabaseResource
                             ->setField($field)
                             ->assertValid([$field->name => $content]);
 
-                        $fieldRepo->addOrUpdateAnswer($field, $content, $user);
+                        $answer = $field->answers()->firstOrNew([
+                            'user_id' => $user->id,
+                        ]);
+                        $answer->content = $content;
+                        $answer->user()->associate($user);
+                        $answer->save();
                     }
                 })
                 ->response(fn() => new EmptyResponse()),

@@ -48,6 +48,7 @@ class Field extends AbstractModel
         'required',
         'validation',
         'on_bio',
+        'sort',
     ];
 
     protected $visible = [
@@ -66,5 +67,16 @@ class Field extends AbstractModel
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
+    }
+
+    /** Checks whether a user has uncompleted required fields. */
+    public static function allRequiredCompletedFor(int $userId): bool
+    {
+        return !self::query()
+            ->where('required', true)
+            ->whereDoesntHave('answers', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->exists();
     }
 }

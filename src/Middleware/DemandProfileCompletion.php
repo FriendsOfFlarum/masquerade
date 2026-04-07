@@ -7,7 +7,7 @@ use Flarum\Http\SlugManager;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
-use FoF\Masquerade\Repositories\FieldRepository;
+use FoF\Masquerade\Field;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -16,8 +16,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class DemandProfileCompletion implements MiddlewareInterface
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected FieldRepository $fields, protected UrlGenerator $url, protected SlugManager $slugManager)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected SlugManager $slugManager
+    ) {
     }
 
     public function process(Request $request, RequestHandlerInterface $handler): Response
@@ -28,7 +31,7 @@ class DemandProfileCompletion implements MiddlewareInterface
 
             $configureProfileUrl = $this->url->to('forum')->route('user', [
                 'username' => $this->slugManager->forResource(User::class)->toSlug($actor),
-                'filter' => 'masquerade'
+                'filter' => 'masquerade',
             ]);
 
             $configureProfilePathWithoutBase = str_replace($this->url->to('forum')->base(), '', $configureProfileUrl);
@@ -37,7 +40,7 @@ class DemandProfileCompletion implements MiddlewareInterface
                 $configureProfilePathWithoutBase !== $request->getUri()->getPath() &&
                 $actor->can('fof.masquerade.have-profile') &&
                 $this->settings->get('masquerade.force-profile-completion') &&
-                !$this->fields->completed($actor->id)
+                !Field::allRequiredCompletedFor($actor->id)
             ) {
                 return new RedirectResponse($configureProfileUrl);
             }
