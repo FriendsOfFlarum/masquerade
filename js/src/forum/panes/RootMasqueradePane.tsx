@@ -11,11 +11,6 @@ export default class RootMasqueradePane extends UserPage {
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
-
-    if (!app.forum.attribute<boolean>('canViewMasquerade')) {
-      m.route.set(app.route('index'));
-    }
-
     this.loadUser(m.route.param('username'));
   }
 
@@ -28,6 +23,10 @@ export default class RootMasqueradePane extends UserPage {
 
   show(user: User) {
     super.show(user);
+
+    if (!app.forum.attribute<boolean>('canViewMasquerade') && !user.canEditMasqueradeProfile()) {
+      m.route.set(app.route.user(user));
+    }
 
     this.loading = false;
     m.redraw();

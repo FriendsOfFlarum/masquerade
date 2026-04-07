@@ -68,7 +68,10 @@ return [
             Schema\Relationship\ToMany::make('masqueradeAnswers')
                 ->type('masquerade-answers')
                 ->includable()
-                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile')),
+                ->visible(fn(
+                    User $user,
+                    $context
+                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Boolean::make('canEditMasqueradeProfile')
                 ->visible(fn(User $user, Context $context) => $context->getActor()->id === $user->id)
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
