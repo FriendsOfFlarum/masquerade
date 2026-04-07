@@ -26,24 +26,27 @@ class DemandProfileCompletion implements MiddlewareInterface
     public function process(Request $request, RequestHandlerInterface $handler): Response
     {
         $actor = RequestUtil::getActor($request);
+        if (
+            $actor->isGuest() ||
+            !$this->settings->get('masquerade.force-profile-completion') ||
+            !$actor->can('fof.masquerade.have-profile') ||
+            $request->getAttribute('routeName') === 'logout'
+        ) {
+            return $handler->handle($request);
+        }
 
-        if (!$actor->isGuest()) {
+        $configureProfileUrl = $this->url->to('forum')->route('user', [
+            'username' => $this->slugManager->forResource(User::class)->toSlug($actor),
+            'filter' => 'masquerade',
+        ]);
 
-            $configureProfileUrl = $this->url->to('forum')->route('user', [
-                'username' => $this->slugManager->forResource(User::class)->toSlug($actor),
-                'filter' => 'masquerade',
-            ]);
+        $configureProfilePathWithoutBase = str_replace($this->url->to('forum')->base(), '', $configureProfileUrl);
 
-            $configureProfilePathWithoutBase = str_replace($this->url->to('forum')->base(), '', $configureProfileUrl);
-
-            if (
-                $configureProfilePathWithoutBase !== $request->getUri()->getPath() &&
-                $actor->can('fof.masquerade.have-profile') &&
-                $this->settings->get('masquerade.force-profile-completion') &&
-                !Field::allRequiredCompletedFor($actor->id)
-            ) {
-                return new RedirectResponse($configureProfileUrl);
-            }
+        if (
+            $configureProfilePathWithoutBase !== $request->getUri()->getPath() &&
+            !Field::allRequiredCompletedFor($actor->id)
+        ) {
+            return new RedirectResponse($configureProfileUrl);
         }
 
         return $handler->handle($request);
