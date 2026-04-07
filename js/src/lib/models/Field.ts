@@ -7,7 +7,6 @@ export default class Field extends Model {
   type = Model.attribute<string | null>('type');
   validation = Model.attribute<string>('validation');
   required = Model.attribute<boolean>('required');
-  prefix = Model.attribute<string>('prefix');
   icon = Model.attribute<string>('icon');
   sort = Model.attribute<number>('sort');
   deleted_at = Model.attribute('deleted_at', Model.transformDate);

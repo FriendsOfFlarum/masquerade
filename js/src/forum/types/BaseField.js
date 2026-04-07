@@ -59,7 +59,6 @@ export default class BaseField {
           {this.field.name()} {this.field.required() ? '*' : null}
         </label>
         <div class="FormField">
-          {this.field.prefix() ? m('.prefix', this.field.prefix()) : null}
           {this.editorInput()}
           {this.field.description() ? <div class="helpText">{this.field.description()}</div> : null}
         </div>

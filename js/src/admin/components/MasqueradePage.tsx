@@ -114,7 +114,6 @@ export default class MasqueradePage extends ExtensionPage {
       attributes: {
         name: '',
         description: '',
-        prefix: '',
         icon: '',
         required: false,
         on_bio: false,

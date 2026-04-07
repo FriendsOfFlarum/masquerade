@@ -42,7 +42,6 @@ class Field extends AbstractModel
     protected $fillable = [
         'name',
         'description',
-        'prefix',
         'icon',
         'type',
         'required',
@@ -54,7 +53,6 @@ class Field extends AbstractModel
     protected $visible = [
         'name',
         'description',
-        'prefix',
         'icon',
         'type',
         'required',

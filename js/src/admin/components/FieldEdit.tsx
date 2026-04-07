@@ -216,7 +216,6 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
       attributes: {
         name: '',
         description: '',
-        prefix: '',
         icon: '',
         required: false,
         on_bio: false,

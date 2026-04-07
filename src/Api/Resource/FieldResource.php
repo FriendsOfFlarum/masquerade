@@ -63,9 +63,6 @@ class FieldResource extends AbstractDatabaseResource
             Schema\Str::make('description')
                 ->nullable()
                 ->writable(),
-            Schema\Str::make('prefix')
-                ->nullable()
-                ->writable(),
             Schema\Str::make('icon')
                 ->nullable()
                 ->writable(),
