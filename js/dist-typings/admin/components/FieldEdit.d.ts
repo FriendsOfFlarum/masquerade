@@ -21,10 +21,10 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
     resetNewField(): void;
     readyToAdd(field: Field): boolean;
     availableTypes(): {
-        url: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
-        email: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
-        boolean: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
-        select: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
-        null: import("@askvortsov/rich-icu-message-formatter").NestedStringArray;
+        url: string | any[];
+        email: string | any[];
+        boolean: string | any[];
+        select: string | any[];
+        null: string | any[];
     };
 }

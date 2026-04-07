@@ -6,7 +6,6 @@ export default class Field extends Model {
     type: () => string | null;
     validation: () => string;
     required: () => boolean;
-    prefix: () => string;
     icon: () => string;
     sort: () => number;
     deleted_at: () => Date | null | undefined;

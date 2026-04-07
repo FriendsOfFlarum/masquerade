@@ -3,11 +3,11 @@ export default class BooleanField extends BaseField {
     options(): ({
         selected: {};
         key: null;
-        label: any;
+        label: string | any[];
     } | {
         selected: {};
         key: string;
-        label: any;
+        label: string | any[];
     } | {
         selected: () => boolean;
         key: any;
