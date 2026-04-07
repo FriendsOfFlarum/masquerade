@@ -16,10 +16,10 @@ export default function mutateUserHero() {
       'masquerade-bio',
       <div>
         {answers.map((answer) => {
-          const field = answer.attribute('field');
+          const field = answer.field();
           const type = TypeFactory.typeForField({
             field,
-            value: answer.attribute('content'),
+            value: answer.content(),
           });
 
           return type.answerField();

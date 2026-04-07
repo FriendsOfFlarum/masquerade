@@ -75,7 +75,9 @@ return [
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
                     ? $context->getActor()->can('fof.masquerade.have-profile')
                     : $context->getActor()->can('fof.masquerade.edit-others-profile')),
-        ]),
+        ])
+        ->endpoint([Endpoint\Index::class, Endpoint\Show::class],
+            fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['bioFields.field'])),
 
     (new Extend\ApiResource(PostResource::class))
         ->endpoint(['index', 'show'], function (Endpoint\Index|Endpoint\Show $endpoint) {
