@@ -1,6 +1,5 @@
 import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
-import Switch from 'flarum/common/components/Switch';
 import Select from 'flarum/common/components/Select';
 import withAttr from 'flarum/common/utils/withAttr';
 import SelectFieldOptionEditor from './SelectFieldOptionEditor';
