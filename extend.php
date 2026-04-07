@@ -63,7 +63,7 @@ return [
     (new Extend\ApiResource(Resource\UserResource::class))
         ->fields(fn() => [
             Schema\Relationship\ToMany::make('bioFields')
-                ->type('masquerade-answer')
+                ->type('masquerade-answers')
                 ->includable()
                 ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Relationship\ToMany::make('masqueradeAnswers')
