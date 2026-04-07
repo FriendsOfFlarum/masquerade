@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import Icon from 'flarum/common/components/Icon';
 import BaseField from './BaseField';
 
