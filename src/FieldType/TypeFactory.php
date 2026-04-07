@@ -21,7 +21,7 @@ class TypeFactory
      * @param string|null $type
      * @return string
      */
-    protected static function classForType(string $type = null): string
+    protected static function classForType(?string $type = null): string
     {
         if ($type) {
             // Can't run $type directly through here, as null makes Arr::get return the whole array

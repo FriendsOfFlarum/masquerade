@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
- * @property \Illuminate\Database\Eloquent\Collection|Answer[] $answers
+ * @property Collection|Answer[] $answers
  *
  * @property int $for A property used to pass the actor ID between the controller and serializer. Not actually in the DB
  */
@@ -41,18 +42,17 @@ class Field extends AbstractModel
     protected $fillable = [
         'name',
         'description',
-        'prefix',
         'icon',
         'type',
         'required',
         'validation',
         'on_bio',
+        'sort',
     ];
 
     protected $visible = [
         'name',
         'description',
-        'prefix',
         'icon',
         'type',
         'required',
@@ -62,8 +62,20 @@ class Field extends AbstractModel
         'deleted_at', // Used to know if an API response was about deletion
     ];
 
+    /** @return HasMany<Answer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);
+    }
+
+    /** Checks whether a user has uncompleted required fields. */
+    public static function allRequiredCompletedFor(int $userId): bool
+    {
+        return !self::query()
+            ->where('required', true)
+            ->whereDoesntHave('answers', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->exists();
     }
 }

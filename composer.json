@@ -28,11 +28,12 @@
         "forum": "https://discuss.flarum.org/d/5791"
     },
     "require": {
-        "php": "^8.1",
-        "flarum/core": "^1.8.5"
+        "php": "^8.3",
+        "flarum/core": "^v2.0.0-beta.8"
     },
-    "replace": {
-        "flagrow/masquerade": "*"
+    "require-dev": {
+        "flarum/phpstan": "^2.0.0-beta",
+        "flarum/gdpr": "*"
     },
     "extra": {
         "flarum-extension": {
@@ -49,9 +50,6 @@
                 "flarum/gdpr"
             ]
         },
-        "flagrow": {
-            "discuss": "https://discuss.flarum.org/d/5791"
-        },
         "flarum-cli": {
             "modules": {
                 "githubActions": true
@@ -63,10 +61,8 @@
             "FoF\\Masquerade\\": "src/"
         }
     },
-    "require-dev": {
-        "flarum/phpstan": "*",
-        "flarum/gdpr": "^1.0.0@beta"
-    },
+    "minimum-stability": "beta",
+    "prefer-stable": true,
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
         "clear-cache:phpstan": "phpstan clear-result-cache"

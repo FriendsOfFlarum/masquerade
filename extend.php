@@ -2,76 +2,53 @@
 
 namespace FoF\Masquerade;
 
-use Flarum\Api\Controller\CreateUserController;
-use Flarum\Api\Controller\ListPostsController;
-use Flarum\Api\Controller\ListUsersController;
-use Flarum\Api\Controller\ShowDiscussionController;
-use Flarum\Api\Controller\ShowForumController;
-use Flarum\Api\Controller\ShowUserController;
-use Flarum\Api\Controller\UpdateUserController;
-use Flarum\Api\Serializer\BasicUserSerializer;
-use Flarum\Api\Serializer\ForumSerializer;
-use Flarum\Api\Serializer\UserSerializer;
+use Flarum\Api\Context;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource;
+use Flarum\Api\Resource\PostResource;
+use Flarum\Api\Schema;
+use Flarum\Extend;
 use Flarum\Gdpr\Extend\UserData;
-use Flarum\User\Filter\UserFilterer;
+use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
-use FoF\Masquerade\Api\Controllers as Api;
-use Flarum\Extend;
-use FoF\Masquerade\Api\Serializers\AnswerSerializer;
-use FoF\Masquerade\Api\Serializers\FieldSerializer;
 
 return [
+    (new Extend\Locales(__DIR__.'/resources/locale')),
+
     (new Extend\Frontend('forum'))
-        ->js(__DIR__ . '/js/dist/forum.js')
-        ->css(__DIR__ . '/resources/less/forum.less'),
+        ->js(__DIR__.'/js/dist/forum.js')
+        ->css(__DIR__.'/resources/less/forum.less'),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__ . '/js/dist/admin.js')
-        ->css(__DIR__ . '/resources/less/admin.less'),
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/resources/less/admin.less'),
 
-    (new Extend\Routes('api'))
-        ->get('/masquerade/fields', 'masquerade.api.fields.index', Api\FieldIndexController::class)
-        ->post('/masquerade/fields/order', 'masquerade.api.fields.order', Api\OrderFieldController::class)
-        ->post('/masquerade/fields', 'masquerade.api.fields.create', Api\StoreFieldController::class)
-        ->patch('/masquerade/fields/{id:[0-9]+}', 'masquerade.api.fields.update', Api\UpdateFieldController::class)
-        ->delete('/masquerade/fields[/{id:[0-9]+}]', 'masquerade.api.fields.delete', Api\DeleteFieldController::class)
-        ->get('/masquerade/profile/{id:[0-9]+}', 'masquerade.api.profile', Api\UserProfileController::class)
-        ->get('/masquerade/configure/{id:[0-9]+}', 'masquerade.api.configure', Api\UserConfigureController::class)
-        ->post('/masquerade/configure/{id:[0-9]+}', 'masquerade.api.configure.save', Api\UserConfigureController::class),
+    new Extend\ApiResource(Api\Resource\FieldResource::class),
+    new Extend\ApiResource(Api\Resource\AnswerResource::class),
 
     (new Extend\Middleware('forum'))
         ->add(Middleware\DemandProfileCompletion::class),
 
-    (new Extend\Locales(__DIR__ . '/resources/locale')),
+    ((new Extend\Settings())
+        ->default('masquerade.force-profile-completion', false))
+        ->serializeToForum('masquerade.force-profile-completion', 'masquerade.force-profile-completion'),
 
-    (new Extend\ApiController(ShowForumController::class))
-        ->prepareDataForSerialization(LoadAllMasqueradeFieldsRelationship::class)
-        ->addInclude('masqueradeFields'),
-
-    (new Extend\ApiController(ShowUserController::class))
-        ->addInclude('bioFields.field')
-        ->addInclude('masqueradeAnswers'),
-
-    (new Extend\ApiController(UpdateUserController::class))
-        ->addInclude('bioFields.field')
-        ->addInclude('masqueradeAnswers'),
-
-    (new Extend\ApiController(CreateUserController::class))
-        ->addInclude('bioFields.field')
-        ->addInclude('masqueradeAnswers'),
-
-    (new Extend\ApiController(ListUsersController::class))
-        ->addInclude('bioFields.field')
-        ->addInclude('masqueradeAnswers'),
-
-    (new Extend\ApiController(ListPostsController::class))
-        ->addInclude('user.bioFields.field')
-        ->addInclude('user.masqueradeAnswers'),
-
-    (new Extend\ApiController(ShowDiscussionController::class))
-        ->addInclude('posts.user.bioFields.field')
-        ->addInclude('posts.user.masqueradeAnswers'),
+    (new Extend\ApiResource(Resource\ForumResource::class))
+        ->fields(fn() => [
+            Schema\Boolean::make('masquerade.profile-completed')
+                ->get(fn(
+                    object $forum,
+                    Context $context
+                ) => !$context->getActor()->isGuest() && Field::allRequiredCompletedFor($context->getActor()->id)),
+            Schema\Boolean::make('canViewMasquerade')
+                ->get(fn(object $forum, Context $context) => $context->getActor()->can('fof.masquerade.view-profile')),
+            Schema\Relationship\ToMany::make('masquerade-fields')
+                ->includable()
+                ->get(fn($model, Context $context) => Field::all()->all()),
+        ])
+        ->endpoint(Endpoint\Show::class,
+            fn(Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['masquerade-fields'])),
 
     (new Extend\Model(User::class))
         ->relationship('bioFields', function (User $model) {
@@ -82,37 +59,38 @@ return [
         })
         ->hasMany('masqueradeAnswers', Answer::class),
 
-    (new Extend\ApiSerializer(BasicUserSerializer::class))
-        ->hasMany('bioFields', AnswerSerializer::class)
-        ->hasMany('masqueradeAnswers', AnswerSerializer::class)
-        ->attributes(function (BasicUserSerializer $serializer, User $user): array {
-            $actor = $serializer->getActor();
+    (new Extend\ApiResource(Resource\UserResource::class))
+        ->fields(fn() => [
+            Schema\Relationship\ToMany::make('bioFields')
+                ->type('masquerade-answers')
+                ->includable()
+                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile')),
+            Schema\Relationship\ToMany::make('masqueradeAnswers')
+                ->type('masquerade-answers')
+                ->includable()
+                ->visible(fn(
+                    User $user,
+                    $context
+                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile')),
+            Schema\Boolean::make('canEditMasqueradeProfile')
+                ->visible(fn(User $user, Context $context) => $context->getActor()->id === $user->id)
+                ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
+                    ? $context->getActor()->can('fof.masquerade.have-profile')
+                    : $context->getActor()->can('fof.masquerade.edit-others-profile')),
+        ])
+        ->endpoint([Endpoint\Index::class, Endpoint\Show::class],
+            fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['bioFields.field'])),
 
-            if ($actor->cannot('fof.masquerade.view-profile')) {
-                // When the relationships are auto-loaded later,
-                // this one will be skipped because it has already been set to null
-                $user->setRelation('bioFields', null);
-                $user->setRelation('masqueradeAnswers', null);
-            }
-
-            return [];
+    (new Extend\ApiResource(PostResource::class))
+        ->endpoint(['index', 'show'], function (Endpoint\Index|Endpoint\Show $endpoint) {
+            return $endpoint->addDefaultInclude(['user.bioFields.field', 'user.masqueradeAnswers']);
         }),
 
-    (new Extend\ApiSerializer(ForumSerializer::class))
-        ->attributes(ForumAttributes::class)
-        ->hasMany('masqueradeFields', FieldSerializer::class),
-
-    (new Extend\ApiSerializer(UserSerializer::class))
-        ->attributes(UserAttributes::class),
-
-    (new Extend\SimpleFlarumSearch(UserSearcher::class))
-        ->addGambit(Gambits\AnswerGambit::class),
-
-    (new Extend\Filter(UserFilterer::class))
-        ->addFilter(Gambits\AnswerGambit::class),
+    (new Extend\SearchDriver(DatabaseSearchDriver::class))
+        ->addFilter(UserSearcher::class, Filters\AnswerFilter::class),
 
     (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-gdpr', fn () => [
+        ->whenExtensionEnabled('flarum-gdpr', fn() => [
             (new UserData())
                 ->addType(Data\MasqueradeAnswers::class),
         ]),

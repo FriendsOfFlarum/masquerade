@@ -1,22 +1,16 @@
 import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-import ProfilePane from './ProfilePane';
-import ProfileConfigurePane from './ProfileConfigurePane';
-
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
+import ProfilePane from './ProfilePane';
+import ProfileConfigurePane from './ProfileConfigurePane';
 
 export default class RootMasqueradePane extends UserPage {
   loading = true;
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
-
-    if (!app.forum.attribute('canViewMasquerade')) {
-      m.route.set(app.route('index'));
-    }
-
     this.loadUser(m.route.param('username'));
   }
 
@@ -29,6 +23,10 @@ export default class RootMasqueradePane extends UserPage {
 
   show(user: User) {
     super.show(user);
+
+    if (!app.forum.attribute<boolean>('canViewMasquerade') && !user.canEditMasqueradeProfile()) {
+      m.route.set(app.route.user(user));
+    }
 
     this.loading = false;
     m.redraw();

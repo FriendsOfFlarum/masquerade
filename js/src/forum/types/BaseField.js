@@ -1,4 +1,4 @@
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 
 /* global m */
 
@@ -48,11 +48,17 @@ export default class BaseField {
     return (
       <div class="Form-group Field">
         <label>
-          {this.field.icon() ? [icon(this.field.icon()), ' '] : null} {this.field.name()} {this.field.required() ? '*' : null}
+          {this.field.icon()
+            ? [
+                Icon.component({
+                  name: this.field.icon(),
+                }),
+                ' ',
+              ]
+            : null}{' '}
+          {this.field.name()} {this.field.required() ? '*' : null}
         </label>
-
         <div class="FormField">
-          {this.field.prefix() ? m('.prefix', this.field.prefix()) : null}
           {this.editorInput()}
           {this.field.description() ? <div class="helpText">{this.field.description()}</div> : null}
         </div>
@@ -81,7 +87,13 @@ export default class BaseField {
     return (
       <div className={`Masquerade-Bio-Set${this.hasAnswer() ? '' : ' Masquerade-Bio-Set--empty'}`}>
         <span class="Masquerade-Bio-Field">
-          {iconName && <>{icon(iconName)} </>}
+          {iconName && (
+            <>
+              {Icon.component({
+                name: iconName,
+              })}{' '}
+            </>
+          )}
           {this.readAttribute(this.field, 'name')}:{' '}
         </span>
         <span class="Masquerade-Bio-Answer">{this.answerContent()}</span>

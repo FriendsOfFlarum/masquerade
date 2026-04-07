@@ -1,12 +1,10 @@
 import app from 'flarum/forum/app';
-
-import Component, { ComponentAttrs } from 'flarum/common/Component';
-import TypeFactory from '../types/TypeFactory';
-
-import type Answer from '../../lib/models/Answer';
-import type Field from '../../lib/models/Field';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
+import Component, { ComponentAttrs } from 'flarum/common/Component';
+import TypeFactory from '../types/TypeFactory';
+import type Answer from '../../lib/models/Answer';
+import type Field from '../../lib/models/Field';
 
 export interface ProfilePaneAttrs extends ComponentAttrs {
   answers: Answer[];
@@ -15,17 +13,12 @@ export interface ProfilePaneAttrs extends ComponentAttrs {
 }
 
 export default class ProfilePane extends Component<ProfilePaneAttrs> {
-  answers!: Answer[];
-  user!: User;
-  loading!: boolean;
+  protected answers: Answer[] = [];
+  loading: boolean = false;
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
     this.loading = true;
-
-    this.answers = [];
-    this.user = this.attrs.user;
-
     this.load();
   }
 
@@ -34,19 +27,19 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
       <div class="Masquerade-Bio">
         <div class="Fields">
           {app.store
-            .all('masquerade-field')
+            .all<Field>('masquerade-fields')
             .sort((a, b) => (a as Field).sort() - (b as Field).sort())
             .map((field) => {
               const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-              return this.field(field as Field, (answer?.content() as Answer) || null);
+              return this.field(field, answer?.content() || null);
             })}
         </div>
       </div>
     );
   }
 
-  field(field: Field, content: Answer | null) {
+  field(field: Field, content: string | null) {
     const type = TypeFactory.typeForField({
       field,
       value: content,
@@ -56,19 +49,19 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
   }
 
   async load() {
-    this.answers = this.user.masqueradeAnswers();
-    const userId = this.user.id();
-
+    const userId = this.attrs.user.id();
     if (!userId) return;
 
-    if (this.answers) return;
+    const answers = this.attrs.user.masqueradeAnswers();
+    if (answers) {
+      this.answers = answers;
+      return;
+    }
 
     this.answers = [];
     app.store.find<User>('users', userId, { include: 'masqueradeAnswers' }).then(() => {
-      this.answers = this.user.masqueradeAnswers();
+      this.answers = this.attrs.user.masqueradeAnswers() || [];
       m.redraw();
     });
-
-    m.redraw();
   }
 }
