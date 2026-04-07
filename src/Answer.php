@@ -33,11 +33,13 @@ class Answer extends AbstractModel
         'field', // Used for the bio feature TODO: should use a relationship
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<Field, $this> */
     public function field(): BelongsTo
     {
         return $this->belongsTo(Field::class);

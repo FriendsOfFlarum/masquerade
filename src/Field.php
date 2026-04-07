@@ -64,6 +64,7 @@ class Field extends AbstractModel
         'deleted_at', // Used to know if an API response was about deletion
     ];
 
+    /** @return HasMany<Answer, $this> */
     public function answers(): HasMany
     {
         return $this->hasMany(Answer::class);

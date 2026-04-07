@@ -72,7 +72,7 @@ class AnswerResource extends AbstractDatabaseResource
                         $validator
                             ->setField($field)
                             ->assertValid([$field->name => $content]);
-
+                        
                         $answer = $field->answers()->firstOrNew([
                             'user_id' => $user->id,
                         ]);
