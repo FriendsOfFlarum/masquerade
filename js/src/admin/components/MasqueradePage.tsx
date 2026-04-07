@@ -3,7 +3,7 @@ import sortable from 'html5sortable/dist/html5sortable.es.js';
 import app from 'flarum/admin/app';
 import Stream from 'flarum/common/utils/Stream';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
-import Switch from 'flarum/common/components/Switch';
+import FormGroup from 'flarum/common/components/FormGroup';
 import saveSettings from 'flarum/admin/utils/saveSettings';
 import type { Vnode } from 'mithril';
 import FieldList from './FieldList';
@@ -54,19 +54,17 @@ export default class MasqueradePage extends ExtensionPage {
       <div className="ExtensionPage-settings ProfileConfigurePane">
         <div className="container">
           <h2>{app.translator.trans('fof-masquerade.admin.general-options')}</h2>
-          <div className="Form-group">
-            <Switch
-              state={this.enforceProfileCompletion()}
-              onchange={(value: boolean) => {
-                saveSettings({
-                  'masquerade.force-profile-completion': value ? '1' : '0',
-                });
-                this.enforceProfileCompletion(value);
-              }}
-            >
-              {app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
-            </Switch>
-          </div>
+          <FormGroup
+            label={app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
+            type="bool"
+            state={this.enforceProfileCompletion()}
+            onchange={(value: boolean) => {
+              saveSettings({
+                'masquerade.force-profile-completion': value ? '1' : '0',
+              });
+              this.enforceProfileCompletion(value);
+            }}
+          />
 
           <h2>{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
           <FieldList existing={this.existing} new={this.newField} loading={this.loading()} onUpdate={this.requestSuccess.bind(this)} />

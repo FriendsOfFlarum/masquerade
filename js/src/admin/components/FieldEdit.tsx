@@ -11,6 +11,7 @@ import clsx from 'flarum/common/utils/classList';
 import type { Vnode } from 'mithril';
 import Field from '../../lib/models/Field';
 import extractText from 'flarum/common/utils/extractText';
+import FormGroup from 'flarum/common/components/FormGroup';
 
 export interface FieldEditAttrs extends ComponentAttrs {
   field: Field;
@@ -50,59 +51,58 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
 
     fields.add(
       'name',
-      <div className="Form-group">
-        <label>{app.translator.trans('fof-masquerade.admin.fields.name')}</label>
-        <input className="FormControl" value={field.name()} oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))} />
-        <span className="helpText">{app.translator.trans('fof-masquerade.admin.fields.name-help')}</span>
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.name')}
+        alue={field.name()}
+        oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'name', field))}
+        help={app.translator.trans('fof-masquerade.admin.fields.name-help')}
+      />,
       100
     );
 
     fields.add(
       'description',
-      <div className="Form-group">
-        <label>{app.translator.trans('fof-masquerade.admin.fields.description')}</label>
-        <input
-          className="FormControl"
-          value={field.description()}
-          oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))}
-        />
-        <span className="helpText">{app.translator.trans('fof-masquerade.admin.fields.description-help')}</span>
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.description')}
+        value={field.description()}
+        oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'description', field))}
+        help={app.translator.trans('fof-masquerade.admin.fields.description-help')}
+      />,
       90
     );
 
     fields.add(
       'icon',
-      <div className="Form-group">
-        <label>{app.translator.trans('fof-masquerade.admin.fields.icon')}</label>
-        <input className="FormControl" value={field.icon()} oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))} />
-        <span className="helpText">
-          {app.translator.trans('fof-masquerade.admin.fields.icon-help', {
-            a: <a href={app.refs.fontawesome} target="_blank" />,
-          })}
-        </span>
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.icon')}
+        value={field.icon()}
+        oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'icon', field))}
+        help={app.translator.trans('fof-masquerade.admin.fields.icon-help', {
+          a: <a href={app.refs.fontawesome} target="_blank" />,
+        })}
+      />,
       80
     );
 
     fields.add(
       'on_bio',
-      <div className="Form-group">
-        <Switch state={field.on_bio()} onchange={this.updateExistingFieldInput.bind(this, 'on_bio', field)}>
-          {app.translator.trans('fof-masquerade.admin.fields.on_bio')}
-        </Switch>
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.on_bio')}
+        type="bool"
+        state={field.on_bio()}
+        onchange={this.updateExistingFieldInput.bind(this, 'on_bio', field)}
+      />,
       70
     );
 
     fields.add(
       'required',
-      <div className="Form-group">
-        <Switch state={field.required()} onchange={this.updateExistingFieldInput.bind(this, 'required', field)}>
-          {app.translator.trans('fof-masquerade.admin.fields.required')}
-        </Switch>
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.required')}
+        type="bool"
+        state={field.required()}
+        onchange={this.updateExistingFieldInput.bind(this, 'required', field)}
+      />,
       60
     );
 
@@ -140,19 +140,14 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
     if (field.type() === null) {
       fields.add(
         'validation',
-        <div className="Form-group">
-          <label>{app.translator.trans('fof-masquerade.admin.fields.validation')}</label>
-          <input
-            className="FormControl"
-            value={field.validation()}
-            oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))}
-          />
-          <span className="helpText">
-            {app.translator.trans('fof-masquerade.admin.fields.validation-help', {
-              a: <a href="https://laravel.com/docs/8.x/validation#available-validation-rules" target="_blank" />,
-            })}
-          </span>
-        </div>,
+        <FormGroup
+          label={app.translator.trans('fof-masquerade.admin.fields.validation')}
+          value={field.validation()}
+          oninput={withAttr('value', this.updateExistingFieldInput.bind(this, 'validation', field))}
+          help={app.translator.trans('fof-masquerade.admin.fields.validation-help', {
+            a: <a href="https://laravel.com/docs/13.x/validation#custom-validation-rules" target="_blank" />,
+          })}
+        />,
         30
       );
     }
