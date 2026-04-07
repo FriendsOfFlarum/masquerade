@@ -1,24 +1,23 @@
 .ProfileConfigurePane {
     fieldset.Field {
-        padding: 5px;
+        padding: 0.8rem 1rem;
         background: var(--body-bg);
         border-radius: var(--border-radius);
         box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
         margin-top: 20px;
 
         legend {
-            margin: 10px;
-            width: 100%;
-
             .Field-toggle {
                 cursor: pointer;
-                margin-left: 5px;
+                margin-left: 1em;
+                background: var(--body-bg);
 
                 .icon {
-                    margin-left: 5px;
+                    margin-left: 0.3em;
                 }
             }
         }
+
 
         .Field-body {
             display: none;
@@ -31,10 +30,6 @@
         &.active .Field-body {
             display: block;
         }
-    }
-
-    .Checkbox--switch.off .Checkbox-display {
-        background: #d8d8d8;
     }
 
     @media @desktop-up {
