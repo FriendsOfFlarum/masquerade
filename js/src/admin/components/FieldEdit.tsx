@@ -1,6 +1,5 @@
 import app from 'flarum/admin/app';
 import Button from 'flarum/common/components/Button';
-import Select from 'flarum/common/components/Select';
 import withAttr from 'flarum/common/utils/withAttr';
 import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 import Icon from 'flarum/common/components/Icon';
@@ -107,19 +106,18 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
 
     fields.add(
       'type',
-      <div className="Form-group">
-        <label>{app.translator.trans('fof-masquerade.admin.fields.type')}</label>
-        <Select
-          onchange={(value: string | null) => {
-            if (value === 'null') {
-              value = null;
-            }
-            this.updateExistingFieldInput('type', field, value);
-          }}
-          options={this.availableTypes()}
-          value={field.type()}
-        />
-      </div>,
+      <FormGroup
+        label={app.translator.trans('fof-masquerade.admin.fields.type')}
+        type="select"
+        onchange={(value: string | null) => {
+          if (value === 'null') {
+            value = null;
+          }
+          this.updateExistingFieldInput('type', field, value);
+        }}
+        options={this.availableTypes()}
+        value={field.type()}
+      />,
       50
     );
 
@@ -212,7 +210,7 @@ export default class FieldEdit extends Component<FieldEditAttrs> {
   }
 
   resetNewField() {
-    this.newField = app.store.createRecord('masquerade-fields', {
+    this.newField = app.store.createRecord<Field>('masquerade-fields', {
       attributes: {
         name: '',
         description: '',
