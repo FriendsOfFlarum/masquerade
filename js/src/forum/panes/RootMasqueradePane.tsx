@@ -1,11 +1,10 @@
 import app from 'flarum/forum/app';
 import UserPage from 'flarum/forum/components/UserPage';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-import ProfilePane from './ProfilePane';
-import ProfileConfigurePane from './ProfileConfigurePane';
-
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
+import ProfilePane from './ProfilePane';
+import ProfileConfigurePane from './ProfileConfigurePane';
 
 export default class RootMasqueradePane extends UserPage {
   loading = true;
@@ -13,7 +12,7 @@ export default class RootMasqueradePane extends UserPage {
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
 
-    if (!app.forum.attribute('canViewMasquerade')) {
+    if (!app.forum.attribute<boolean>('canViewMasquerade')) {
       m.route.set(app.route('index'));
     }
 

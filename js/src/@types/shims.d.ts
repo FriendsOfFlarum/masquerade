@@ -4,7 +4,7 @@ import type Answer from '../lib/models/Answer';
 declare module 'flarum/common/models/User' {
   export default interface User {
     bioFields(): Answer[];
-    masqueradeAnswers(): Answer[];
+    masqueradeAnswers(): Answer[] | false;
     canEditMasqueradeProfile(): boolean;
   }
 }

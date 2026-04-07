@@ -1,9 +1,7 @@
 import app from 'flarum/forum/app';
-
 import { extend } from 'flarum/common/extend';
 import LinkButton from 'flarum/common/components/LinkButton';
 import UserPage from 'flarum/forum/components/UserPage';
-
 import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 
@@ -14,14 +12,9 @@ export default function addProfilePane() {
 
       items.add(
         'masquerade',
-        LinkButton.component(
-          {
-            href: app.route('fof-masquerade', { username: this.user?.slug() }),
-            icon: 'far fa-id-card',
-            'data-editProfile': edit,
-          },
-          app.translator.trans(`fof-masquerade.forum.buttons.${edit ? 'edit' : 'view'}-profile`)
-        ),
+        <LinkButton href={app.route('fof-masquerade', { username: this.user?.slug() })} icon="far fa-id-card" data-edit-profile={edit}>
+          {app.translator.trans(`fof-masquerade.forum.buttons.${edit ? 'edit' : 'view'}-profile`)}
+        </LinkButton>,
         200
       );
     }
