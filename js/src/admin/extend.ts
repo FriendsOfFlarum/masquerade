@@ -7,6 +7,11 @@ export default [
   ...commonExtend,
   new Extend.Admin()
     .page(MasqueradePage)
+    .setting(() => ({
+      setting: 'masquerade.force-profile-completion',
+      label: app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion'),
+      type: 'boolean',
+    }))
     .permission(
       () => ({
         icon: 'far fa-id-card',

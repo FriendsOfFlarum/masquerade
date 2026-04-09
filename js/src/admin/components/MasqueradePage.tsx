@@ -1,76 +1,121 @@
-// @ts-ignore
-import sortable from 'html5sortable/dist/html5sortable.es.js';
 import app from 'flarum/admin/app';
-import Stream from 'flarum/common/utils/Stream';
-import ExtensionPage from 'flarum/admin/components/ExtensionPage';
-import FormGroup from 'flarum/common/components/FormGroup';
-import saveSettings from 'flarum/admin/utils/saveSettings';
-import type { Vnode } from 'mithril';
-import FieldList from './FieldList';
+import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/ExtensionPage';
+import Icon from 'flarum/common/components/Icon';
+import Button from 'flarum/common/components/Button';
+import FormSection from 'flarum/admin/components/FormSection';
+import FormSectionGroup from 'flarum/admin/components/FormSectionGroup';
+import type { Vnode, VnodeDOM } from 'mithril';
+import { DragDropManager } from '@dnd-kit/dom';
+import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
 import Field from '../../lib/models/Field';
+import FieldEditModal from './FieldEditModal';
+import sortFields from '../../common/utils/sortFields';
 
 export default class MasqueradePage extends ExtensionPage {
-  loading: Stream<boolean> = Stream(false);
-  existing: Field[] = [];
-  enforceProfileCompletion: Stream<boolean> = Stream(app.data.settings['masquerade.force-profile-completion'] === '1');
-  newField!: Field;
+  protected dragDropManager!: DragDropManager;
+  protected sortableInstances = new Map<string, Sortable>();
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
+    this.dragDropManager = new DragDropManager();
 
-    this.resetNew();
-    this.loadExisting();
-  }
+    this.dragDropManager.monitor.addEventListener('dragend', (event) => {
+      if (event.canceled) return;
 
-  oncreate(vnode: Vnode) {
-    super.oncreate(vnode);
+      const { source } = event.operation;
+      if (!isSortable(source)) return;
 
-    sortable(this.element.querySelector('.js-sortable-fields'), {
-      handle: 'legend',
-    })[0].addEventListener('sortupdate', () => {
+      const { initialIndex, index } = source;
+      if (initialIndex === index) return;
+
+      const fields = sortFields(app.store.all<Field>('masquerade-fields'));
+      const [movedField] = fields.splice(initialIndex, 1);
+      fields.splice(index, 0, movedField);
+
       const sorting: number[] = [];
-
-      this.element.querySelectorAll<HTMLFieldSetElement>('.js-sortable-fields > .Field').forEach((el, index) => {
-        const id = Number(el.dataset.id);
-        const field = app.store.getById<Field>('masquerade-fields', String(id));
-
-        if (field) field.pushAttributes({ sort: index });
-        sorting.push(id);
+      fields.forEach((field, newIndex) => {
+        field.pushAttributes({ sort: newIndex });
+        sorting.push(Number(field.id()));
       });
 
-      this.existing.sort((a, b) => a.sort() - b.sort());
       this.updateSort(sorting);
     });
+
+    if (!app.store.all<Field>('masquerade-fields').length) {
+      this.loading = true;
+      app.store.find<Field>('masquerade-fields').then(() => (this.loading = false));
+    }
   }
 
-  onupdate() {
-    sortable(this.element.querySelector('.js-sortable-fields'), {
-      handle: 'legend',
-    });
+  sections(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
+    const items = super.sections(vnode);
+
+    items.setPriority('content', 20);
+    items.add('fields', this.fieldsSection(), 10);
+
+    return items;
   }
 
-  content() {
+  fieldsSection() {
     return (
-      <div className="ExtensionPage-settings ProfileConfigurePane">
-        <div className="container">
-          <h2>{app.translator.trans('fof-masquerade.admin.general-options')}</h2>
-          <FormGroup
-            label={app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
-            type="bool"
-            state={this.enforceProfileCompletion()}
-            onchange={(value: boolean) => {
-              saveSettings({
-                'masquerade.force-profile-completion': value ? '1' : '0',
-              });
-              this.enforceProfileCompletion(value);
-            }}
-          />
-
-          <h2>{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
-          <FieldList existing={this.existing} new={this.newField} loading={this.loading()} onUpdate={this.requestSuccess.bind(this)} />
-        </div>
-      </div>
+      <FormSectionGroup className="MasqueradePage container">
+        <FormSection label={app.translator.trans('fof-masquerade.admin.fields.title')}>
+          <ol className="MasqueradePage-list">
+            {sortFields(app.store.all<Field>('masquerade-fields')).map((field, index) => (
+              <li
+                key={field.id()}
+                data-id={field.id()}
+                className="MasqueradeFieldListItem"
+                oncreate={(vnode: VnodeDOM) => this.initSortableItem(vnode, field.id()!, index)}
+                onupdate={() => this.updateSortableItem(field.id()!, index)}
+                onbeforeremove={() => this.removeSortableItem(field.id()!)}
+              >
+                {field.icon() && <Icon name={field.icon()} className="MasqueradeFieldListItem-icon" />}
+                <span className="MasqueradeFieldListItem-name">{field.name()}</span>
+                <Button
+                  aria-label={app.translator.trans('fof-masquerade.admin.fields.edit', { field: field.name() })}
+                  className="Button Button--link Button--icon MasqueradeFieldListItem-edit"
+                  icon="fas fa-pencil-alt"
+                  onclick={() => app.modal.show(FieldEditModal, { model: field })}
+                />
+              </li>
+            ))}
+          </ol>
+          <Button className="Button Button--dashed" icon="fas fa-plus" onclick={() => app.modal.show(FieldEditModal)}>
+            {app.translator.trans('fof-masquerade.admin.buttons.add-field')}
+          </Button>
+        </FormSection>
+      </FormSectionGroup>
     );
+  }
+
+  initSortableItem(vnode: VnodeDOM, id: string, index: number) {
+    this.sortableInstances.set(
+      id,
+      new Sortable(
+        {
+          id,
+          index,
+          element: vnode.dom,
+          transition: {
+            duration: 200,
+          },
+        },
+        this.dragDropManager
+      )
+    );
+  }
+
+  updateSortableItem(id: string, index: number) {
+    const sortable = this.sortableInstances.get(id);
+    if (sortable) {
+      sortable.index = index;
+    }
+  }
+
+  removeSortableItem(id: string) {
+    this.sortableInstances.get(id)?.unregister();
+    this.sortableInstances.delete(id);
   }
 
   updateSort(sorting: number[]) {
@@ -79,46 +124,6 @@ export default class MasqueradePage extends ExtensionPage {
       url: app.forum.attribute('apiUrl') + '/masquerade-fields/order',
       body: {
         sort: sorting,
-      },
-    });
-  }
-
-  requestSuccess() {
-    this.loadExisting();
-    this.resetNew();
-    m.redraw();
-  }
-
-  loadExisting() {
-    this.loading(true);
-
-    return app
-      .request({
-        method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/masquerade-fields',
-      })
-      .then((result) => {
-        // @ts-ignore
-        app.store.pushPayload(result);
-        this.existing = app.store.all<Field>('masquerade-fields');
-        this.existing.sort((a, b) => a.sort() - b.sort());
-      })
-      .finally(() => {
-        this.loading(false);
-        m.redraw();
-      });
-  }
-
-  resetNew() {
-    this.newField = app.store.createRecord<Field>('masquerade-fields', {
-      attributes: {
-        name: '',
-        description: '',
-        icon: '',
-        required: false,
-        on_bio: false,
-        type: null,
-        validation: '',
       },
     });
   }
