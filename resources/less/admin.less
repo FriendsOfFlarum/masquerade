@@ -33,3 +33,31 @@
         }
     }
 }
+
+// ---
+.MasqueradeSelectOptionsList,
+.MasqueradeSelectOptionNewItem {
+    width: 100%;
+}
+
+.MasqueradeSelectOptionItem,
+.MasqueradeSelectOptionNewItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.MasqueradeSelectOptionItem {
+    margin-bottom: 10px;
+
+    &-handle{
+        cursor: grab;
+        color: var(--control-color);
+    }
+}
+
+.MasqueradeSelectOptionNewItem{
+    .Form-group {
+        width: 100%;
+    }
+}

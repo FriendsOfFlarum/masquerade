@@ -30,6 +30,7 @@ export default class MasqueradePage extends ExtensionPage {
       const fields = sortFields(app.store.all<Field>('masquerade-fields'));
       const [movedField] = fields.splice(initialIndex, 1);
       fields.splice(index, 0, movedField);
+
       const sorting: number[] = [];
       fields.forEach((field, newIndex) => {
         field.pushAttributes({ sort: newIndex });
