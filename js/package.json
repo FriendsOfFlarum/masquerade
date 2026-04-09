@@ -3,7 +3,7 @@
   "private": true,
   "prettier": "@flarum/prettier-config",
   "dependencies": {
-    "html5sortable": "^0.14.0"
+    "@dnd-kit/dom": "^0.3.2"
   },
   "devDependencies": {
     "@flarum/prettier-config": "^1.0.0",

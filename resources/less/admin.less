@@ -7,12 +7,17 @@
     display: flex;
     align-items: center;
     width: 100%;
-    cursor: move;
+    cursor: grab;
     padding: 0.3em 0.6em;
     border-radius: var(--border-radius);
 
     &:hover {
         background-color: var(--control-bg);
+    }
+
+    &[aria-grabbed="true"] {
+        background-color: color-mix(in srgb, var(--control-bg), transparent 15%);
+        backdrop-filter: blur(2px);
     }
 
     &-icon {
