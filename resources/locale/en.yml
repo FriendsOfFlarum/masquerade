@@ -27,7 +27,7 @@ fof-masquerade:
       view-profile: View masquerade profile
     fields:
       title: Fields
-      add: Add field {field}
+      create: Create field
       edit: Edit field {field}
       delete-confirmation: Are you sure you want to delete the field {field}? This cannot be undone.
       name: Field name

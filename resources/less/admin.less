@@ -1,41 +1,30 @@
-.ProfileConfigurePane {
-    fieldset.Field {
-        padding: 0.8rem 1rem;
-        background: var(--body-bg);
-        border-radius: var(--border-radius);
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-        margin-top: 20px;
+.MasqueradePage-list {
+    list-style: none;
+    padding: 0;
+}
 
-        legend {
-            .Field-toggle {
-                cursor: pointer;
-                margin-left: 1em;
-                background: var(--body-bg);
+.MasqueradeFieldListItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: move;
+    padding: 0.3em 0.6em;
+    border-radius: var(--border-radius);
 
-                .icon {
-                    margin-left: 0.3em;
-                }
-            }
-        }
-
-
-        .Field-body {
-            display: none;
-
-            .Form-group:not(:last-child) {
-                margin-bottom: 1em;
-            }
-        }
-
-        &.active .Field-body {
-            display: block;
-        }
+    &:hover {
+        background-color: var(--control-bg);
     }
 
-    @media @desktop-up {
-        .container {
-            max-width: 600px;
-            margin: 0;
+    &-icon {
+        margin-right: 0.8em;
+    }
+
+    &-edit {
+        margin-left: auto;
+        visibility: hidden;
+
+        .MasqueradeFieldListItem:hover & {
+            visibility: visible;
         }
     }
 }
