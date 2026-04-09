@@ -1,18 +1,14 @@
 // @ts-ignore
 import sortable from 'html5sortable/dist/html5sortable.es.js';
 import app from 'flarum/admin/app';
-import Stream from 'flarum/common/utils/Stream';
-import ExtensionPage from 'flarum/admin/components/ExtensionPage';
-import FormGroup from 'flarum/common/components/FormGroup';
-import saveSettings from 'flarum/admin/utils/saveSettings';
-import type { Vnode } from 'mithril';
-import FieldList from './FieldList';
+import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/ExtensionPage';
+import type { Vnode, VnodeDOM } from 'mithril';
 import Field from '../../lib/models/Field';
+import FieldList from './FieldList';
 
 export default class MasqueradePage extends ExtensionPage {
-  loading: Stream<boolean> = Stream(false);
+  loading: boolean = false;
   existing: Field[] = [];
-  enforceProfileCompletion: Stream<boolean> = Stream(app.data.settings['masquerade.force-profile-completion'] === '1');
   newField!: Field;
 
   oninit(vnode: Vnode) {
@@ -49,25 +45,25 @@ export default class MasqueradePage extends ExtensionPage {
     });
   }
 
-  content() {
-    return (
-      <div className="ExtensionPage-settings ProfileConfigurePane">
-        <div className="container">
-          <h2>{app.translator.trans('fof-masquerade.admin.general-options')}</h2>
-          <FormGroup
-            label={app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion')}
-            type="bool"
-            state={this.enforceProfileCompletion()}
-            onchange={(value: boolean) => {
-              saveSettings({
-                'masquerade.force-profile-completion': value ? '1' : '0',
-              });
-              this.enforceProfileCompletion(value);
-            }}
-          />
+  sections(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
+    const items = super.sections(vnode);
 
-          <h2>{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
-          <FieldList existing={this.existing} new={this.newField} loading={this.loading()} onUpdate={this.requestSuccess.bind(this)} />
+    items.setPriority('content', 10);
+    items.add('fields', this.fields(), 5);
+
+    return items;
+  }
+
+  fields() {
+    return (
+      <div className="FieldsPage">
+        <div className="ExtensionPage-permissions-header">
+          <div className="container">
+            <h2 className="ExtensionTitle">{app.translator.trans('fof-masquerade.admin.fields.title')}</h2>
+          </div>
+        </div>
+        <div className="ProfileConfigurePane">
+          <FieldList existing={this.existing} new={this.newField} loading={this.loading} onUpdate={this.requestSuccess.bind(this)} />
         </div>
       </div>
     );
@@ -90,7 +86,7 @@ export default class MasqueradePage extends ExtensionPage {
   }
 
   loadExisting() {
-    this.loading(true);
+    this.loading = true;
 
     return app
       .request({
@@ -104,7 +100,7 @@ export default class MasqueradePage extends ExtensionPage {
         this.existing.sort((a, b) => a.sort() - b.sort());
       })
       .finally(() => {
-        this.loading(false);
+        this.loading = false;
         m.redraw();
       });
   }
