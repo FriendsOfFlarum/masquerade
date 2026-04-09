@@ -1,18 +1,15 @@
-import Stream from 'flarum/common/utils/Stream';
-import ExtensionPage from 'flarum/admin/components/ExtensionPage';
-import type { Vnode } from 'mithril';
-import Field from '../../lib/models/Field';
+import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/ExtensionPage';
+import type { Vnode, VnodeDOM } from 'mithril';
+import { DragDropManager } from '@dnd-kit/dom';
+import { Sortable } from '@dnd-kit/dom/sortable';
 export default class MasqueradePage extends ExtensionPage {
-    loading: Stream<boolean>;
-    existing: Field[];
-    enforceProfileCompletion: Stream<boolean>;
-    newField: Field;
+    protected dragDropManager: DragDropManager;
+    protected sortableInstances: Map<string, Sortable<import("@dnd-kit/abstract").Data>>;
     oninit(vnode: Vnode): void;
-    oncreate(vnode: Vnode): void;
-    onupdate(): void;
-    content(): JSX.Element;
+    sections(vnode: VnodeDOM<ExtensionPageAttrs, this>): import("flarum/common/utils/ItemList").default<unknown>;
+    fieldsSection(): JSX.Element;
+    initSortableItem(vnode: VnodeDOM, id: string, index: number): void;
+    updateSortableItem(id: string, index: number): void;
+    removeSortableItem(id: string): void;
     updateSort(sorting: number[]): void;
-    requestSuccess(): void;
-    loadExisting(): Promise<void>;
-    resetNew(): void;
 }
