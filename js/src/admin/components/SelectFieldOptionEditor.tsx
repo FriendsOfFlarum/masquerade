@@ -61,7 +61,8 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
               data-id={item.id}
               className="MasqueradeSelectOptionItem"
               oncreate={(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>) => this.initSortableItem(vnode, item.id, index)}
-              onremove={() => this.removeSortableItem(item.id)}
+              onupdate={() => this.updateSortableItem(item.id, index)}
+              onbeforeremove={() => this.removeSortableItem(item.id)}
             >
               <Icon name="fas fa-grip-vertical" className="MasqueradeSelectOptionItem-handle" />
               <input
@@ -111,6 +112,13 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
         this.dragDropManager
       )
     );
+  }
+
+  updateSortableItem(id: string, index: number) {
+    const sortable = this.sortableInstances.get(id);
+    if (sortable) {
+      sortable.index = index;
+    }
   }
 
   removeSortableItem(id: string) {

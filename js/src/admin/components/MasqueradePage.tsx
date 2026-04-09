@@ -13,6 +13,7 @@ import sortFields from '../../common/utils/sortFields';
 
 export default class MasqueradePage extends ExtensionPage {
   protected dragDropManager!: DragDropManager;
+  protected sortableInstances = new Map<string, Sortable>();
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
@@ -59,9 +60,16 @@ export default class MasqueradePage extends ExtensionPage {
     return (
       <FormSectionGroup className="MasqueradePage container">
         <FormSection label={app.translator.trans('fof-masquerade.admin.fields.title')}>
-          <ol className="MasqueradePage-list" oncreate={this.onListCreate.bind(this)}>
-            {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => (
-              <li key={field.id()} data-id={field.id()} className="MasqueradeFieldListItem">
+          <ol className="MasqueradePage-list">
+            {sortFields(app.store.all<Field>('masquerade-fields')).map((field, index) => (
+              <li
+                key={field.id()}
+                data-id={field.id()}
+                className="MasqueradeFieldListItem"
+                oncreate={(vnode: VnodeDOM) => this.initSortableItem(vnode, field.id()!, index)}
+                onupdate={() => this.updateSortableItem(field.id()!, index)}
+                onbeforeremove={() => this.removeSortableItem(field.id()!)}
+              >
                 {field.icon() && <Icon name={field.icon()} className="MasqueradeFieldListItem-icon" />}
                 <span className="MasqueradeFieldListItem-name">{field.name()}</span>
                 <Button
@@ -81,21 +89,33 @@ export default class MasqueradePage extends ExtensionPage {
     );
   }
 
-  onListCreate(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
-    const elements = vnode.dom.querySelectorAll<HTMLLIElement>('.MasqueradeFieldListItem');
-    elements.forEach((element, index) => {
+  initSortableItem(vnode: VnodeDOM, id: string, index: number) {
+    this.sortableInstances.set(
+      id,
       new Sortable(
         {
-          id: element.dataset.id!,
+          id,
           index,
-          element,
+          element: vnode.dom,
           transition: {
             duration: 200,
           },
         },
         this.dragDropManager
-      );
-    });
+      )
+    );
+  }
+
+  updateSortableItem(id: string, index: number) {
+    const sortable = this.sortableInstances.get(id);
+    if (sortable) {
+      sortable.index = index;
+    }
+  }
+
+  removeSortableItem(id: string) {
+    this.sortableInstances.get(id)?.unregister();
+    this.sortableInstances.delete(id);
   }
 
   updateSort(sorting: number[]) {
