@@ -7,12 +7,16 @@ import FormSectionGroup from 'flarum/admin/components/FormSectionGroup';
 import type { Vnode, VnodeDOM } from 'mithril';
 import Field from '../../lib/models/Field';
 import FieldEditModal from './FieldEditModal';
+import sortFields from '../../common/utils/sortFields';
 
 export default class MasqueradePage extends ExtensionPage {
   oninit(vnode: Vnode) {
     super.oninit(vnode);
-    this.loading = true;
-    app.store.find<Field>('masquerade-fields').then(() => (this.loading = false));
+
+    if (!app.store.all<Field>('masquerade-fields').length) {
+      this.loading = true;
+      app.store.find<Field>('masquerade-fields').then(() => (this.loading = false));
+    }
   }
 
   sections(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
@@ -29,7 +33,7 @@ export default class MasqueradePage extends ExtensionPage {
       <FormSectionGroup className="MasqueradePage container">
         <FormSection label={app.translator.trans('fof-masquerade.admin.fields.title')}>
           <ol className="MasqueradePage-list">
-            {app.store.all<Field>('masquerade-fields').map((field) => (
+            {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => (
               <li key={field.id()} data-id={field.id()} className="MasqueradeFieldListItem">
                 {field.icon() && <Icon name={field.icon()} className="MasqueradeFieldListItem-icon" />}
                 <span className="MasqueradeFieldListItem-name">{field.name()}</span>
@@ -42,7 +46,7 @@ export default class MasqueradePage extends ExtensionPage {
               </li>
             ))}
           </ol>
-          <Button className="Button Button--primary" icon="fas fa-plus" onclick={() => app.modal.show(FieldEditModal)}>
+          <Button className="Button Button--dashed" icon="fas fa-plus" onclick={() => app.modal.show(FieldEditModal)}>
             {app.translator.trans('fof-masquerade.admin.buttons.add-field')}
           </Button>
         </FormSection>

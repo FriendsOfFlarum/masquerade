@@ -7,6 +7,7 @@ import type { Vnode } from 'mithril';
 import TypeFactory from '../types/TypeFactory';
 import Field from '../../lib/models/Field';
 import Answer from '../../lib/models/Answer';
+import sortFields from '../../common/utils/sortFields';
 
 export interface ProfileConfigurePaneAttrs extends ComponentAttrs {
   user: User;
@@ -37,12 +38,9 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
         )}
 
         <div class="Fields">
-          {app.store
-            .all<Field>('masquerade-fields')
-            .sort((a, b) => a.sort() - b.sort())
-            .map((field) => {
-              return this.field(field);
-            })}
+          {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => {
+            return this.field(field);
+          })}
         </div>
 
         <Button type="submit" className="Button Button--primary" loading={this.loading} disabled={!this.dirty}>

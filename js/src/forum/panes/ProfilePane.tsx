@@ -5,6 +5,7 @@ import Component, { ComponentAttrs } from 'flarum/common/Component';
 import TypeFactory from '../types/TypeFactory';
 import type Answer from '../../lib/models/Answer';
 import type Field from '../../lib/models/Field';
+import sortFields from '../../common/utils/sortFields';
 
 export interface ProfilePaneAttrs extends ComponentAttrs {
   answers: Answer[];
@@ -26,14 +27,11 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
     return (
       <div class="Masquerade-Bio">
         <div class="Fields">
-          {app.store
-            .all<Field>('masquerade-fields')
-            .sort((a, b) => (a as Field).sort() - (b as Field).sort())
-            .map((field) => {
-              const answer = this.answers.find((a) => a.field()?.id() === field.id());
+          {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => {
+            const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-              return this.field(field, answer?.content() || null);
-            })}
+            return this.field(field, answer?.content() || null);
+          })}
         </div>
       </div>
     );
