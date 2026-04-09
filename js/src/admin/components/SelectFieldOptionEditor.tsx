@@ -20,6 +20,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     value: string;
   }[] = [];
   protected dragDropManager!: DragDropManager;
+  protected sortableInstances = new Map<string, Sortable>();
 
   oninit(vnode: Vnode<SelectFieldOptionEditorAttrs, this>) {
     super.oninit(vnode);
@@ -53,9 +54,15 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
       <div className="Form-group">
         <label>{app.translator.trans('fof-masquerade.admin.fields.options')}</label>
 
-        <div className="MasqueradeSelectOptionsList" oncreate={this.onListCreate.bind(this)}>
+        <div className="MasqueradeSelectOptionsList">
           {this.items.map((item, index) => (
-            <div key={item.id} data-id={item.id} className="MasqueradeSelectOptionItem">
+            <div
+              key={item.id}
+              data-id={item.id}
+              className="MasqueradeSelectOptionItem"
+              oncreate={(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>) => this.initSortableItem(vnode, item.id, index)}
+              onremove={() => this.removeSortableItem(item.id)}
+            >
               <Icon name="fas fa-grip-vertical" className="MasqueradeSelectOptionItem-handle" />
               <input
                 type="text"
@@ -87,23 +94,28 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     );
   }
 
-  onListCreate(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>) {
-    const elements = vnode.dom.querySelectorAll<HTMLDivElement>('.MasqueradeSelectOptionItem');
-
-    elements.forEach((element, index) => {
+  initSortableItem(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>, id: string, index: number) {
+    const element = vnode.dom;
+    this.sortableInstances.set(
+      id,
       new Sortable(
         {
-          id: element.dataset.id!,
+          id,
           index,
           element,
-          handle: element.querySelector<HTMLElement>('.MasqueradeSelectOptionItem-handle')!,
+          handle: element.querySelector('.MasqueradeSelectOptionItem-handle')!,
           transition: {
             duration: 200,
           },
         },
         this.dragDropManager
-      );
-    });
+      )
+    );
+  }
+
+  removeSortableItem(id: string) {
+    this.sortableInstances.get(id)?.unregister();
+    this.sortableInstances.delete(id);
   }
 
   updateRules() {
