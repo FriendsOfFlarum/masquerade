@@ -138,11 +138,10 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
         'validation',
         <FormGroup
           label={app.translator.trans('fof-masquerade.admin.fields.validation')}
-          value={this.validation()}
           help={app.translator.trans('fof-masquerade.admin.fields.validation-help', {
             a: <a href="https://laravel.com/docs/13.x/validation#custom-validation-rules" target="_blank" />,
           })}
-          oninput={(value: string) => this.validation(value)}
+          stream={this.validation}
         />,
         30
       );
