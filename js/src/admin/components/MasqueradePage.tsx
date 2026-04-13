@@ -43,7 +43,10 @@ export default class MasqueradePage extends ExtensionPage {
 
     if (!app.store.all<Field>('masquerade-fields').length) {
       this.loading = true;
-      app.store.find<Field>('masquerade-fields').then(() => (this.loading = false));
+      app.store.find<Field>('masquerade-fields').finally(() => {
+        this.loading = false;
+        m.redraw();
+      });
     }
   }
 
