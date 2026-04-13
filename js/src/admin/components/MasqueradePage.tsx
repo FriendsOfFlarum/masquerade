@@ -17,6 +17,7 @@ export default class MasqueradePage extends ExtensionPage {
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
+    this.loading = false;
     this.dragDropManager = new DragDropManager();
 
     this.dragDropManager.monitor.addEventListener('dragend', (event) => {
