@@ -4,13 +4,13 @@ namespace FoF\Masquerade\Api\Resource;
 
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\AbstractDatabaseResource;
+use Flarum\Api\Resource\UserResource;
 use Flarum\Api\Schema;
 use Flarum\User\UserRepository;
 use FoF\Masquerade\Answer;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Illuminate\Support\Arr;
-use Laminas\Diactoros\Response\EmptyResponse;
 use Tobyz\JsonApiServer\Context;
 
 /**
@@ -18,6 +18,12 @@ use Tobyz\JsonApiServer\Context;
  */
 class AnswerResource extends AbstractDatabaseResource
 {
+    public function __construct(
+        protected UserRepository $users,
+        protected AnswerValidator $validator
+    ) {
+    }
+
     public function type(): string
     {
         return 'masquerade-answers';
@@ -42,7 +48,7 @@ class AnswerResource extends AbstractDatabaseResource
                 ->action(function (Context $context) {
                     $actor = $context->getActor();
                     $userId = Arr::get($context->request->getQueryParams(), 'userId');
-                    $user = resolve(UserRepository::class)->findOrFail($userId);
+                    $user = $this->users->findOrFail($userId);
 
                     if ($actor->id !== $user->id) {
                         $actor->assertCan('fof.masquerade.edit-others-profile');
@@ -52,7 +58,6 @@ class AnswerResource extends AbstractDatabaseResource
 
                     $answersData = $context->request->getParsedBody();
                     $fields = Field::all();
-                    $validator = resolve(AnswerValidator::class);
 
                     foreach ($fields as $field) {
                         if (!array_key_exists($field->id, $answersData)) {
@@ -69,10 +74,10 @@ class AnswerResource extends AbstractDatabaseResource
                             }
                         }
 
-                        $validator
+                        $this->validator
                             ->setField($field)
                             ->assertValid([$field->name => $content]);
-                        
+
                         $answer = $field->answers()->firstOrNew([
                             'user_id' => $user->id,
                         ]);
@@ -80,8 +85,21 @@ class AnswerResource extends AbstractDatabaseResource
                         $answer->user()->associate($user);
                         $answer->save();
                     }
+
+                    return $user;
                 })
-                ->response(fn() => new EmptyResponse()),
+                ->response(function (Context $context, $user) {
+                    return $context->api
+                        ->forResource(UserResource::class)
+                        ->forEndpoint('show')
+                        ->handle(
+                            $context->request
+                                ->withUri($context->request->getUri()->withPath('/users/'.$user->id))
+                                ->withMethod('GET')
+                                ->withQueryParams(['include' => 'masqueradeAnswers'])
+                                ->withParsedBody([])
+                        );
+                }),
         ];
     }
 

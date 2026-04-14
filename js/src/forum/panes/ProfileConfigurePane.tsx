@@ -106,8 +106,9 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
         url: app.forum.attribute('apiUrl') + '/masquerade-answers/configure/' + this.attrs.user.id(),
         body: this.answerValues,
       })
-      .then(() => {
+      .then((res: any) => {
         this.dirty = false;
+        app.store.pushPayload(res);
 
         if (!this.profileCompleted) {
           this.profileCompleted = true;
