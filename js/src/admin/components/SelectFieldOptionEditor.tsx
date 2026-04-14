@@ -105,9 +105,6 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
           index,
           element,
           handle: element.querySelector('.MasqueradeSelectOptionItem-handle')!,
-          transition: {
-            duration: 200,
-          },
         },
         this.dragDropManager
       )

@@ -3,7 +3,7 @@
   "private": true,
   "prettier": "@flarum/prettier-config",
   "dependencies": {
-    "@dnd-kit/dom": "^0.3.2"
+    "@dnd-kit/dom": "^0.4.0"
   },
   "devDependencies": {
     "@flarum/prettier-config": "^1.0.0",

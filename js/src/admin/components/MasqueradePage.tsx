@@ -100,9 +100,6 @@ export default class MasqueradePage extends ExtensionPage {
           id,
           index,
           element: vnode.dom,
-          transition: {
-            duration: 200,
-          },
         },
         this.dragDropManager
       )
