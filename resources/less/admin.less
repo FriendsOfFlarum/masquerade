@@ -26,10 +26,14 @@
 
     &-edit {
         margin-left: auto;
-        visibility: hidden;
 
-        .MasqueradeFieldListItem:hover & {
-            visibility: visible;
+        // pointer: fine = mouse — safe to use hover. Touch devices always show the button.
+        @media (pointer: fine) {
+            visibility: hidden;
+
+            .MasqueradeFieldListItem:hover & {
+                visibility: visible;
+            }
         }
     }
 }
@@ -50,13 +54,13 @@
 .MasqueradeSelectOptionItem {
     margin-bottom: 10px;
 
-    &-handle{
+    &-handle {
         cursor: grab;
         color: var(--control-color);
     }
 }
 
-.MasqueradeSelectOptionNewItem{
+.MasqueradeSelectOptionNewItem {
     .Form-group {
         width: 100%;
     }
