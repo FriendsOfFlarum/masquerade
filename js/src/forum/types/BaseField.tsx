@@ -1,15 +1,23 @@
 import Icon from 'flarum/common/components/Icon';
+import FormGroup from 'flarum/common/components/FormGroup';
+import Stream from 'flarum/common/utils/Stream';
+import Field from '../../lib/models/Field';
 
-/* global m */
+interface BaseFieldAttrs {
+  field: Field;
+  stream: Stream<string>;
+}
 
 export default class BaseField {
-  constructor({ field, set, value }) {
+  protected readonly field: BaseFieldAttrs['field'];
+  protected readonly stream: BaseFieldAttrs['stream'];
+
+  constructor({ field, stream }: BaseFieldAttrs) {
     this.field = field;
-    this.set = set;
-    this.value = value;
+    this.stream = stream;
   }
 
-  readAttribute(object, attribute) {
+  readAttribute<T extends object, K extends keyof T>(object: T, attribute: K) {
     if (typeof object[attribute] === 'function') {
       return object[attribute]();
     }
@@ -17,20 +25,13 @@ export default class BaseField {
     return object[attribute];
   }
 
-  /**
-   * Gets all Laravel validation rules split by rule
-   * @returns {Array}
-   */
-  validationRules() {
+  /** Gets all Laravel validation rules split by rule. */
+  validationRules(): string[] {
     return this.readAttribute(this.field, 'validation').split('|');
   }
 
-  /**
-   * Gets a Laravel validation rule by name
-   * @param {string} ruleName
-   * @returns {string|null}
-   */
-  validationRule(ruleName) {
+  /** Gets a Laravel validation rule by name. */
+  validationRule(ruleName: string): string | null {
     let ruleContent = null;
 
     this.validationRules().forEach((rule) => {
@@ -45,40 +46,30 @@ export default class BaseField {
   }
 
   editorField() {
-    return (
-      <div class="Form-group Field">
-        <label>
-          {this.field.icon()
-            ? [
-                Icon.component({
-                  name: this.field.icon(),
-                }),
-                ' ',
-              ]
-            : null}{' '}
-          {this.field.name()} {this.field.required() ? '*' : null}
-        </label>
-        <div class="FormField">
-          {this.editorInput()}
-          {this.field.description() ? <div class="helpText">{this.field.description()}</div> : null}
-        </div>
-      </div>
-    );
+    return <FormGroup stream={this.stream} {...this.editorInputAttrs()} />;
   }
 
-  editorInput() {
-    return <input {...this.editorInputAttrs()} />;
-  }
-
-  editorInputAttrs() {
+  editorInputAttrs(): FormGroup['attrs'] {
     return {
-      className: 'FormControl',
-      oninput: (event) => {
-        this.set(event.target.value);
-      },
-      value: this.value,
+      type: 'text',
+      label: this.fieldLabel(true),
+      help: this.field.description(),
       required: this.field.required(),
     };
+  }
+
+  fieldLabel(isEditor: boolean) {
+    return (
+      <>
+        {this.field.icon() && (
+          <>
+            <Icon name={this.field.icon()} />{' '}
+          </>
+        )}
+        {this.field.name()}
+        {isEditor && this.field.required() ? '*' : null}
+      </>
+    );
   }
 
   answerField() {
@@ -119,7 +110,7 @@ export default class BaseField {
     return !!answerContent?.length;
   }
 
-  static isNoOptionSelectedValue(value) {
+  static isNoOptionSelectedValue(value: string | null) {
     // The value can be null when coming from the API
     // The value can be '' when the field does not exist on the user (the empty string is set in ProfileConfigurePane)
     return value === null || value === '';
