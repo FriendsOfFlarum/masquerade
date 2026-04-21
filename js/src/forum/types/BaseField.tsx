@@ -93,7 +93,7 @@ export default class BaseField {
   }
 
   answerContent() {
-    return this.value;
+    return this.stream();
   }
 
   hasAnswer() {

@@ -24,7 +24,6 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
   protected profileCompleted = app.forum.attribute<boolean>('masquerade.profile-completed') || false;
   protected profileNowCompleted = false;
   protected answerStreams = new Map<string, Stream<string>>();
-  protected dirty = !this.profileCompleted;
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
@@ -45,7 +44,7 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
             return this.field(field);
           })}
 
-          <Button type="submit" className="Button Button--primary" loading={this.loading} disabled={!this.dirty}>
+          <Button type="submit" className="Button Button--primary" loading={this.loading} disabled={!this.isChanged()}>
             {app.translator.trans('fof-masquerade.forum.buttons.save-profile')}
           </Button>
 
@@ -72,6 +71,23 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
     return type.editorField();
   }
 
+  isChanged(): boolean {
+    if (!this.profileCompleted) return true;
+
+    const answers = (this.attrs.user.masqueradeAnswers() || []) as Answer[];
+
+    for (const [fieldId, stream] of this.answerStreams) {
+      const originalAnswer = answers.find((a) => a.field()?.id() === fieldId);
+      const originalValue = originalAnswer ? originalAnswer.content() : '';
+
+      if (stream() !== originalValue) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   async load() {
     let answers = this.attrs.user.masqueradeAnswers();
 
@@ -94,14 +110,18 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
     e.preventDefault();
     this.loading = true;
 
+    const payload: Record<string, string> = {};
+    for (const [key, stream] of this.answerStreams) {
+      payload[key] = stream();
+    }
+
     app
       .request({
         method: 'POST',
         url: app.forum.attribute('apiUrl') + '/masquerade-answers/configure/' + this.attrs.user.id(),
-        body: this.answerValues,
+        body: payload,
       })
       .then((res: any) => {
-        this.dirty = false;
         app.store.pushPayload(res);
 
         if (!this.profileCompleted) {

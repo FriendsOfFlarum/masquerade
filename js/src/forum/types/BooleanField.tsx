@@ -4,7 +4,7 @@ import BaseField from './BaseField';
 
 export default class BooleanField extends BaseField {
   editorInputAttrs() {
-    return { ...super.editorInputAttrs(), type: 'radio', name: crypto.randomUUID(), options: this.getRadioOptions() };
+    return { ...super.editorInputAttrs(), type: 'radio', options: this.getRadioOptions() };
   }
 
   getRadioOptions() {

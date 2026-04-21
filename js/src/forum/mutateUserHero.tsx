@@ -19,7 +19,7 @@ export default function mutateUserHero() {
           const field = answer.field();
           const type = TypeFactory.typeForField({
             field,
-            value: answer.content(),
+            stream: answer.content,
           });
 
           return type.answerField();

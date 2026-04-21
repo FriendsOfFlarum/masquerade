@@ -2,6 +2,7 @@ import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 import Component, { ComponentAttrs } from 'flarum/common/Component';
+import Stream from 'flarum/common/utils/Stream';
 import TypeFactory from '../types/TypeFactory';
 import type Answer from '../../lib/models/Answer';
 import type Field from '../../lib/models/Field';
@@ -40,7 +41,7 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
   field(field: Field, content: string | null) {
     const type = TypeFactory.typeForField({
       field,
-      value: content,
+      stream: Stream(content || ''),
     });
 
     return type.answerField();

@@ -3,24 +3,18 @@ import BaseField from './BaseField';
 
 export default class EmailField extends BaseField {
   editorInputAttrs() {
-    let attrs = super.editorInputAttrs();
-
-    attrs.type = 'email';
-    attrs.placeholder = 'you@example.com';
-
-    return attrs;
+    return { ...super.editorInputAttrs(), type: 'email', placeholder: 'you@example.com' };
   }
 
   answerContent() {
-    const value = this.value;
-
+    const value = this.stream();
     if (!value) {
       return null;
     }
 
     const email = value
-      .split(/@|\./)
-      .map((segment) => {
+      .split(/[@.]/)
+      .map((segment: string) => {
         return segment.replace(/(.{2})./g, '$1*');
       })
       .join('*');
@@ -36,6 +30,7 @@ export default class EmailField extends BaseField {
   }
 
   mailTo() {
-    window.location = 'mailto:' + this.value;
+    // @ts-ignore
+    window.location = 'mailto:' + this.stream();
   }
 }
