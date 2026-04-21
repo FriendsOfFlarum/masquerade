@@ -1,5 +1,5 @@
-import Button from 'flarum/common/components/Button';
 import BaseField from './BaseField';
+import LinkButton from 'flarum/common/components/LinkButton';
 
 export default class EmailField extends BaseField {
   editorInputAttrs() {
@@ -12,25 +12,10 @@ export default class EmailField extends BaseField {
       return null;
     }
 
-    const email = value
-      .split(/[@.]/)
-      .map((segment: string) => {
-        return segment.replace(/(.{2})./g, '$1*');
-      })
-      .join('*');
-
-    return Button.component(
-      {
-        onclick: () => this.mailTo(),
-        className: 'Button Button--text',
-        icon: 'far fa-envelope',
-      },
-      email
+    return (
+      <LinkButton className="Button Button--text" icon="far fa-envelope" href={`mailto:${value}`} external={true}>
+        {value}
+      </LinkButton>
     );
-  }
-
-  mailTo() {
-    // @ts-ignore
-    window.location = 'mailto:' + this.stream();
   }
 }
