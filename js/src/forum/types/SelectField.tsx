@@ -2,11 +2,9 @@ import app from 'flarum/forum/app';
 import BaseField from './BaseField';
 import extractText from 'flarum/common/utils/extractText';
 
-const NO_OPTION_SELECTED_KEY = 'fof_masquerade_no_option_selected';
-
 export default class SelectField extends BaseField {
   editorInputAttrs() {
-    return { ...super.editorInputAttrs(), type: 'select', options: this.options(), default: NO_OPTION_SELECTED_KEY };
+    return { ...super.editorInputAttrs(), type: 'select', options: this.options(), default: '' };
   }
 
   options() {
@@ -14,9 +12,9 @@ export default class SelectField extends BaseField {
     const currentValue = this.stream();
 
     if (!this.readAttribute(this.field, 'required')) {
-      options[NO_OPTION_SELECTED_KEY] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-optional'));
+      options[''] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-optional'));
     } else if (BaseField.isNoOptionSelectedValue(currentValue)) {
-      options[NO_OPTION_SELECTED_KEY] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-required'));
+      options[''] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-required'));
     }
 
     const validationIn = this.validationRule('in');
