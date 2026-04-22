@@ -10,7 +10,7 @@ export default class BooleanField extends BaseField {
 
   getRadioOptions() {
     const options: { value: string; label: string }[] = [];
-    if (!this.readAttribute(this.field, 'required')) {
+    if (!this.field.required()) {
       options.push({
         value: '',
         label: extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-optional')),

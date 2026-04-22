@@ -17,17 +17,9 @@ export default class BaseField {
     this.stream = stream;
   }
 
-  readAttribute<T extends object, K extends keyof T>(object: T, attribute: K) {
-    if (typeof object[attribute] === 'function') {
-      return object[attribute]();
-    }
-
-    return object[attribute];
-  }
-
   /** Gets all Laravel validation rules split by rule. */
   validationRules(): string[] {
-    return this.readAttribute(this.field, 'validation').split('|');
+    return this.field.validation().split('|');
   }
 
   /** Gets a Laravel validation rule by name. */
@@ -73,7 +65,7 @@ export default class BaseField {
   }
 
   answerField() {
-    const iconName = this.readAttribute(this.field, 'icon');
+    const iconName = this.field.icon();
 
     return (
       <div className={`Masquerade-Bio-Set${this.hasAnswer() ? '' : ' Masquerade-Bio-Set--empty'}`}>
@@ -85,7 +77,7 @@ export default class BaseField {
               })}{' '}
             </>
           )}
-          {this.readAttribute(this.field, 'name')}:{' '}
+          {this.field.name()}:{' '}
         </span>
         <span class="Masquerade-Bio-Answer">{this.answerContent()}</span>
       </div>

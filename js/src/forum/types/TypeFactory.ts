@@ -22,14 +22,6 @@ export default class TypeFactory {
     });
   }
 
-  static fieldAttribute<T extends Field, K extends keyof T>(field: T, attribute: K) {
-    if (typeof field[attribute] === 'function') {
-      return field[attribute]();
-    }
-
-    return field[attribute];
-  }
-
   static types(): Record<string, typeof BaseField> {
     return {
       boolean: BooleanField,
@@ -41,11 +33,11 @@ export default class TypeFactory {
 
   /** Identifies how to parse the field answer. */
   static identify(field: Field): null | string {
-    const validation = (this.fieldAttribute(field, 'validation') || '').split(',');
+    const validation = (field.validation() || '').split(',');
     let identified = null;
 
     // If the field has a type, we use it
-    const fieldType = this.fieldAttribute(field, 'type');
+    const fieldType = field.type() ?? '';
     if (typeof this.types()[fieldType] !== 'undefined') {
       return fieldType;
     }

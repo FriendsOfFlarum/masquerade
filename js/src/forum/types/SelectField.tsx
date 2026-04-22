@@ -11,7 +11,7 @@ export default class SelectField extends BaseField {
     const options: Record<string, string> = {};
     const currentValue = this.stream();
 
-    if (!this.readAttribute(this.field, 'required')) {
+    if (!this.field.required()) {
       options[''] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-optional'));
     } else if (BaseField.isNoOptionSelectedValue(currentValue)) {
       options[''] = extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-required'));

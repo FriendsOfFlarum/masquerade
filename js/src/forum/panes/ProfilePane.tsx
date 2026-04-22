@@ -11,16 +11,13 @@ import sortFields from '../../common/utils/sortFields';
 export interface ProfilePaneAttrs extends ComponentAttrs {
   answers: Answer[];
   user: User;
-  loading: boolean;
 }
 
 export default class ProfilePane extends Component<ProfilePaneAttrs> {
   protected answers: Answer[] = [];
-  loading: boolean = false;
 
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
-    this.loading = true;
     this.load();
   }
 
