@@ -9,7 +9,6 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
     protected loading: boolean;
     protected enforceProfileCompletion: boolean;
     protected profileCompleted: boolean;
-    protected profileNowCompleted: boolean;
     protected answerStreams: Map<string, Stream<string>>;
     oninit(vnode: Vnode): void;
     view(): JSX.Element;
