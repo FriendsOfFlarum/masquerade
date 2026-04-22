@@ -6,6 +6,7 @@ import TypeFactory from './types/TypeFactory';
 import type ItemList from 'flarum/common/utils/ItemList';
 import type Mithril from 'mithril';
 import type User from 'flarum/common/models/User';
+import Stream from 'flarum/common/utils/Stream';
 
 export default function mutateUserHero() {
   extend(UserCard.prototype, 'infoItems', function (items: ItemList<Mithril.Children>) {
@@ -19,7 +20,7 @@ export default function mutateUserHero() {
           const field = answer.field();
           const type = TypeFactory.typeForField({
             field,
-            value: answer.content(),
+            stream: Stream(answer.content() || ''),
           });
 
           return type.answerField();

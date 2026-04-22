@@ -29,10 +29,10 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^v2.0.0-beta.8"
+        "flarum/core": "^v2.0.0-rc.1"
     },
     "require-dev": {
-        "flarum/phpstan": "^2.0.0-beta",
+        "flarum/phpstan": "^2.0.0",
         "flarum/gdpr": "*"
     },
     "extra": {

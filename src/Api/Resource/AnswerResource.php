@@ -110,7 +110,21 @@ class AnswerResource extends AbstractDatabaseResource
                 ->get(fn(Answer $answer) => $answer->field_id),
             Schema\Integer::make('userId')
                 ->get(fn(Answer $answer) => $answer->user_id),
-            Schema\Str::make('content'),
+            Schema\Str::make('content')
+                ->get(function (Answer $answer) {
+                    $content = $answer->content;
+
+                    if ($answer->field && $answer->field->type === 'boolean') {
+                        if (in_array($content, ['1', 'true', 'yes', 1, true], true)) {
+                            return 'true';
+                        }
+                        if (in_array($content, ['0', 'false', 'no', 0, false], true)) {
+                            return 'false';
+                        }
+                    }
+
+                    return $content;
+                }),
             Schema\Relationship\ToOne::make('field')
                 ->type('masquerade-fields')
                 ->includable(),
