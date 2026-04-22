@@ -78,7 +78,7 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
 
     for (const [fieldId, stream] of this.answerStreams) {
       const originalAnswer = answers.find((a) => a.field()?.id() === fieldId);
-      const originalValue = originalAnswer ? originalAnswer.content() : '';
+      const originalValue = originalAnswer?.content() || '';
 
       if (stream() !== originalValue) {
         return true;
@@ -99,7 +99,7 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
 
     app.store.all<Field>('masquerade-fields').forEach((field) => {
       const answer = answers.find((answer) => answer.field()?.id() === field.id());
-      this.answerStreams.set(field.id()!, Stream(answer ? answer.content() : ''));
+      this.answerStreams.set(field.id()!, Stream(answer?.content() || ''));
     });
 
     this.loading = false;
