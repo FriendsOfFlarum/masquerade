@@ -13,19 +13,17 @@ export default function mutateUserHero() {
     const user = (this.attrs as { user: User }).user;
     const answers = app.forum.attribute<boolean>('canViewMasquerade') ? user.bioFields() || [] : [];
 
-    items.add(
-      'masquerade-bio',
-      <div>
-        {answers.map((answer) => {
-          const field = answer.field();
-          const type = TypeFactory.typeForField({
-            field,
-            stream: Stream(answer.content() || ''),
-          });
+    answers.forEach((answer) => {
+      const field = answer.field();
+      const type = TypeFactory.typeForField({
+        field,
+        stream: Stream(answer.content() || ''),
+      });
 
-          return type.answerField();
-        })}
-      </div>
-    );
+      const answerField = type.answerField();
+      if (answerField) {
+        items.add(`masquerade-bio-${field.id()}`, answerField);
+      }
+    });
   });
 }
