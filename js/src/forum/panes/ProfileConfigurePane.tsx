@@ -19,10 +19,7 @@ export interface ProfileConfigurePaneAttrs extends ComponentAttrs {
 export default class ProfileConfigurePane extends Component<ProfileConfigurePaneAttrs> {
   protected loading = false;
   protected enforceProfileCompletion = app.forum.attribute<boolean>('masquerade.force-profile-completion') || false;
-  // Show disabled state if everything is saved
-  // Unless the profile isn't complete, in which case show enabled button, so it's obvious you will need to save
   protected profileCompleted = app.forum.attribute<boolean>('masquerade.profile-completed') || false;
-  protected profileNowCompleted = false;
   protected answerStreams = new Map<string, Stream<string>>();
 
   oninit(vnode: Vnode) {
@@ -47,14 +44,6 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
           <Button type="submit" className="Button Button--primary" loading={this.loading} disabled={!this.isChanged()}>
             {app.translator.trans('fof-masquerade.forum.buttons.save-profile')}
           </Button>
-
-          {this.profileNowCompleted && (
-            <span class="Masquerade-NowCompleted">
-              {app.translator.trans('fof-masquerade.forum.alerts.profile-completed', {
-                a: <Link href={app.route('index')} />,
-              })}
-            </span>
-          )}
         </Form>
       </form>
     );
@@ -126,7 +115,12 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
 
         if (!this.profileCompleted) {
           this.profileCompleted = true;
-          this.profileNowCompleted = true;
+          app.alerts.show(
+            { type: 'success' },
+            app.translator.trans('fof-masquerade.forum.alerts.profile-completed', {
+              a: <Link href={app.route('index')} />,
+            })
+          );
         }
       })
       .finally(() => {
