@@ -10,8 +10,6 @@ export default class BooleanField extends BaseField {
 
   getRadioOptions() {
     const options: { value: string; label: string }[] = [];
-    const currentValue = this.stream();
-
     if (!this.readAttribute(this.field, 'required')) {
       options.push({
         value: '',
@@ -29,13 +27,6 @@ export default class BooleanField extends BaseField {
       label: extractText(app.translator.trans('fof-masquerade.forum.fields.boolean.no')),
     });
 
-    if (currentValue && !['true', '1', 'yes', 'false', '0', 'no'].includes(currentValue)) {
-      options.push({
-        value: currentValue,
-        label: `(invalid) ${currentValue}`,
-      });
-    }
-
     return options;
   }
 
@@ -45,7 +36,7 @@ export default class BooleanField extends BaseField {
       return null;
     }
 
-    const isYes = ['1', 'true', 'yes'].includes(value);
+    const isYes = value === 'true';
 
     return (
       <>
