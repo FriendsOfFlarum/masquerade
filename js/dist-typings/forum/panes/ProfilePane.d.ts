@@ -11,6 +11,6 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
     protected answers: Answer[];
     oninit(vnode: Mithril.Vnode): void;
     view(): JSX.Element;
-    field(field: Field, content: string | null): JSX.Element;
+    field(field: Field, content: string | null): JSX.Element | null;
     load(): Promise<void>;
 }

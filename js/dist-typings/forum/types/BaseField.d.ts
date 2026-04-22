@@ -16,7 +16,7 @@ export default class BaseField {
     editorField(): JSX.Element;
     editorInputAttrs(): FormGroup['attrs'];
     fieldLabel(isEditor: boolean): JSX.Element;
-    answerField(): JSX.Element;
+    answerField(): JSX.Element | null;
     answerContent(): any;
     hasAnswer(): boolean;
     static isNoOptionSelectedValue(value: string | null): value is "" | null;
