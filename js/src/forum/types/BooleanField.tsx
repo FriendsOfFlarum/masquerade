@@ -1,5 +1,6 @@
 import app from 'flarum/forum/app';
 import Icon from 'flarum/common/components/Icon';
+import extractText from 'flarum/common/utils/extractText';
 import BaseField from './BaseField';
 
 export default class BooleanField extends BaseField {
@@ -9,29 +10,37 @@ export default class BooleanField extends BaseField {
 
   getRadioOptions() {
     const options: { value: string; label: string }[] = [];
+    const currentValue = this.stream();
+
     if (!this.readAttribute(this.field, 'required')) {
       options.push({
         value: '',
-        label: app.translator.trans('fof-masquerade.forum.fields.select.none-optional') as string,
+        label: extractText(app.translator.trans('fof-masquerade.forum.fields.select.none-optional')),
       });
     }
 
     options.push({
       value: 'true',
-      label: app.translator.trans('fof-masquerade.forum.fields.boolean.yes') as string,
+      label: extractText(app.translator.trans('fof-masquerade.forum.fields.boolean.yes')),
     });
 
     options.push({
       value: 'false',
-      label: app.translator.trans('fof-masquerade.forum.fields.boolean.no') as string,
+      label: extractText(app.translator.trans('fof-masquerade.forum.fields.boolean.no')),
     });
+
+    if (currentValue && !['true', '1', 'yes', 'false', '0', 'no'].includes(currentValue)) {
+      options.push({
+        value: currentValue,
+        label: `(invalid) ${currentValue}`,
+      });
+    }
 
     return options;
   }
 
   answerContent() {
     const value = this.stream();
-
     if (!value) {
       return null;
     }
