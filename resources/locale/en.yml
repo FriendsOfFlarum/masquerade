@@ -16,7 +16,6 @@ fof-masquerade:
         yes: Yes
         no: No
   admin:
-    general-options: General options
     buttons:
       add-field: Create field
       edit-field: Save changes
@@ -46,6 +45,7 @@ fof-masquerade:
       icon-help: >
         Shows an icon in front of values entered by the user. For a reference of available icons, check the <a>FontAwesome website</a>. Use icon names with the "fa-" prefix, like "fas fa-info".
       force-user-to-completion: Force user to complete profile
+      hide-empty-fields: Hide empty fields
       options: Options
       option-new: New option
       option-comma-warning: The label of an option cannot contain any comma (",").

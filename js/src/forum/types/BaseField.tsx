@@ -1,3 +1,4 @@
+import app from 'flarum/forum/app';
 import Icon from 'flarum/common/components/Icon';
 import FormGroup from 'flarum/common/components/FormGroup';
 import Stream from 'flarum/common/utils/Stream';
@@ -65,6 +66,10 @@ export default class BaseField {
   }
 
   answerField() {
+    if (app.forum.attribute<boolean>('masquerade.hide-empty-fields') && !this.hasAnswer()) {
+      return null;
+    }
+
     const iconName = this.field.icon();
 
     return (

@@ -12,6 +12,11 @@ export default [
       label: app.translator.trans('fof-masquerade.admin.fields.force-user-to-completion'),
       type: 'boolean',
     }))
+    .setting(() => ({
+      setting: 'masquerade.hide-empty-fields',
+      label: app.translator.trans('fof-masquerade.admin.fields.hide-empty-fields'),
+      type: 'boolean',
+    }))
     .permission(
       () => ({
         icon: 'far fa-id-card',
