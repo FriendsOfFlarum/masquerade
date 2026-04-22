@@ -1,34 +1,24 @@
+import FormGroup from 'flarum/common/components/FormGroup';
+import Stream from 'flarum/common/utils/Stream';
+import Field from '../../lib/models/Field';
+interface BaseFieldAttrs {
+    field: Field;
+    stream: Stream<string>;
+}
 export default class BaseField {
-    static isNoOptionSelectedValue(value: any): boolean;
-    constructor({ field, set, value }: {
-        field: any;
-        set: any;
-        value: any;
-    });
-    field: any;
-    set: any;
-    value: any;
-    readAttribute(object: any, attribute: any): any;
-    /**
-     * Gets all Laravel validation rules split by rule
-     * @returns {Array}
-     */
-    validationRules(): any[];
-    /**
-     * Gets a Laravel validation rule by name
-     * @param {string} ruleName
-     * @returns {string|null}
-     */
+    protected readonly field: BaseFieldAttrs['field'];
+    protected readonly stream: BaseFieldAttrs['stream'];
+    constructor({ field, stream }: BaseFieldAttrs);
+    /** Gets all Laravel validation rules split by rule. */
+    validationRules(): string[];
+    /** Gets a Laravel validation rule by name. */
     validationRule(ruleName: string): string | null;
     editorField(): JSX.Element;
-    editorInput(): JSX.Element;
-    editorInputAttrs(): {
-        className: string;
-        oninput: (event: any) => void;
-        value: any;
-        required: any;
-    };
+    editorInputAttrs(): FormGroup['attrs'];
+    fieldLabel(isEditor: boolean): JSX.Element;
     answerField(): JSX.Element;
     answerContent(): any;
     hasAnswer(): boolean;
+    static isNoOptionSelectedValue(value: string | null): value is "" | null;
 }
+export {};

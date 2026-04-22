@@ -6,11 +6,9 @@ import type Field from '../../lib/models/Field';
 export interface ProfilePaneAttrs extends ComponentAttrs {
     answers: Answer[];
     user: User;
-    loading: boolean;
 }
 export default class ProfilePane extends Component<ProfilePaneAttrs> {
     protected answers: Answer[];
-    loading: boolean;
     oninit(vnode: Mithril.Vnode): void;
     view(): JSX.Element;
     field(field: Field, content: string | null): JSX.Element;
