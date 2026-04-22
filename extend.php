@@ -30,9 +30,11 @@ return [
     (new Extend\Middleware('forum'))
         ->add(Middleware\DemandProfileCompletion::class),
 
-    ((new Extend\Settings())
-        ->default('masquerade.force-profile-completion', false))
-        ->serializeToForum('masquerade.force-profile-completion', 'masquerade.force-profile-completion'),
+    (new Extend\Settings())
+        ->default('masquerade.force-profile-completion', false)
+        ->serializeToForum('masquerade.force-profile-completion', 'masquerade.force-profile-completion')
+        ->default('masquerade.hide-empty-fields', false)
+        ->serializeToForum('masquerade.hide-empty-fields', 'masquerade.hide-empty-fields'),
 
     (new Extend\ApiResource(Resource\ForumResource::class))
         ->fields(fn() => [
