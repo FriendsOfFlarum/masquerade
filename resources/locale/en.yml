@@ -74,7 +74,7 @@ flarum-audit:
     lib:
         browser:
             masquerade:
-                field_created: 'Created profile field "{name}"'
-                field_updated: 'Updated profile field "{name}"'
-                field_deleted: 'Deleted profile field "{name}"'
+                field_created: Created profile field
+                field_updated: Updated profile field
+                field_deleted: Deleted profile field
                 profile_updated: "Updated {username}'s profile fields"
