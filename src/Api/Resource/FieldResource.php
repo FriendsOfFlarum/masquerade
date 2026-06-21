@@ -114,7 +114,7 @@ class FieldResource extends AbstractDatabaseResource
         $this->events->dispatch(
             new FieldUpdated($model, $context->getActor(), $model->getDirty())
         );
-        return parent::updated($model, $context);
+        return parent::updating($model, $context);
     }
 
     public function deleted(object $model, Context $context): void

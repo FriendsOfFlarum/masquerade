@@ -16,6 +16,7 @@ use Flarum\User\User;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\Events\FieldUpdated;
+use FoF\Masquerade\Events\ProfileUpdated;
 
 return [
     (new Extend\Locales(__DIR__.'/resources/locale')),
@@ -114,6 +115,10 @@ return [
                 ->listen(FieldDeleted::class, 'masquerade.field_deleted', fn(FieldDeleted $event) => [
                     'field_id' => $event->field->id,
                     'name' => $event->field->name,
+                ])
+                ->listen(ProfileUpdated::class, 'masquerade.profile_updated', fn(ProfileUpdated $event) => [
+                    'user_id' => $event->user->id,
+                    'changes' => $event->data,
                 ]),
         ]),
 ];
