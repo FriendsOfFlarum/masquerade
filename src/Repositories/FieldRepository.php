@@ -100,7 +100,7 @@ class FieldRepository
     {
         $response = $field->delete();
 
-        $this->events->dispatch(new FieldDeleted($field, $actor, []));
+        $this->events->dispatch(new FieldDeleted($field, $actor));
 
         $this->clearCacheAllFields();
 
@@ -135,7 +135,7 @@ class FieldRepository
      * @param string $content
      * @param User $actor
      */
-    public function addOrUpdateAnswer(Field $field, $content, User $actor)
+    public function addOrUpdateAnswer(Field $field, $content, User $actor): Answer
     {
         /** @var Answer $answer */
         $answer = $field->answers()->firstOrNew([
@@ -151,6 +151,8 @@ class FieldRepository
             static::CACHE_KEY_UNCOMPLETED,
             $actor->id
         ));
+
+        return $answer;
     }
 
     /**

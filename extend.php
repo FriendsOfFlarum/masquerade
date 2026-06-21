@@ -12,6 +12,7 @@ use Flarum\Api\Controller\UpdateUserController;
 use Flarum\Api\Serializer\BasicUserSerializer;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Api\Serializer\UserSerializer;
+use Flarum\Audit\Extend\Audit;
 use Flarum\Gdpr\Extend\UserData;
 use Flarum\User\Filter\UserFilterer;
 use Flarum\User\Search\UserSearcher;
@@ -20,6 +21,10 @@ use FoF\Masquerade\Api\Controllers as Api;
 use Flarum\Extend;
 use FoF\Masquerade\Api\Serializers\AnswerSerializer;
 use FoF\Masquerade\Api\Serializers\FieldSerializer;
+use FoF\Masquerade\Events\FieldCreated;
+use FoF\Masquerade\Events\FieldDeleted;
+use FoF\Masquerade\Events\FieldUpdated;
+use FoF\Masquerade\Events\ProfileUpdated;
 
 return [
     (new Extend\Frontend('forum'))
@@ -115,5 +120,25 @@ return [
         ->whenExtensionEnabled('flarum-gdpr', fn () => [
             (new UserData())
                 ->addType(Data\MasqueradeAnswers::class),
+        ])
+        ->whenExtensionEnabled('flarum-audit', fn() => [
+            (new Audit())
+                ->listen(FieldCreated::class, 'masquerade.field_created', fn(FieldCreated $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
+                ->listen(FieldUpdated::class, 'masquerade.field_updated', fn(FieldUpdated $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                    'changes' => $event->data,
+                ])
+                ->listen(FieldDeleted::class, 'masquerade.field_deleted', fn(FieldDeleted $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
+                ->listen(ProfileUpdated::class, 'masquerade.profile_updated', fn(ProfileUpdated $event) => [
+                    'user_id' => $event->user->id,
+                    'changes' => $event->data,
+                ]),
         ]),
 ];

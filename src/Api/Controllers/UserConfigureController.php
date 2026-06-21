@@ -3,6 +3,7 @@
 namespace FoF\Masquerade\Api\Controllers;
 
 use Flarum\Http\RequestUtil;
+use FoF\Masquerade\Events\ProfileUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Repositories\FieldRepository;
 use FoF\Masquerade\Validators\AnswerValidator;
@@ -10,6 +11,7 @@ use Flarum\Api\Controller\AbstractListController;
 use Flarum\User\User;
 use Flarum\User\UserRepository;
 use FoF\Masquerade\Api\Serializers\AnswerSerializer;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
@@ -20,24 +22,12 @@ class UserConfigureController extends AbstractListController
 
     public $include = ['answer'];
 
-    /**
-     * @var AnswerValidator
-     */
-    protected $validator;
-    /**
-     * @var FieldRepository
-     */
-    protected $fields;
-    /**
-     * @var UserRepository
-     */
-    protected $users;
-
-    function __construct(AnswerValidator $validator, FieldRepository $fields, UserRepository $users)
-    {
-        $this->validator = $validator;
-        $this->fields = $fields;
-        $this->users = $users;
+    function __construct(
+        protected AnswerValidator $validator,
+        protected FieldRepository $fields,
+        protected UserRepository $users,
+        protected Dispatcher $events
+    ) {
     }
 
     protected function data(ServerRequestInterface $request, Document $document)
@@ -60,7 +50,11 @@ class UserConfigureController extends AbstractListController
         }
 
         if ($request->getMethod() === 'POST') {
-            $this->processUpdate($user, $request->getParsedBody(), $fields);
+            $changes = $this->processUpdate($user, $request->getParsedBody(), $fields);
+
+            if (!empty($changes)) {
+                $this->events->dispatch(new ProfileUpdated($user, $actor, $changes));
+            }
         }
 
         return $fields->map(function (Field $field) use ($actor) {
@@ -76,7 +70,9 @@ class UserConfigureController extends AbstractListController
      */
     protected function processUpdate(User $user, $answers, &$fields)
     {
-        $fields->each(function (Field $field) use ($answers, $user) {
+        $changes = [];
+
+        $fields->each(function (Field $field) use ($answers, $user, &$changes) {
             $content = Arr::get($answers, $field->id);
 
             $this->processBoolean($field, $content);
@@ -87,12 +83,17 @@ class UserConfigureController extends AbstractListController
                 $field->name => $content
             ]);
 
-            $this->fields->addOrUpdateAnswer(
+            $answer = $this->fields->addOrUpdateAnswer(
                 $field,
                 $content,
                 $user
             );
+            if (in_array('content', array_keys($answer->getChanges()))) {
+                $changes[$field->name] = $content;
+            }
         });
+
+        return $changes;
     }
 
     protected function processBoolean(Field $field, &$content)
