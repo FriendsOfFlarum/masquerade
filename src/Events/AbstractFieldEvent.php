@@ -19,7 +19,7 @@ abstract class AbstractFieldEvent
     public function __construct (
         public Field $field,
         public User $actor,
-        public array $data
+        public array $data = []
     )
     {
     }

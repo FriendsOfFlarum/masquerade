@@ -46,7 +46,8 @@
                 "backgroundPosition": "center"
             },
             "optional-dependencies": [
-                "flarum/gdpr"
+                "flarum/gdpr",
+                "flarum/audit"
             ]
         },
         "flagrow": {
@@ -65,7 +66,8 @@
     },
     "require-dev": {
         "flarum/phpstan": "*",
-        "flarum/gdpr": "^1.0.0@beta"
+        "flarum/gdpr": "^1.0.0@beta",
+        "flarum/audit": "^1.8"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
