@@ -8,6 +8,7 @@ use Flarum\Api\Resource\UserResource;
 use Flarum\Api\Schema;
 use Flarum\User\UserRepository;
 use FoF\Masquerade\Answer;
+use FoF\Masquerade\Events\ProfileUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Illuminate\Support\Arr;
@@ -59,6 +60,7 @@ class AnswerResource extends AbstractDatabaseResource
                     $answersData = $context->request->getParsedBody();
                     $fields = Field::all();
 
+                    $changes = [];
                     foreach ($fields as $field) {
                         if (!array_key_exists($field->id, $answersData)) {
                             continue;
@@ -83,7 +85,18 @@ class AnswerResource extends AbstractDatabaseResource
                         ]);
                         $answer->content = $content;
                         $answer->user()->associate($user);
+
+                        if ($answer->isDirty('content')) {
+                            $changes[$field->name] = $content;
+                        }
+
                         $answer->save();
+                    }
+
+                    if (!empty($changes)) {
+                        $this->events->dispatch(
+                            new ProfileUpdated($user, $actor, $changes)
+                        );
                     }
 
                     return $user;

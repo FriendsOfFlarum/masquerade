@@ -29,11 +29,12 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^v2.0.0-rc.1"
+        "flarum/core": "^v2.0.0-rc.4"
     },
     "require-dev": {
         "flarum/phpstan": "^2.0.0",
-        "flarum/gdpr": "*"
+        "flarum/gdpr": "*",
+        "flarum/audit": "^2.0@RC"
     },
     "extra": {
         "flarum-extension": {
@@ -47,7 +48,8 @@
                 "backgroundPosition": "center"
             },
             "optional-dependencies": [
-                "flarum/gdpr"
+                "flarum/gdpr",
+                "flarum/audit"
             ]
         },
         "flarum-cli": {

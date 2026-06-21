@@ -7,11 +7,16 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
 use Flarum\Api\Resource\PostResource;
 use Flarum\Api\Schema;
+use Flarum\Audit\Extend\Audit;
 use Flarum\Extend;
 use Flarum\Gdpr\Extend\UserData;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
+use FoF\Masquerade\Events\FieldCreated;
+use FoF\Masquerade\Events\FieldDeleted;
+use FoF\Masquerade\Events\FieldUpdated;
+use FoF\Masquerade\Events\ProfileUpdated;
 
 return [
     (new Extend\Locales(__DIR__.'/resources/locale')),
@@ -95,5 +100,25 @@ return [
         ->whenExtensionEnabled('flarum-gdpr', fn() => [
             (new UserData())
                 ->addType(Data\MasqueradeAnswers::class),
+        ])
+        ->whenExtensionEnabled('flarum-audit', fn() => [
+            (new Audit())
+                ->listen(FieldCreated::class, 'masquerade.field_created', fn(FieldCreated $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
+                ->listen(FieldUpdated::class, 'masquerade.field_updated', fn(FieldUpdated $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                    'changes' => $event->data,
+                ])
+                ->listen(FieldDeleted::class, 'masquerade.field_deleted', fn(FieldDeleted $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
+                ->listen(ProfileUpdated::class, 'masquerade.profile_updated', fn(ProfileUpdated $event) => [
+                    'user_id' => $event->user->id,
+                    'changes' => $event->data,
+                ]),
         ]),
 ];
