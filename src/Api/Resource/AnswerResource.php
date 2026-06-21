@@ -93,9 +93,11 @@ class AnswerResource extends AbstractDatabaseResource
                         $answer->save();
                     }
 
-                    $this->events->dispatch(
-                        new ProfileUpdated($user, $actor, $changes)
-                    );
+                    if (!empty($changes)) {
+                        $this->events->dispatch(
+                            new ProfileUpdated($user, $actor, $changes)
+                        );
+                    }
 
                     return $user;
                 })
