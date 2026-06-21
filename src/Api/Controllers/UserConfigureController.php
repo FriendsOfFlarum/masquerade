@@ -88,7 +88,7 @@ class UserConfigureController extends AbstractListController
                 $content,
                 $user
             );
-            if (in_array('content', array_keys($answer->getChanges()))) {
+            if ($answer->wasChanged('content')) {
                 $changes[$field->name] = $content;
             }
         });
