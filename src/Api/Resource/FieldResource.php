@@ -109,7 +109,7 @@ class FieldResource extends AbstractDatabaseResource
         return parent::created($model, $context);
     }
 
-    public function updated(object $model, Context $context): ?object
+    public function updating(object $model, Context $context): ?object
     {
         $this->events->dispatch(
             new FieldUpdated($model, $context->getActor(), $model->getDirty())
