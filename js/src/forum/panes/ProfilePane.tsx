@@ -39,7 +39,7 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
             .map((field) => {
               const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-              return this.field(field as Field, (answer?.content() as Answer) || null);
+              return this.field(field as Field, (answer?.content() || null) as unknown as Answer | null);
             })}
         </div>
       </div>
