@@ -76,7 +76,6 @@ return [
                     $context
                 ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Boolean::make('canEditMasqueradeProfile')
-                ->visible(fn(User $user, Context $context) => $context->getActor()->id === $user->id)
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
                     ? $context->getActor()->can('fof.masquerade.have-profile')
                     : $context->getActor()->can('fof.masquerade.edit-others-profile')),
