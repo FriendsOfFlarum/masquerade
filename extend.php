@@ -89,8 +89,8 @@ return [
 
     (new Extend\ApiResource(PostResource::class))
         ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
-            ->addDefaultInclude(['user.bioFields.field', 'user.masqueradeAnswers'])
-            ->eagerLoad(['user.bioFields.field', 'user.masqueradeAnswers.field'])
+            ->addDefaultInclude(['user.bioFields.field'])
+            ->eagerLoad(['user.bioFields.field'])
         ),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
