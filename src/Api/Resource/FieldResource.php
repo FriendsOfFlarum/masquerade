@@ -10,7 +10,6 @@ use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Tobyz\JsonApiServer\Context;
@@ -18,10 +17,6 @@ use Tobyz\JsonApiServer\Context;
 /** @extends AbstractDatabaseResource<Field> */
 class FieldResource extends AbstractDatabaseResource
 {
-    public function __construct(protected Dispatcher $events)
-    {
-    }
-
     public function type(): string
     {
         return 'masquerade-fields';
