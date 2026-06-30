@@ -58,12 +58,8 @@ return [
             fn(Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['masquerade-fields'])),
 
     (new Extend\Model(User::class))
-        ->relationship('bioFields', function (User $model) {
-            return $model->hasMany(Answer::class)
-                ->whereHas('field', function ($q) {
-                    $q->where('on_bio', true);
-                });
-        })
+        ->relationship('bioFields', fn(User $model) => $model->hasMany(Answer::class)
+            ->whereHas('field', fn($q) => $q->where('on_bio', true)))
         ->hasMany('masqueradeAnswers', Answer::class),
 
     (new Extend\ApiResource(Resource\UserResource::class))
@@ -89,9 +85,9 @@ return [
             fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['bioFields.field'])),
 
     (new Extend\ApiResource(PostResource::class))
-        ->endpoint(['index', 'show'], function (Endpoint\Index|Endpoint\Show $endpoint) {
-            return $endpoint->addDefaultInclude(['user.bioFields.field', 'user.masqueradeAnswers']);
-        }),
+        ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude([
+            'user.bioFields.field', 'user.masqueradeAnswers',
+        ])),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(UserSearcher::class, Filters\AnswerFilter::class),
