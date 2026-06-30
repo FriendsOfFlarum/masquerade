@@ -82,12 +82,17 @@ return [
                     : $context->getActor()->can('fof.masquerade.edit-others-profile')),
         ])
         ->endpoint([Endpoint\Index::class, Endpoint\Show::class],
-            fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['bioFields.field'])),
+            fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
+                ->addDefaultInclude(['bioFields.field'])
+                ->eagerLoad(['bioFields.field'])
+                ->eagerLoadWhenIncluded(['masqueradeAnswers' => ['masqueradeAnswers.field']])
+        ),
 
     (new Extend\ApiResource(PostResource::class))
-        ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude([
-            'user.bioFields.field', 'user.masqueradeAnswers',
-        ])),
+        ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
+            ->addDefaultInclude(['user.bioFields.field'])
+            ->eagerLoad(['user.bioFields.field'])
+        ),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(UserSearcher::class, Filters\AnswerFilter::class),
