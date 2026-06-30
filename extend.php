@@ -85,9 +85,12 @@ return [
             fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude(['bioFields.field'])),
 
     (new Extend\ApiResource(PostResource::class))
-        ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint->addDefaultInclude([
-            'user.bioFields.field', 'user.masqueradeAnswers',
-        ])),
+        ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
+            ->addDefaultInclude([
+                'user.bioFields.field', 'user.masqueradeAnswers',
+            ])
+            ->eagerLoad(['user.bioFields.field', 'user.masqueradeAnswers'])
+        ),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(UserSearcher::class, Filters\AnswerFilter::class),
