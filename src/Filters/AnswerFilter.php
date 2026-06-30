@@ -17,7 +17,7 @@ class AnswerFilter implements FilterInterface
 
     public function filter(SearchState $state, string|array $value, bool $negate): void
     {
-        if (!$state->getActor()->hasPermission('fof.masquerade.view-profile')) {
+        if (!$state->getActor()->can('fof.masquerade.view-profile')) {
             return;
         }
 
