@@ -5,9 +5,8 @@
 changelog.md export-ignore
 tests export-ignore
 phpunit.xml export-ignore
-js/*/src export-ignore
-js/*/Gulfile.js
-js/*/package.json
-js/*/yarn.lock
+js/src export-ignore
+js/package.json export-ignore
+js/pnpm-lock.yaml export-ignore
 
 js/*/dist/*.js -diff
