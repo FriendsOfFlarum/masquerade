@@ -20,7 +20,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     value: string;
   }[] = [];
   protected dragDropManager!: DragDropManager;
-  protected sortableInstances = new Map<string, Sortable>();
+  protected sortableInstances: Map<string, Sortable> = new Map<string, Sortable>();
 
   oninit(vnode: Vnode<SelectFieldOptionEditorAttrs, this>) {
     super.oninit(vnode);

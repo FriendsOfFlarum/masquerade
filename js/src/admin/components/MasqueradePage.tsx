@@ -13,7 +13,7 @@ import sortFields from '../../common/utils/sortFields';
 
 export default class MasqueradePage extends ExtensionPage {
   protected dragDropManager!: DragDropManager;
-  protected sortableInstances = new Map<string, Sortable>();
+  protected sortableInstances: Map<string, Sortable> = new Map<string, Sortable>();
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
