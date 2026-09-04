@@ -58,6 +58,7 @@ export default class SelectField extends BaseField {
         value?: string | null | (() => string | null);
         url?: string | null | (() => string | null);
         icon?: string | boolean | Mithril.Children;
+        noStyleOverride?: boolean;
         disabled?: boolean;
         loading?: boolean;
         'aria-label'?: string | Mithril.ChildArray;
