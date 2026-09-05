@@ -62,6 +62,7 @@ fof-masquerade:
     gambits:
       answer:
         key: answer
+        hint: values of user profile fields
 
 flarum-gdpr:
   lib:
