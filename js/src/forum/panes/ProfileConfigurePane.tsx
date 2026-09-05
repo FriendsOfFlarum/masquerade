@@ -87,6 +87,8 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
     }
 
     app.store.all<Field>('masquerade-fields').forEach((field) => {
+      if (this.attrs.user.id() !== app.session.user?.id() && !field.canView()) return;
+
       const answer = answers.find((answer) => answer.field()?.id() === field.id());
       this.answerStreams.set(field.id()!, Stream(answer?.content() || ''));
     });

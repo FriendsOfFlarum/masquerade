@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\Group\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Field extends AbstractModel
 {
+    use ScopeVisibilityTrait;
     use SoftDeletes;
 
     public $timestamps = true;

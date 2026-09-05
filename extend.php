@@ -13,7 +13,6 @@ use Flarum\Gdpr\Extend\UserData;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
-use FoF\Masquerade\Access\AnswerPolicy;
 use FoF\Masquerade\Access\FieldPolicy;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
@@ -44,8 +43,12 @@ return [
         ->serializeToForum('masquerade.hide-empty-fields', 'masquerade.hide-empty-fields'),
 
     (new Extend\Policy())
-        ->modelPolicy(Field::class, FieldPolicy::class)
-        ->modelPolicy(Answer::class, AnswerPolicy::class),
+        ->modelPolicy(Field::class, FieldPolicy::class),
+
+    (new Extend\ModelVisibility(Field::class))
+        ->scope(Access\ScopeFieldVisibility::class),
+    (new Extend\ModelVisibility(Answer::class))
+        ->scope(Access\ScopeAnswerVisibility::class),
 
     (new Extend\ApiResource(Resource\ForumResource::class))
         ->fields(fn() => [
@@ -73,22 +76,14 @@ return [
             Schema\Relationship\ToMany::make('bioFields')
                 ->type('masquerade-answers')
                 ->includable()
-                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile'))
-                ->get(fn(User $user, Context $context) => $user->bioFields
-                    ->filter(fn(Answer $answer) => $context->getActor()->can('view', $answer))
-                    ->all()
-                ),
+                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Relationship\ToMany::make('masqueradeAnswers')
                 ->type('masquerade-answers')
                 ->includable()
                 ->visible(fn(
                     User $user,
                     $context
-                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile'))
-                ->get(fn(User $user, Context $context) => $user->masqueradeAnswers
-                    ->filter(fn(Answer $answer) => $context->getActor()->can('view', $answer))
-                    ->all()
-                ),
+                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile')),
             Schema\Boolean::make('canEditMasqueradeProfile')
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
                     ? $context->getActor()->can('fof.masquerade.have-profile')
@@ -97,14 +92,15 @@ return [
         ->endpoint([Endpoint\Index::class, Endpoint\Show::class],
             fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
                 ->addDefaultInclude(['bioFields.field'])
-                ->eagerLoad(['bioFields.field'])
-                ->eagerLoadWhenIncluded(['masqueradeAnswers' => ['masqueradeAnswers.field']])
+                ->eagerLoadWhere('bioFields', fn($query, Context $context) => $query
+                    ->whereVisibleTo($context->getActor())->with('field'))
         ),
 
     (new Extend\ApiResource(PostResource::class))
         ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
             ->addDefaultInclude(['user.bioFields.field'])
-            ->eagerLoad(['user.bioFields.field'])
+            ->eagerLoadWhere('user.bioFields', fn($query, Context $context) => $query
+                ->whereVisibleTo($context->getActor())->with('field'))
         ),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))

@@ -12,6 +12,7 @@ use FoF\Masquerade\Events\ProfileUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\Validators\AnswerValidator;
 use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context;
 
 /**
@@ -58,7 +59,12 @@ class AnswerResource extends AbstractDatabaseResource
                     }
 
                     $answersData = $context->request->getParsedBody();
-                    $fields = Field::all();
+                    $fields = Field::query();
+                    if ($actor->id !== $user->id) {
+                        $actor->assertCan('fof.masquerade.view-profile');
+                        $fields->whereVisibleTo($actor);
+                    }
+                    $fields = $fields->get();
 
                     $changes = [];
                     foreach ($fields as $field) {
@@ -114,6 +120,11 @@ class AnswerResource extends AbstractDatabaseResource
                         );
                 }),
         ];
+    }
+
+    public function scope(Builder $query, Context $context): void
+    {
+        $query->whereVisibleTo($context->getActor())->with('field');
     }
 
     public function fields(): array
