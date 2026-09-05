@@ -1,5 +1,7 @@
 fof-masquerade:
   forum:
+    profile:
+      empty-text: This user hasn't filled out any profile fields yet.
     alerts:
       profile-completion-required: >
         Please complete the necessary profile fields below.

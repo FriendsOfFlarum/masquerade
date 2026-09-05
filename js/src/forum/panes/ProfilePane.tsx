@@ -2,6 +2,7 @@ import app from 'flarum/forum/app';
 import type User from 'flarum/common/models/User';
 import type Mithril from 'mithril';
 import Component, { ComponentAttrs } from 'flarum/common/Component';
+import Placeholder from 'flarum/common/components/Placeholder';
 import Stream from 'flarum/common/utils/Stream';
 import TypeFactory from '../types/TypeFactory';
 import type Answer from '../../lib/models/Answer';
@@ -22,17 +23,18 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
   }
 
   view() {
+    const fields = sortFields(app.store.all<Field>('masquerade-fields'))
+      .filter((field) => field.canView() || this.attrs.user.id() === app.session.user?.id())
+      .map((field) => {
+        const answer = this.answers.find((a) => a.field()?.id() === field.id());
+
+        return this.field(field, answer?.content() || null);
+      })
+      .filter((field) => field !== null);
+
     return (
       <div class="Masquerade-Bio">
-        <div class="Fields">
-          {sortFields(app.store.all<Field>('masquerade-fields'))
-            .filter((field) => field.canView() || this.attrs.user.id() === app.session.user?.id())
-            .map((field) => {
-              const answer = this.answers.find((a) => a.field()?.id() === field.id());
-
-              return this.field(field, answer?.content() || null);
-            })}
-        </div>
+        {fields.length ? <div class="Fields">{fields}</div> : <Placeholder text={app.translator.trans('fof-masquerade.forum.profile.empty-text')} />}
       </div>
     );
   }
