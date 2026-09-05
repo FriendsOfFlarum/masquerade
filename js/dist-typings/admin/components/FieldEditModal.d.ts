@@ -13,6 +13,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
     icon: Stream<string>;
     required: Stream<boolean>;
     on_bio: Stream<boolean>;
+    is_restricted: Stream<boolean>;
     type: Stream<string | null>;
     validation: Stream<string>;
     oninit(vnode: Vnode<FieldEditModalAttrs, this>): void;
@@ -33,6 +34,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
         icon: any;
         required: any;
         on_bio: any;
+        is_restricted: any;
         type: any;
         validation: any;
     };

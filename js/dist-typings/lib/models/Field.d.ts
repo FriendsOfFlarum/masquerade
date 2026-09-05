@@ -11,5 +11,7 @@ export default class Field extends Model {
     deleted_at: () => Date | null | undefined;
     answer: () => false | Answer;
     on_bio: () => boolean;
+    is_restricted: () => boolean;
+    canView: () => boolean;
     apiEndpoint(): string;
 }
