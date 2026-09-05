@@ -13,6 +13,7 @@ use Flarum\Gdpr\Extend\UserData;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
+use FoF\Masquerade\Access\FieldPolicy;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\Events\FieldUpdated;
@@ -41,6 +42,14 @@ return [
         ->default('masquerade.hide-empty-fields', false)
         ->serializeToForum('masquerade.hide-empty-fields', 'masquerade.hide-empty-fields'),
 
+    (new Extend\Policy())
+        ->modelPolicy(Field::class, FieldPolicy::class),
+
+    (new Extend\ModelVisibility(Field::class))
+        ->scope(Access\ScopeFieldVisibility::class),
+    (new Extend\ModelVisibility(Answer::class))
+        ->scope(Access\ScopeAnswerVisibility::class),
+
     (new Extend\ApiResource(Resource\ForumResource::class))
         ->fields(fn() => [
             Schema\Boolean::make('masquerade.profile-completed')
@@ -59,7 +68,8 @@ return [
 
     (new Extend\Model(User::class))
         ->relationship('bioFields', fn(User $model) => $model->hasMany(Answer::class)
-            ->whereHas('field', fn($q) => $q->where('on_bio', true)))
+            ->whereHas('field', fn($q) => $q->where('on_bio', true))
+        )
         ->hasMany('masqueradeAnswers', Answer::class),
 
     (new Extend\ApiResource(Resource\UserResource::class))
@@ -78,19 +88,23 @@ return [
             Schema\Boolean::make('canEditMasqueradeProfile')
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
                     ? $context->getActor()->can('fof.masquerade.have-profile')
-                    : $context->getActor()->can('fof.masquerade.edit-others-profile')),
+                    : $context->getActor()->can('fof.masquerade.edit-others-profile')
+                ),
         ])
         ->endpoint([Endpoint\Index::class, Endpoint\Show::class],
             fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
                 ->addDefaultInclude(['bioFields.field'])
-                ->eagerLoad(['bioFields.field'])
-                ->eagerLoadWhenIncluded(['masqueradeAnswers' => ['masqueradeAnswers.field']])
+                ->eagerLoadWhere('bioFields', fn($query, Context $context) => $query
+                    ->whereVisibleTo($context->getActor())->with('field')
+                )
         ),
 
     (new Extend\ApiResource(PostResource::class))
         ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
             ->addDefaultInclude(['user.bioFields.field'])
-            ->eagerLoad(['user.bioFields.field'])
+            ->eagerLoadWhere('user.bioFields', fn($query, Context $context) => $query
+                ->whereVisibleTo($context->getActor())->with('field')
+            )
         ),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))

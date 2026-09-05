@@ -25,11 +25,13 @@ export default class ProfilePane extends Component<ProfilePaneAttrs> {
     return (
       <div class="Masquerade-Bio">
         <div class="Fields">
-          {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => {
-            const answer = this.answers.find((a) => a.field()?.id() === field.id());
+          {sortFields(app.store.all<Field>('masquerade-fields'))
+            .filter((field) => field.canView() || this.attrs.user.id() === app.session.user?.id())
+            .map((field) => {
+              const answer = this.answers.find((a) => a.field()?.id() === field.id());
 
-            return this.field(field, answer?.content() || null);
-          })}
+              return this.field(field, answer?.content() || null);
+            })}
         </div>
       </div>
     );

@@ -60,6 +60,8 @@ class FieldResource extends AbstractDatabaseResource
     public function fields(): array
     {
         return [
+            Schema\Boolean::make('canView')
+                ->get(fn(Field $field, Context $context) => $context->getActor()->can('view', $field)),
             Schema\Str::make('name')
                 ->requiredOnCreate()
                 ->writable(),
@@ -82,6 +84,9 @@ class FieldResource extends AbstractDatabaseResource
                 ->nullable()
                 ->writable(),
             Schema\Boolean::make('on_bio')
+                ->writable(),
+            Schema\Boolean::make('is_restricted')
+                ->default(false)
                 ->writable(),
             Schema\DateTime::make('deleted_at')
                 ->nullable()

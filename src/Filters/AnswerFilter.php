@@ -5,7 +5,7 @@ namespace FoF\Masquerade\Filters;
 use Flarum\Search\Database\DatabaseSearchState;
 use Flarum\Search\Filter\FilterInterface;
 use Flarum\Search\SearchState;
-use Illuminate\Database\Query\Builder;
+use FoF\Masquerade\Answer;
 
 /** @implements FilterInterface<DatabaseSearchState> */
 class AnswerFilter implements FilterInterface
@@ -24,11 +24,14 @@ class AnswerFilter implements FilterInterface
         $value = is_array($value) ? implode(' ', $value) : $value;
         $value = trim($value, '"');
 
-        $state->getQuery()->whereExists(function (Builder $query) use ($value) {
-            $query->selectRaw('1')
-                ->from('fof_masquerade_answers')
+        $state->getQuery()->whereExists(
+            Answer::whereVisibleTo($state->getActor())
+                ->selectRaw('1')
                 ->whereColumn('users.id', 'user_id')
-                ->where('content', 'like', "%$value%");
-        }, 'and', $negate);
+                ->where('content', 'like', "%$value%")
+                ->toBase(),
+            'and',
+            $negate
+        );
     }
 }

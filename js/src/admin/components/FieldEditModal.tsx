@@ -9,6 +9,8 @@ import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 import Button from 'flarum/common/components/Button';
 import Icon from 'flarum/common/components/Icon';
 import extractText from 'flarum/common/utils/extractText';
+import PermissionDropdown from 'flarum/admin/components/PermissionDropdown';
+import Alert from 'flarum/common/components/Alert';
 
 interface FieldEditModalAttrs extends IFormModalAttrs {
   model?: Field;
@@ -22,6 +24,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
   icon!: Stream<string>;
   required!: Stream<boolean>;
   on_bio!: Stream<boolean>;
+  is_restricted!: Stream<boolean>;
   type!: Stream<string | null>;
   validation!: Stream<string>;
 
@@ -30,6 +33,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
 
     this.field = this.attrs.model || app.store.createRecord<Field>('masquerade-fields');
 
+    this.is_restricted = Stream(this.field.is_restricted() || false);
     this.name = Stream(this.field.name() || '');
     this.description = Stream(this.field.description() || '');
     this.icon = Stream(this.field.icon() || '');
@@ -61,6 +65,31 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
 
   fieldItems() {
     const fields = new ItemList();
+
+    fields.add(
+      'is_restricted',
+      <FormGroup label={app.translator.trans('fof-masquerade.admin.fields.is_restricted')} type="boolean" stream={this.is_restricted} />,
+      120
+    );
+
+    if (this.is_restricted()) {
+      if (this.field.exists) {
+        fields.add(
+          'permissions',
+          <div className="Form-group">
+            <label>{app.translator.trans('fof-masquerade.admin.fields.permissions')}</label>
+            <PermissionDropdown permission={`fof-masquerade.field${this.field.id()}.view`} allowGuest={false} />
+          </div>,
+          110
+        );
+      } else {
+        fields.add(
+          'permissions-alert',
+          <Alert dismissible={false}>{app.translator.trans('fof-masquerade.admin.fields.permissions-alert')}</Alert>,
+          115
+        );
+      }
+    }
 
     fields.add(
       'name',
@@ -182,6 +211,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
       icon: this.icon(),
       required: this.required(),
       on_bio: this.on_bio(),
+      is_restricted: this.is_restricted(),
       type: this.type(),
       validation: this.validation(),
     };

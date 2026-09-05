@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Answer extends AbstractModel
 {
+    use ScopeVisibilityTrait;
+
     public $timestamps = true;
 
     protected $table = 'fof_masquerade_answers';

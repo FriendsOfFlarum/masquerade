@@ -4,6 +4,8 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
+use Flarum\Group\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $validation
  * @property integer $sort
  * @property bool $on_bio
+ * @property bool $is_restricted
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
@@ -28,6 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Field extends AbstractModel
 {
+    use ScopeVisibilityTrait;
     use SoftDeletes;
 
     public $timestamps = true;
@@ -37,6 +41,7 @@ class Field extends AbstractModel
     protected $casts = [
         'required' => 'boolean',
         'on_bio' => 'boolean',
+        'is_restricted' => 'boolean',
     ];
 
     protected $fillable = [
@@ -48,6 +53,7 @@ class Field extends AbstractModel
         'validation',
         'on_bio',
         'sort',
+        'is_restricted',
     ];
 
     protected $visible = [
@@ -59,6 +65,7 @@ class Field extends AbstractModel
         'validation',
         'sort',
         'on_bio',
+        'is_restricted',
         'deleted_at', // Used to know if an API response was about deletion
     ];
 
@@ -77,5 +84,25 @@ class Field extends AbstractModel
                 $query->where('user_id', $userId);
             })
             ->exists();
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::saved(function (self $field) {
+            if (!$field->is_restricted && $field->wasChanged('is_restricted')) {
+                $field->deletePermissions();
+            }
+        });
+
+        static::deleted(function (self $field) {
+            $field->deletePermissions();
+        });
+    }
+
+    public function deletePermissions(): void
+    {
+        Permission::where('permission', 'like', "fof-masquerade.field{$this->id}.%")->delete();
     }
 }

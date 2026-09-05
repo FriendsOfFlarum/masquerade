@@ -34,7 +34,8 @@
     "require-dev": {
         "flarum/phpstan": "^2.0.0",
         "flarum/gdpr": "*",
-        "flarum/audit": "^2.0@RC"
+        "flarum/audit": "^2.0@RC",
+        "flarum/testing": "^2.0.0"
     },
     "extra": {
         "flarum-extension": {
@@ -63,13 +64,24 @@
             "FoF\\Masquerade\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "FoF\\Masquerade\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "beta",
     "prefer-stable": true,
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
-        "clear-cache:phpstan": "phpstan clear-result-cache"
+        "clear-cache:phpstan": "phpstan clear-result-cache",
+        "test": "@test:integration",
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php"
     },
     "scripts-descriptions": {
-        "analyse:phpstan": "Run static analysis"
+        "analyse:phpstan": "Run static analysis",
+        "test": "Runs all tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once."
     }
 }

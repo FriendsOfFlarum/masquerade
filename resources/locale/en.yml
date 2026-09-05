@@ -29,6 +29,9 @@ fof-masquerade:
       create: Create field
       edit: Edit field {field}
       delete-confirmation: Are you sure you want to delete the field {field}? This cannot be undone.
+      is_restricted: Restrict field visibility
+      permissions: Field visibility
+      permissions-alert: Permission settings will be available when editing the field after creation.
       name: Field name
       name-help: >
         The publicly visible (non-translatable) field label.
