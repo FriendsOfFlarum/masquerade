@@ -83,6 +83,9 @@ class FieldResource extends AbstractDatabaseResource
                 ->writable(),
             Schema\Boolean::make('on_bio')
                 ->writable(),
+            Schema\Boolean::make('is_restricted')
+                ->default(false)
+                ->writable(),
             Schema\DateTime::make('deleted_at')
                 ->nullable()
                 ->writable(),

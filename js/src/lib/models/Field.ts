@@ -12,6 +12,7 @@ export default class Field extends Model {
   deleted_at = Model.attribute('deleted_at', Model.transformDate);
   answer = Model.hasOne<Answer>('answer');
   on_bio = Model.attribute<boolean>('on_bio');
+  is_restricted = Model.attribute<boolean>('is_restricted');
 
   apiEndpoint() {
     return '/masquerade-fields' + (this.exists ? `/${this.id()}` : '');

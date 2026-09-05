@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $validation
  * @property integer $sort
  * @property bool $on_bio
+ * @property bool $is_restricted
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
@@ -37,6 +38,7 @@ class Field extends AbstractModel
     protected $casts = [
         'required' => 'boolean',
         'on_bio' => 'boolean',
+        'is_restricted' => 'boolean',
     ];
 
     protected $fillable = [
@@ -48,6 +50,7 @@ class Field extends AbstractModel
         'validation',
         'on_bio',
         'sort',
+        'is_restricted',
     ];
 
     protected $visible = [
@@ -59,6 +62,7 @@ class Field extends AbstractModel
         'validation',
         'sort',
         'on_bio',
+        'is_restricted',
         'deleted_at', // Used to know if an API response was about deletion
     ];
 
