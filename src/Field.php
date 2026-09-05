@@ -4,6 +4,7 @@ namespace FoF\Masquerade;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
+use Flarum\Group\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -81,5 +82,25 @@ class Field extends AbstractModel
                 $query->where('user_id', $userId);
             })
             ->exists();
+    }
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+        static::saved(function (self $field) {
+            if (!$field->is_restricted && $field->wasChanged('is_restricted')) {
+                $field->deletePermissions();
+            }
+        });
+
+        static::deleted(function (self $field) {
+            $field->deletePermissions();
+        });
+    }
+
+    public function deletePermissions(): void
+    {
+        Permission::where('permission', 'like', "fof-masquerade.field{$this->id}.%")->delete();
     }
 }

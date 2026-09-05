@@ -78,7 +78,7 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
           'permissions',
           <div className="Form-group">
             <label>{app.translator.trans('fof-masquerade.admin.fields.permissions')}</label>
-            <PermissionDropdown permission={`fof-masquerade.field${this.field.id()}.view`} allowGuest={true} />
+            <PermissionDropdown permission={`fof-masquerade.field${this.field.id()}.view`} allowGuest={false} />
           </div>,
           110
         );
