@@ -3,3 +3,5 @@
 js/node_modules
 vendor/
 composer.lock
+tests/tmp/
+tests/.phpunit.cache/
