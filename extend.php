@@ -13,6 +13,8 @@ use Flarum\Gdpr\Extend\UserData;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\Search\UserSearcher;
 use Flarum\User\User;
+use FoF\Masquerade\Access\AnswerPolicy;
+use FoF\Masquerade\Access\FieldPolicy;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\Events\FieldUpdated;
@@ -41,6 +43,10 @@ return [
         ->default('masquerade.hide-empty-fields', false)
         ->serializeToForum('masquerade.hide-empty-fields', 'masquerade.hide-empty-fields'),
 
+    (new Extend\Policy())
+        ->modelPolicy(Field::class, FieldPolicy::class)
+        ->modelPolicy(Answer::class, AnswerPolicy::class),
+
     (new Extend\ApiResource(Resource\ForumResource::class))
         ->fields(fn() => [
             Schema\Boolean::make('masquerade.profile-completed')
@@ -67,14 +73,22 @@ return [
             Schema\Relationship\ToMany::make('bioFields')
                 ->type('masquerade-answers')
                 ->includable()
-                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile')),
+                ->visible(fn(User $user, $context) => $context->getActor()->can('fof.masquerade.view-profile'))
+                ->get(fn(User $user, Context $context) => $user->bioFields
+                    ->filter(fn(Answer $answer) => $context->getActor()->can('view', $answer))
+                    ->all()
+                ),
             Schema\Relationship\ToMany::make('masqueradeAnswers')
                 ->type('masquerade-answers')
                 ->includable()
                 ->visible(fn(
                     User $user,
                     $context
-                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile')),
+                ) => $context->getActor()->id === $user->id || $context->getActor()->can('fof.masquerade.view-profile'))
+                ->get(fn(User $user, Context $context) => $user->masqueradeAnswers
+                    ->filter(fn(Answer $answer) => $context->getActor()->can('view', $answer))
+                    ->all()
+                ),
             Schema\Boolean::make('canEditMasqueradeProfile')
                 ->get(fn(User $user, Context $context) => $context->getActor()->id === $user->id
                     ? $context->getActor()->can('fof.masquerade.have-profile')
