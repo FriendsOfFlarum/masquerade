@@ -9,6 +9,7 @@ import SelectFieldOptionEditor from './SelectFieldOptionEditor';
 import Button from 'flarum/common/components/Button';
 import Icon from 'flarum/common/components/Icon';
 import extractText from 'flarum/common/utils/extractText';
+import PermissionDropdown from 'flarum/admin/components/PermissionDropdown';
 
 interface FieldEditModalAttrs extends IFormModalAttrs {
   model?: Field;
@@ -61,6 +62,17 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
 
   fieldItems() {
     const fields = new ItemList();
+
+    if (this.field.exists) {
+      fields.add(
+        'permissions',
+        <div className="Form-group">
+          <label>{app.translator.trans('fof-masquerade.admin.fields.permissions')}</label>
+          <PermissionDropdown permission={`fof-masquerade.field${this.field.id()}.view`} allowGuest={true} />
+        </div>,
+        110
+      );
+    }
 
     fields.add(
       'name',
