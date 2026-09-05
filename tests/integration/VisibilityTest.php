@@ -183,8 +183,9 @@ class VisibilityTest extends TestCase
         $this->assertCount($limit, $document['data']);
         $queries = $this->database()->getQueryLog();
         foreach (['fof_masquerade_answers', 'fof_masquerade_fields'] as $table) {
+            $select = $this->database()->table($table)->toSql();
             $selects = array_filter($queries,
-                fn(array $query) => preg_match('/^select \* from ["`]'.$table.'["`]/i', $query['query']));
+                fn(array $query) => str_starts_with($query['query'], $select));
             $this->assertCount(1, $selects, "Expected one batched query for $table");
         }
     }
