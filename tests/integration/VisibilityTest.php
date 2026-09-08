@@ -134,6 +134,18 @@ class VisibilityTest extends TestCase
         }
     }
 
+    public function test_posts_can_include_another_nested_user(): void
+    {
+        // Like flags.user, discussion.user loads a user through another resource.
+        $document = $this->get('/api/posts', 3, [
+            'filter' => ['discussion' => 1],
+            'include' => 'user.bioFields.field,discussion.user',
+        ]);
+
+        $this->assertCount(10, $document['data']);
+        $this->assertCount(11, $this->answers($document));
+    }
+
     public static function editors(): array
     {
         return ['moderator' => [3, false], 'allowed editor' => [4, true], 'owner' => [2, true], 'admin' => [1, true]];

@@ -102,8 +102,10 @@ return [
     (new Extend\ApiResource(PostResource::class))
         ->endpoint(['index', 'show'], fn(Endpoint\Index|Endpoint\Show $endpoint) => $endpoint
             ->addDefaultInclude(['user.bioFields.field'])
-            ->eagerLoadWhere('user.bioFields', fn($query, Context $context) => $query
-                ->whereVisibleTo($context->getActor())->with('field')
+            ->eagerLoadWhere('user', fn($query, Context $context) => $query
+                ->with(['bioFields' => fn($query) => $query
+                    ->whereVisibleTo($context->getActor())->with('field')
+                ])
             )
         ),
 
