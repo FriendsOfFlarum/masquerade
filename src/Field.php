@@ -9,6 +9,7 @@ use Flarum\Group\Permission;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\JoinClause;
 
 /**
  * @property int $id
@@ -78,12 +79,13 @@ class Field extends AbstractModel
     /** Checks whether a user has uncompleted required fields. */
     public static function allRequiredCompletedFor(int $userId): bool
     {
-        return !self::query()
+        return self::query()
             ->where('required', true)
-            ->whereDoesntHave('answers', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
-            ->exists();
+            ->leftJoin('fof_masquerade_answers as answers', fn(JoinClause $join) => $join
+                ->on('answers.field_id', '=', 'fof_masquerade_fields.id')
+                ->where('answers.user_id', $userId))
+            ->pluck('answers.content')
+            ->every(fn(?string $content) => trim($content ?? '') !== '');
     }
 
     public static function boot(): void

@@ -5,6 +5,7 @@ namespace FoF\Masquerade\Tests\integration;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
 use FoF\Masquerade\Events\ProfileUpdated;
+use FoF\Masquerade\Field;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ProfileTest extends TestCase
@@ -143,6 +144,39 @@ class ProfileTest extends TestCase
         $response = $this->configure([$field['id'] => null]);
         $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
         $this->assertNull($this->database()->table('fof_masquerade_answers')->value('content'));
+    }
+
+    public static function incompleteAnswers(): array
+    {
+        return ['null' => [null], 'empty' => [''], 'spaces' => ['   '], 'whitespace' => ["\t\n\r"]];
+    }
+
+    #[DataProvider('incompleteAnswers')]
+    public function test_making_an_empty_field_required_leaves_the_profile_incomplete(?string $content): void
+    {
+        $field = $this->createField();
+        $response = $this->configure([$field['id'] => $content]);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertTrue(Field::allRequiredCompletedFor(2));
+        Field::findOrFail($field['id'])->update(['required' => true]);
+        $this->assertFalse(Field::allRequiredCompletedFor(2));
+    }
+
+    public function test_completion_preserves_false_and_checks_the_right_user_and_fields(): void
+    {
+        $this->app();
+        $this->assertTrue(Field::allRequiredCompletedFor(2));
+        $field = $this->createField(['type' => 'boolean', 'required' => true]);
+        $this->createField(['name' => 'Optional']);
+        $this->assertFalse(Field::allRequiredCompletedFor(2));
+
+        $response = $this->configure([$field['id'] => 'false']);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertTrue(Field::allRequiredCompletedFor(2));
+        $this->assertFalse(Field::allRequiredCompletedFor(1));
+
+        Field::findOrFail($field['id'])->delete();
+        $this->assertTrue(Field::allRequiredCompletedFor(1));
     }
 
     private function createField(array $attributes = []): array
