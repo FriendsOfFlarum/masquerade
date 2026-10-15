@@ -5,41 +5,16 @@ import Button from 'flarum/common/components/Button';
 import FormSection from 'flarum/admin/components/FormSection';
 import FormSectionGroup from 'flarum/admin/components/FormSectionGroup';
 import type { Vnode, VnodeDOM } from 'mithril';
-import { DragDropManager } from '@dnd-kit/dom';
-import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
+import type Sortable from 'sortablejs';
 import Field from '../../lib/models/Field';
 import FieldEditModal from './FieldEditModal';
 import sortFields from '../../common/utils/sortFields';
 
 export default class MasqueradePage extends ExtensionPage {
-  protected dragDropManager!: DragDropManager;
-  protected sortableInstances: Map<string, Sortable> = new Map<string, Sortable>();
+  protected sortable?: Sortable;
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
-    this.dragDropManager = new DragDropManager();
-
-    this.dragDropManager.monitor.addEventListener('dragend', (event) => {
-      if (event.canceled) return;
-
-      const { source } = event.operation;
-      if (!isSortable(source)) return;
-
-      const { initialIndex, index } = source;
-      if (initialIndex === index) return;
-
-      const fields = sortFields(app.store.all<Field>('masquerade-fields'));
-      const [movedField] = fields.splice(initialIndex, 1);
-      fields.splice(index, 0, movedField);
-
-      const sorting: number[] = [];
-      fields.forEach((field, newIndex) => {
-        field.pushAttributes({ sort: newIndex });
-        sorting.push(Number(field.id()));
-      });
-
-      this.updateSort(sorting);
-    });
 
     if (!app.store.all<Field>('masquerade-fields').length) {
       this.loading = true;
@@ -63,16 +38,13 @@ export default class MasqueradePage extends ExtensionPage {
     return (
       <FormSectionGroup className="MasqueradePage container">
         <FormSection label={app.translator.trans('fof-masquerade.admin.fields.title')}>
-          <ol className="MasqueradePage-list">
-            {sortFields(app.store.all<Field>('masquerade-fields')).map((field, index) => (
-              <li
-                key={field.id()}
-                data-id={field.id()}
-                className="MasqueradeFieldListItem"
-                oncreate={(vnode: VnodeDOM) => this.initSortableItem(vnode, field.id()!, index)}
-                onupdate={() => this.updateSortableItem(field.id()!, index)}
-                onbeforeremove={() => this.removeSortableItem(field.id()!)}
-              >
+          <ol
+            className="MasqueradePage-list"
+            oncreate={(vnode: VnodeDOM) => this.createSortable(vnode.dom as HTMLElement)}
+            onremove={() => this.sortable?.destroy()}
+          >
+            {sortFields(app.store.all<Field>('masquerade-fields')).map((field) => (
+              <li key={field.id()} data-id={field.id()} className="MasqueradeFieldListItem">
                 {field.icon() && <Icon name={field.icon()} className="MasqueradeFieldListItem-icon" />}
                 <span className="MasqueradeFieldListItem-name">{field.name()}</span>
                 <Button
@@ -92,30 +64,35 @@ export default class MasqueradePage extends ExtensionPage {
     );
   }
 
-  initSortableItem(vnode: VnodeDOM, id: string, index: number) {
-    this.sortableInstances.set(
-      id,
-      new Sortable(
-        {
-          id,
-          index,
-          element: vnode.dom,
-        },
-        this.dragDropManager
-      )
-    );
-  }
+  async createSortable(element: HTMLElement) {
+    const { default: sortableModule }: { default: typeof Sortable } = await import('flarum/admin/utils/loadSortable');
+    if (!element.isConnected) return;
 
-  updateSortableItem(id: string, index: number) {
-    const sortable = this.sortableInstances.get(id);
-    if (sortable) {
-      sortable.index = index;
-    }
-  }
+    this.sortable = sortableModule.create(element, {
+      animation: 150,
+      draggable: '.MasqueradeFieldListItem',
+      filter: 'button',
+      preventOnFilter: false,
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
 
-  removeSortableItem(id: string) {
-    this.sortableInstances.get(id)?.unregister();
-    this.sortableInstances.delete(id);
+        const fields = sortFields(app.store.all<Field>('masquerade-fields'));
+        // Restore the DOM order so Mithril can reconcile the keyed items.
+        this.sortable!.sort(fields.map((field) => field.id()!));
+
+        const [movedField] = fields.splice(oldIndex, 1);
+        fields.splice(newIndex, 0, movedField);
+
+        const sorting: number[] = [];
+        fields.forEach((field, index) => {
+          field.pushAttributes({ sort: index });
+          sorting.push(Number(field.id()));
+        });
+
+        this.updateSort(sorting);
+        m.redraw();
+      },
+    });
   }
 
   updateSort(sorting: number[]) {
