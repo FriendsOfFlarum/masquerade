@@ -29,13 +29,13 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^v2.0.0-rc.4"
+        "flarum/core": "^2.0.0"
     },
     "require-dev": {
         "flarum/phpstan": "^2.0.0",
-        "flarum/gdpr": "*",
-        "flarum/audit": "^2.0@RC",
-        "flarum/testing": "^2.0.0"
+        "flarum/gdpr": "^2.0",
+        "flarum/audit": "^2.0",
+        "flarum/testing": "^2.0"
     },
     "extra": {
         "flarum-extension": {
