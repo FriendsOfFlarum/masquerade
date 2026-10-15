@@ -5,9 +5,12 @@ namespace FoF\Masquerade\Validators;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\Foundation\AbstractValidator;
+use Illuminate\Validation\Validator;
 
 class AnswerValidator extends AbstractValidator
 {
+    protected string $fieldName;
+
     /**
      * @param Field $field
      * @return self
@@ -25,8 +28,14 @@ class AnswerValidator extends AbstractValidator
             $rules = array_merge($rules, explode('|', $validation));
         }
 
-        $this->rules = [$field->name => $rules];
+        $this->rules = ['answer' => $rules];
+        $this->fieldName = $field->name;
 
         return $this;
+    }
+
+    protected function makeValidator(array $attributes): Validator
+    {
+        return parent::makeValidator($attributes)->setAttributeNames(['answer' => $this->fieldName]);
     }
 }

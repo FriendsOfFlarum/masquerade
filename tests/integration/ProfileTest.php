@@ -77,6 +77,30 @@ class ProfileTest extends TestCase
         $this->assertSame(0, $this->database()->table('fof_masquerade_answers')->count());
     }
 
+    public static function fieldLabels(): array
+    {
+        return [
+            'required dotted label' => ['Contact.email', true],
+            'optional dotted label' => ['Contact.email', false],
+            'wildcard label' => ['Contact.*', true],
+            'numeric label' => ['123', true],
+        ];
+    }
+
+    #[DataProvider('fieldLabels')]
+    public function test_field_labels_do_not_change_validation(string $name, bool $required): void
+    {
+        $field = $this->createField(['name' => $name, 'type' => 'email', 'required' => $required]);
+        $response = $this->configure([$field['id'] => 'valid@example.com']);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+
+        $response = $this->configure([$field['id'] => 'invalid email']);
+        $this->assertSame(422, $response->getStatusCode(), (string) $response->getBody());
+        $document = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertStringContainsString($name, $document['errors'][0]['detail']);
+        $this->assertSame('valid@example.com', $this->database()->table('fof_masquerade_answers')->value('content'));
+    }
+
     private function createField(array $attributes = []): array
     {
         $response = $this->send($this->request('POST', '/api/masquerade-fields', [
