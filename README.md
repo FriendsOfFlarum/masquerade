@@ -33,31 +33,6 @@ Be aware that the "Add new field" and "Edit field <foo>" toggle the field form w
 
 Make sure you configure the masquerade permissions on the Admin Permissions tab to your needs.
 
-## Updating from Flagrow
-
-This extension replaces [Flagrow Masquerade](https://packagist.org/packages/flagrow/masquerade).
-
-**Please backup your data before attempting the update!**
-
-First make sure you installed the latest Flagrow release will all migrations applied:
-
-```sh
-composer require flagrow/masquerade
-# Go to admin panel and check extension is enabled
-php flarum migrate
-```
-
-(Instead of running the migrate command you can also disable and re-enable the extension in the admin panel)
-
-Then upgrade from the old extension to the new one:
-
-```sh
-composer remove flagrow/masquerade
-composer require fof/masquerade:*
-```
-
-When you enable the new extension, the permissions and the data from Flagrow Masquerade will be moved to FoF Masquerade.
-
 ## Links
 
 - [Flarum Discuss post](https://discuss.flarum.org/d/5791)
