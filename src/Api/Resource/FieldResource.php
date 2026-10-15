@@ -96,8 +96,7 @@ class FieldResource extends AbstractDatabaseResource
 
     public function saving(object $model, Context $context): ?object
     {
-        $type = TypeFactory::typeForField(['type' => $model->type]);
-        $model->fill($type->overrideAttributes());
+        $model->validation = TypeFactory::validationForField($model);
 
         return parent::saving($model, $context);
     }

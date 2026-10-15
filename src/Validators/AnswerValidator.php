@@ -19,7 +19,7 @@ class AnswerValidator extends AbstractValidator
     {
         $rules = [$field->required ? 'required' : 'nullable'];
 
-        $validation = TypeFactory::typeForField(['type' => $field->type])->overrideAttributes()['validation'] ?? $field->validation;
+        $validation = TypeFactory::validationForField($field);
         if ($validation) {
             $rules = array_merge($rules, explode('|', $validation));
         }
