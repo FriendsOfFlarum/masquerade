@@ -17,11 +17,7 @@ class AnswerValidator extends AbstractValidator
      */
     public function setField(Field $field): self
     {
-        $rules = [];
-
-        if ($field->required) {
-            $rules[] = 'required';
-        }
+        $rules = [$field->required ? 'required' : 'nullable'];
 
         $validation = TypeFactory::typeForField(['type' => $field->type])->overrideAttributes()['validation'] ?? $field->validation;
         if ($validation) {

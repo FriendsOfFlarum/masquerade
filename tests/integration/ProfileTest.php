@@ -130,6 +130,21 @@ class ProfileTest extends TestCase
         $this->assertSame(['Existing' => 'Changed', 'New' => 'Created', 'Email' => 'valid@example.com'], $events[0]->data);
     }
 
+    public function test_optional_boolean_answers_can_be_cleared(): void
+    {
+        $field = $this->createField(['type' => 'boolean']);
+        foreach (['true' => 'true', '' => null, 'false' => 'false'] as $value => $expected) {
+            $response = $this->configure([$field['id'] => $value]);
+            $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+            $document = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            $this->assertSame($expected, $document['included'][0]['attributes']['content']);
+        }
+
+        $response = $this->configure([$field['id'] => null]);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertNull($this->database()->table('fof_masquerade_answers')->value('content'));
+    }
+
     private function createField(array $attributes = []): array
     {
         $response = $this->send($this->request('POST', '/api/masquerade-fields', [
