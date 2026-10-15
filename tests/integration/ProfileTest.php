@@ -4,6 +4,7 @@ namespace FoF\Masquerade\Tests\integration;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use FoF\Masquerade\Events\ProfileUpdated;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ProfileTest extends TestCase
@@ -99,6 +100,34 @@ class ProfileTest extends TestCase
         $document = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertStringContainsString($name, $document['errors'][0]['detail']);
         $this->assertSame('valid@example.com', $this->database()->table('fof_masquerade_answers')->value('content'));
+    }
+
+    public function test_profile_saves_are_atomic_and_only_successful_changes_emit_events(): void
+    {
+        $existing = $this->createField(['name' => 'Existing']);
+        $new = $this->createField(['name' => 'New']);
+        $email = $this->createField(['name' => 'Email', 'type' => 'email', 'required' => true]);
+        $response = $this->configure([$existing['id'] => 'Original']);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+
+        $events = [];
+        $this->app()->getContainer()->make('events')->listen(ProfileUpdated::class, function ($event) use (&$events) {
+            $events[] = $event;
+        });
+
+        $answers = [$existing['id'] => 'Changed', $new['id'] => 'Created', $email['id'] => 'invalid'];
+        $response = $this->configure($answers);
+        $this->assertSame(422, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertSame([(int) $existing['id'] => 'Original'],
+            $this->database()->table('fof_masquerade_answers')->pluck('content', 'field_id')->all());
+        $this->assertSame([], $events);
+
+        $answers[$email['id']] = 'valid@example.com';
+        $response = $this->configure($answers);
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertEquals($answers, $this->database()->table('fof_masquerade_answers')->pluck('content', 'field_id')->all());
+        $this->assertCount(1, $events);
+        $this->assertSame(['Existing' => 'Changed', 'New' => 'Created', 'Email' => 'valid@example.com'], $events[0]->data);
     }
 
     private function createField(array $attributes = []): array

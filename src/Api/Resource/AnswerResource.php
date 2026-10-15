@@ -66,38 +66,42 @@ class AnswerResource extends AbstractDatabaseResource
                     }
                     $fields = $fields->get();
 
-                    $changes = [];
-                    foreach ($fields as $field) {
-                        if (!array_key_exists($field->id, $answersData)) {
-                            continue;
-                        }
-
-                        $content = $answersData[$field->id];
-
-                        if ($field->type === 'boolean') {
-                            if ($content === '' || $content === null) {
-                                $content = null;
-                            } else {
-                                $content = in_array(strtolower((string) $content), ['yes', 'true', '1', 1, true], true);
+                    $changes = $user->getConnection()->transaction(function () use ($fields, $answersData, $user) {
+                        $changes = [];
+                        foreach ($fields as $field) {
+                            if (!array_key_exists($field->id, $answersData)) {
+                                continue;
                             }
+
+                            $content = $answersData[$field->id];
+
+                            if ($field->type === 'boolean') {
+                                if ($content === '' || $content === null) {
+                                    $content = null;
+                                } else {
+                                    $content = in_array(strtolower((string) $content), ['yes', 'true', '1', 1, true], true);
+                                }
+                            }
+
+                            $this->validator
+                                ->setField($field)
+                                ->assertValid(['answer' => $content]);
+
+                            $answer = $field->answers()->firstOrNew([
+                                'user_id' => $user->id,
+                            ]);
+                            $answer->content = $content;
+                            $answer->user()->associate($user);
+
+                            if ($answer->isDirty('content')) {
+                                $changes[$field->name] = $content;
+                            }
+
+                            $answer->save();
                         }
 
-                        $this->validator
-                            ->setField($field)
-                            ->assertValid(['answer' => $content]);
-
-                        $answer = $field->answers()->firstOrNew([
-                            'user_id' => $user->id,
-                        ]);
-                        $answer->content = $content;
-                        $answer->user()->associate($user);
-
-                        if ($answer->isDirty('content')) {
-                            $changes[$field->name] = $content;
-                        }
-
-                        $answer->save();
-                    }
+                        return $changes;
+                    });
 
                     if (!empty($changes)) {
                         $this->events->dispatch(
