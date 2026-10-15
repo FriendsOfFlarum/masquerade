@@ -1,8 +1,7 @@
 import Component, { ComponentAttrs } from 'flarum/common/Component';
 import Stream from 'flarum/common/utils/Stream';
-import type { Vnode, VnodeDOM } from 'mithril';
-import { DragDropManager } from '@dnd-kit/dom';
-import { Sortable } from '@dnd-kit/dom/sortable';
+import type { Vnode } from 'mithril';
+import type Sortable from 'sortablejs';
 export interface SelectFieldOptionEditorAttrs extends ComponentAttrs {
     value: string;
     onchange: (rules: string) => void;
@@ -13,13 +12,10 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
         id: string;
         value: string;
     }[];
-    protected dragDropManager: DragDropManager;
-    protected sortableInstances: Map<string, Sortable>;
+    protected sortable?: Sortable;
     oninit(vnode: Vnode<SelectFieldOptionEditorAttrs, this>): void;
     view(): JSX.Element;
-    initSortableItem(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>, id: string, index: number): void;
-    updateSortableItem(id: string, index: number): void;
-    removeSortableItem(id: string): void;
+    createSortable(element: HTMLElement): Promise<void>;
     updateRules(): void;
     parseOptions(): string[];
     updateOption(index: number, value: string): void;

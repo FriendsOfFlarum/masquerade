@@ -4,8 +4,7 @@ import Button from 'flarum/common/components/Button';
 import Icon from 'flarum/common/components/Icon';
 import Stream from 'flarum/common/utils/Stream';
 import type { Vnode, VnodeDOM } from 'mithril';
-import { DragDropManager } from '@dnd-kit/dom';
-import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
+import type Sortable from 'sortablejs';
 import FormGroup from 'flarum/common/components/FormGroup';
 
 export interface SelectFieldOptionEditorAttrs extends ComponentAttrs {
@@ -19,8 +18,7 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     id: string;
     value: string;
   }[] = [];
-  protected dragDropManager!: DragDropManager;
-  protected sortableInstances: Map<string, Sortable> = new Map<string, Sortable>();
+  protected sortable?: Sortable;
 
   oninit(vnode: Vnode<SelectFieldOptionEditorAttrs, this>) {
     super.oninit(vnode);
@@ -30,23 +28,6 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
       id: crypto.randomUUID(),
       value,
     }));
-
-    this.dragDropManager = new DragDropManager();
-    this.dragDropManager.monitor.addEventListener('dragend', (event) => {
-      if (event.canceled) return;
-
-      const { source } = event.operation;
-      if (!isSortable(source)) return;
-
-      const { initialIndex, index } = source;
-      if (initialIndex === index) return;
-
-      const [movedItem] = this.items.splice(initialIndex, 1);
-      this.items.splice(index, 0, movedItem);
-
-      this.updateRules();
-      m.redraw();
-    });
   }
 
   view() {
@@ -54,16 +35,13 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
       <div className="Form-group">
         <label>{app.translator.trans('fof-masquerade.admin.fields.options')}</label>
 
-        <div className="MasqueradeSelectOptionsList">
+        <div
+          className="MasqueradeSelectOptionsList"
+          oncreate={(vnode: VnodeDOM) => this.createSortable(vnode.dom as HTMLElement)}
+          onremove={() => this.sortable?.destroy()}
+        >
           {this.items.map((item, index) => (
-            <div
-              key={item.id}
-              data-id={item.id}
-              className="MasqueradeSelectOptionItem"
-              oncreate={(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>) => this.initSortableItem(vnode, item.id, index)}
-              onupdate={() => this.updateSortableItem(item.id, index)}
-              onbeforeremove={() => this.removeSortableItem(item.id)}
-            >
+            <div key={item.id} data-id={item.id} className="MasqueradeSelectOptionItem">
               <Icon name="fas fa-grip-vertical" className="MasqueradeSelectOptionItem-handle" />
               <input
                 type="text"
@@ -95,32 +73,27 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     );
   }
 
-  initSortableItem(vnode: VnodeDOM<SelectFieldOptionEditorAttrs, this>, id: string, index: number) {
-    const element = vnode.dom;
-    this.sortableInstances.set(
-      id,
-      new Sortable(
-        {
-          id,
-          index,
-          element,
-          handle: element.querySelector('.MasqueradeSelectOptionItem-handle')!,
-        },
-        this.dragDropManager
-      )
-    );
-  }
+  async createSortable(element: HTMLElement) {
+    const { default: sortableModule }: { default: typeof Sortable } = await import('flarum/admin/utils/loadSortable');
+    if (!element.isConnected) return;
 
-  updateSortableItem(id: string, index: number) {
-    const sortable = this.sortableInstances.get(id);
-    if (sortable) {
-      sortable.index = index;
-    }
-  }
+    this.sortable = sortableModule.create(element, {
+      animation: 150,
+      draggable: '.MasqueradeSelectOptionItem',
+      handle: '.MasqueradeSelectOptionItem-handle',
+      onEnd: ({ oldIndex, newIndex }) => {
+        if (oldIndex == null || newIndex == null || oldIndex === newIndex) return;
 
-  removeSortableItem(id: string) {
-    this.sortableInstances.get(id)?.unregister();
-    this.sortableInstances.delete(id);
+        // Restore the DOM order so Mithril can reconcile the keyed items.
+        this.sortable!.sort(this.items.map((item) => item.id));
+
+        const [movedItem] = this.items.splice(oldIndex, 1);
+        this.items.splice(newIndex, 0, movedItem);
+
+        this.updateRules();
+        m.redraw();
+      },
+    });
   }
 
   updateRules() {

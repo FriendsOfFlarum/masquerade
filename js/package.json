@@ -2,12 +2,10 @@
   "name": "@fof/masquerade",
   "private": true,
   "prettier": "@flarum/prettier-config",
-  "dependencies": {
-    "@dnd-kit/dom": "^0.5.0"
-  },
   "devDependencies": {
     "@flarum/prettier-config": "^1.0.0",
     "@types/mithril": "^2.2.9",
+    "@types/sortablejs": "^1.15.9",
     "flarum-tsconfig": "^2.0.0",
     "flarum-webpack-config": "^3.0.4",
     "prettier": "^3.9.6",
