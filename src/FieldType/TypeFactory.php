@@ -2,6 +2,7 @@
 
 namespace FoF\Masquerade\FieldType;
 
+use FoF\Masquerade\Field;
 use Illuminate\Support\Arr;
 
 class TypeFactory
@@ -43,6 +44,11 @@ class TypeFactory
         $class = self::classForType($type);
 
         return resolve($class);
+    }
+
+    public static function validationForField(Field $field): ?string
+    {
+        return self::typeForField(['type' => $field->type])->overrideAttributes()['validation'] ?? $field->validation;
     }
 
     /**

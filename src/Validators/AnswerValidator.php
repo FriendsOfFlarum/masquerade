@@ -3,28 +3,35 @@
 namespace FoF\Masquerade\Validators;
 
 use FoF\Masquerade\Field;
+use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\Foundation\AbstractValidator;
+use Illuminate\Validation\Validator;
 
 class AnswerValidator extends AbstractValidator
 {
+    protected string $fieldName;
+
     /**
      * @param Field $field
      * @return self
      */
     public function setField(Field $field): self
     {
-        $rules = [];
+        $rules = [$field->required ? 'required' : 'nullable'];
 
-        if ($field->required) {
-            $rules[] = 'required';
+        $validation = TypeFactory::validationForField($field);
+        if ($validation) {
+            $rules = array_merge($rules, explode('|', $validation));
         }
 
-        if ($field->validation) {
-            $rules = array_merge($rules, explode('|', $field->validation));
-        }
-
-        $this->rules = [$field->name => $rules];
+        $this->rules = ['answer' => $rules];
+        $this->fieldName = $field->name;
 
         return $this;
+    }
+
+    protected function makeValidator(array $attributes): Validator
+    {
+        return parent::makeValidator($attributes)->setAttributeNames(['answer' => $this->fieldName]);
     }
 }

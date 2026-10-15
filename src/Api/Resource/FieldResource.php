@@ -94,11 +94,11 @@ class FieldResource extends AbstractDatabaseResource
         ];
     }
 
-    public function mutateDataBeforeValidation(Context $context, array $data): array
+    public function saving(object $model, Context $context): ?object
     {
-        $typeStr = $data['type'] ?? ($context->model ? $context->model->type : null);
-        $type = TypeFactory::typeForField(['type' => $typeStr]);
-        return array_merge($data, $type->overrideAttributes());
+        $model->validation = TypeFactory::validationForField($model);
+
+        return parent::saving($model, $context);
     }
 
     public function created(object $model, Context $context): ?object
