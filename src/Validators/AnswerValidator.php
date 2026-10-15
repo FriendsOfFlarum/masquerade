@@ -3,6 +3,7 @@
 namespace FoF\Masquerade\Validators;
 
 use FoF\Masquerade\Field;
+use FoF\Masquerade\FieldType\TypeFactory;
 use Flarum\Foundation\AbstractValidator;
 
 class AnswerValidator extends AbstractValidator
@@ -19,8 +20,9 @@ class AnswerValidator extends AbstractValidator
             $rules[] = 'required';
         }
 
-        if ($field->validation) {
-            $rules = array_merge($rules, explode('|', $field->validation));
+        $validation = TypeFactory::typeForField(['type' => $field->type])->overrideAttributes()['validation'] ?? $field->validation;
+        if ($validation) {
+            $rules = array_merge($rules, explode('|', $validation));
         }
 
         $this->rules = [$field->name => $rules];
