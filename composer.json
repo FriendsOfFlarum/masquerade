@@ -12,14 +12,8 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Daniël Klabbers",
-            "email": "daniel@klabbers.email",
-            "homepage": "https://luceos.com/"
-        },
-        {
-            "name": "Clark Winkelmann",
-            "email": "clark.winkelmann@gmail.com",
-            "homepage": "https://clarkwinkelmann.com/"
+            "name": "FriendsOfFlarum",
+            "homepage": "https://friendsofflarum.org"
         }
     ],
     "support": {
