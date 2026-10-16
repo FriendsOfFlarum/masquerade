@@ -36,32 +36,34 @@ export default class FieldList extends Component<FieldListAttrs> {
           >
             {field.icon() && <Icon name={field.icon()} className="MasqueradeFieldListItem-icon" />}
             <span className="MasqueradeFieldListItem-name">{field.name()}</span>
-            {this.attrs.trashed ? (
-              <span className="MasqueradeFieldListItem-actions">
+            <span className="MasqueradeFieldListItem-actions">
+              {this.attrs.trashed ? (
+                <>
+                  <Button
+                    aria-label={app.translator.trans('fof-masquerade.admin.buttons.restore-field', { field: field.name() })}
+                    className="Button Button--link Button--icon"
+                    icon="fas fa-undo"
+                    disabled={this.loading.has(field.id()!)}
+                    loading={this.loading.has(field.id()!)}
+                    onclick={() => this.restore(field)}
+                  />
+                  <Button
+                    aria-label={app.translator.trans('fof-masquerade.admin.buttons.delete-field-permanently', { field: field.name() })}
+                    className="Button Button--danger Button--icon"
+                    icon="fas fa-trash"
+                    disabled={this.loading.has(field.id()!)}
+                    onclick={() => this.deletePermanently(field)}
+                  />
+                </>
+              ) : (
                 <Button
-                  aria-label={app.translator.trans('fof-masquerade.admin.buttons.restore-field', { field: field.name() })}
-                  className="Button Button--link Button--icon"
-                  icon="fas fa-undo"
-                  disabled={this.loading.has(field.id()!)}
-                  loading={this.loading.has(field.id()!)}
-                  onclick={() => this.restore(field)}
+                  aria-label={app.translator.trans('fof-masquerade.admin.fields.edit', { field: field.name() })}
+                  className="Button Button--link Button--icon MasqueradeFieldListItem-edit"
+                  icon="fas fa-pencil-alt"
+                  onclick={() => app.modal.show(FieldEditModal, { model: field, ondelete: this.attrs.ondelete })}
                 />
-                <Button
-                  aria-label={app.translator.trans('fof-masquerade.admin.buttons.delete-field-permanently', { field: field.name() })}
-                  className="Button Button--danger Button--icon"
-                  icon="fas fa-trash"
-                  disabled={this.loading.has(field.id()!)}
-                  onclick={() => this.deletePermanently(field)}
-                />
-              </span>
-            ) : (
-              <Button
-                aria-label={app.translator.trans('fof-masquerade.admin.fields.edit', { field: field.name() })}
-                className="Button Button--link Button--icon MasqueradeFieldListItem-edit"
-                icon="fas fa-pencil-alt"
-                onclick={() => app.modal.show(FieldEditModal, { model: field, ondelete: this.attrs.ondelete })}
-              />
-            )}
+              )}
+            </span>
           </li>
         ))}
       </ol>

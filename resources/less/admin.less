@@ -1,6 +1,12 @@
-.MasqueradePage-list {
-    list-style: none;
-    padding: 0;
+.MasqueradePage {
+    &.FormSectionGroup {
+        row-gap: 30px;
+    }
+
+    &-list {
+        list-style: none;
+        padding: 0;
+    }
 }
 
 .MasqueradeFieldListItem {
@@ -34,8 +40,6 @@
     }
 
     &-edit {
-        margin-left: auto;
-
         // pointer: fine = mouse — safe to use hover. Touch devices always show the button.
         @media (pointer: fine) {
             visibility: hidden;
