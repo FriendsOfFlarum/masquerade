@@ -98,7 +98,7 @@ class Field extends AbstractModel
             }
         });
 
-        static::deleted(function (self $field) {
+        static::forceDeleted(function (self $field) {
             $field->deletePermissions();
         });
     }

@@ -10,6 +10,7 @@ use FoF\Masquerade\Events\FieldDeleted;
 use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
 use Tobyz\JsonApiServer\Context;
@@ -55,6 +56,27 @@ class FieldResource extends AbstractDatabaseResource
                 })
                 ->response(fn() => new EmptyResponse()),
         ];
+    }
+
+    public function scope(Builder $query, Context $context): void
+    {
+        if ($context->updating()) {
+            $context->getActor()->assertAdmin();
+            $query->withTrashed();
+        } elseif (($context->listing() && in_array($context->queryParam('isTrashed'), ['1', 1], true))
+            || ($context->deleting() && Arr::get($context->body(), 'meta.force') === true)) {
+            $context->getActor()->assertAdmin();
+            $query->onlyTrashed();
+        }
+    }
+
+    public function delete(object $model, Context $context): void
+    {
+        if (Arr::get($context->body(), 'meta.force') === true) {
+            $model->forceDelete();
+        } else {
+            parent::delete($model, $context);
+        }
     }
 
     public function fields(): array
