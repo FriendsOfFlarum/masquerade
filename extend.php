@@ -16,6 +16,8 @@ use Flarum\User\User;
 use FoF\Masquerade\Access\FieldPolicy;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
+use FoF\Masquerade\Events\FieldPermanentlyDeleted;
+use FoF\Masquerade\Events\FieldRestored;
 use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Events\ProfileUpdated;
 
@@ -128,7 +130,15 @@ return [
                     'name' => $event->field->name,
                     'changes' => $event->data,
                 ])
+                ->listen(FieldRestored::class, 'masquerade.field_restored', fn(FieldRestored $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
                 ->listen(FieldDeleted::class, 'masquerade.field_deleted', fn(FieldDeleted $event) => [
+                    'field_id' => $event->field->id,
+                    'name' => $event->field->name,
+                ])
+                ->listen(FieldPermanentlyDeleted::class, 'masquerade.field_permanently_deleted', fn(FieldPermanentlyDeleted $event) => [
                     'field_id' => $event->field->id,
                     'name' => $event->field->name,
                 ])

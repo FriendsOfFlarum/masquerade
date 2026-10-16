@@ -4,7 +4,8 @@ namespace FoF\Masquerade\Tests\integration;
 
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
-use FoF\Masquerade\Events\FieldDeleted;
+use FoF\Masquerade\Events\FieldPermanentlyDeleted;
+use FoF\Masquerade\Events\FieldRestored;
 use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Field;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -65,6 +66,10 @@ class FieldTrashTest extends TestCase
     public function test_soft_delete_and_restore_preserve_answers_settings_and_permissions(): void
     {
         $events = [];
+        $restored = [];
+        $this->app()->getContainer()->make('events')->listen(FieldRestored::class, function (FieldRestored $event) use (&$restored) {
+            $restored[] = $event->field->id;
+        });
         $this->app()->getContainer()->make('events')->listen(FieldUpdated::class, function (FieldUpdated $event) use (&$events) {
             $events[] = $event;
         });
@@ -89,9 +94,8 @@ class FieldTrashTest extends TestCase
         $this->assertSame(2, $this->fieldPermissions()->count());
         $this->assertSame(['1'], $this->fieldIds());
         $this->assertSame(['2'], $this->fieldIds(['isTrashed' => 1]));
-        $this->assertCount(1, $events);
-        $this->assertArrayHasKey('deleted_at', $events[0]->data);
-        $this->assertNull($events[0]->data['deleted_at']);
+        $this->assertSame([], $events);
+        $this->assertSame([1], $restored);
     }
 
     public function test_restoring_required_field_restores_completion_requirement(): void
@@ -119,7 +123,7 @@ class FieldTrashTest extends TestCase
         }
 
         $events = [];
-        $this->app()->getContainer()->make('events')->listen(FieldDeleted::class, function (FieldDeleted $event) use (&$events) {
+        $this->app()->getContainer()->make('events')->listen(FieldPermanentlyDeleted::class, function (FieldPermanentlyDeleted $event) use (&$events) {
             $events[] = $event;
         });
 

@@ -85,4 +85,6 @@ flarum-audit:
         field_created: 'Created profile field "{name}"'
         field_updated: 'Updated profile field "{name}"'
         field_deleted: 'Deleted profile field "{name}"'
+        field_restored: 'Restored profile field "{name}"'
+        field_permanently_deleted: 'Permanently deleted profile field "{name}"'
         profile_updated: "Updated {username}'s profile fields"

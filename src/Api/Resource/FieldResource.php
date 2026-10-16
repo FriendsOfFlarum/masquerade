@@ -7,6 +7,8 @@ use Flarum\Api\Resource\AbstractDatabaseResource;
 use Flarum\Api\Schema;
 use FoF\Masquerade\Events\FieldCreated;
 use FoF\Masquerade\Events\FieldDeleted;
+use FoF\Masquerade\Events\FieldPermanentlyDeleted;
+use FoF\Masquerade\Events\FieldRestored;
 use FoF\Masquerade\Events\FieldUpdated;
 use FoF\Masquerade\Field;
 use FoF\Masquerade\FieldType\TypeFactory;
@@ -133,16 +135,21 @@ class FieldResource extends AbstractDatabaseResource
 
     public function updated(object $model, Context $context): ?object
     {
-        $this->events->dispatch(
-            new FieldUpdated($model, $context->getActor(), Arr::except($model->getChanges(), 'updated_at'))
-        );
+        $changes = Arr::except($model->getChanges(), 'updated_at');
+        if ($changes) {
+            $this->events->dispatch($model->wasChanged('deleted_at') && !$model->trashed()
+                ? new FieldRestored($model, $context->getActor(), $changes)
+                : new FieldUpdated($model, $context->getActor(), $changes)
+            );
+        }
         return parent::updated($model, $context);
     }
 
     public function deleted(object $model, Context $context): void
     {
-        $this->events->dispatch(
-            new FieldDeleted($model, $context->getActor())
+        $this->events->dispatch(Arr::get($context->body(), 'meta.force') === true
+            ? new FieldPermanentlyDeleted($model, $context->getActor())
+            : new FieldDeleted($model, $context->getActor())
         );
         parent::deleted($model, $context);
     }
