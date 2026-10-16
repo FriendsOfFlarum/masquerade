@@ -5,6 +5,7 @@ import Field from '../../lib/models/Field';
 import ItemList from 'flarum/common/utils/ItemList';
 interface FieldEditModalAttrs extends IFormModalAttrs {
     model?: Field;
+    ondelete?: () => Promise<unknown>;
 }
 export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
     field: Field;
