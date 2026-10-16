@@ -14,6 +14,7 @@ import Alert from 'flarum/common/components/Alert';
 
 interface FieldEditModalAttrs extends IFormModalAttrs {
   model?: Field;
+  ondelete?: () => Promise<unknown>;
 }
 
 export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
@@ -229,9 +230,17 @@ export default class FieldEditModal extends FormModal<FieldEditModalAttrs> {
 
   delete() {
     if (confirm(extractText(app.translator.trans('fof-masquerade.admin.fields.delete-confirmation', { field: this.name() })))) {
-      this.field.delete().then(() => {
-        this.hide();
-      });
+      this.loading = true;
+      this.field
+        .delete()
+        .then(() => {
+          this.hide();
+          return this.attrs.ondelete?.();
+        })
+        .finally(() => {
+          this.loading = false;
+          m.redraw();
+        });
     }
   }
 }
