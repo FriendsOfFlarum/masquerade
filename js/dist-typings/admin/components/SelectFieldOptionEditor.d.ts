@@ -20,5 +20,6 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     parseOptions(): string[];
     updateOption(index: number, value: string): void;
     deleteOption(index: number): void;
+    canAddOption(): boolean;
     addOption(): void;
 }
