@@ -20,6 +20,8 @@ fof-masquerade:
   admin:
     buttons:
       add-field: Create field
+      add-option: Add option
+      delete-option: Delete option
       edit-field: Save changes
       delete-field: Move to trash
       restore-field: Restore field "{field}"

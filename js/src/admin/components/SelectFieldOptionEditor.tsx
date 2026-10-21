@@ -49,7 +49,12 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
                 value={item.value}
                 oninput={(event: InputEvent) => this.updateOption(index, (event.currentTarget as HTMLInputElement).value)}
               />
-              <Button className="Button Button--danger Button--icon" icon="fas fa-times" onclick={() => this.deleteOption(index)} />
+              <Button
+                className="Button Button--danger Button--icon"
+                icon="fas fa-times"
+                aria-label={app.translator.trans('fof-masquerade.admin.buttons.delete-option')}
+                onclick={() => this.deleteOption(index)}
+              />
             </div>
           ))}
         </div>
@@ -67,7 +72,13 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
               }
             }}
           />
-          <Button className="Button Button--icon" icon="fas fa-plus" onclick={() => this.addOption()} />
+          <Button
+            className="Button Button--icon"
+            icon="fas fa-plus"
+            aria-label={app.translator.trans('fof-masquerade.admin.buttons.add-option')}
+            onclick={() => this.addOption()}
+            disabled={!this.canAddOption()}
+          />
         </div>
       </div>
     );
@@ -127,8 +138,12 @@ export default class SelectFieldOptionEditor extends Component<SelectFieldOption
     this.updateRules();
   }
 
+  canAddOption(): boolean {
+    return this.newOption().trim() !== '';
+  }
+
   addOption() {
-    if (this.newOption() === '') {
+    if (!this.canAddOption()) {
       return;
     }
 
