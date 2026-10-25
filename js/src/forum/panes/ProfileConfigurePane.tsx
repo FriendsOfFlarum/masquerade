@@ -117,6 +117,8 @@ export default class ProfileConfigurePane extends Component<ProfileConfigurePane
 
         if (!this.profileCompleted) {
           this.profileCompleted = true;
+          // So enforceProfileCompletion lets the member leave the page.
+          app.forum.pushAttributes({ 'masquerade.profile-completed': true });
           app.alerts.show(
             { type: 'success' },
             app.translator.trans('fof-masquerade.forum.alerts.profile-completed', {

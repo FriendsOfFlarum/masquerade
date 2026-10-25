@@ -1,4 +1,6 @@
 fof-masquerade:
+  api:
+    profile-completion-required: Complete the required fields of your profile before you post.
   forum:
     profile:
       empty-text: This user hasn't filled out any profile fields yet.
