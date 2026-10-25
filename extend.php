@@ -38,6 +38,9 @@ return [
     (new Extend\Middleware('forum'))
         ->add(Middleware\DemandProfileCompletion::class),
 
+    (new Extend\Middleware('api'))
+        ->add(Middleware\BlockPostingUntilProfileComplete::class),
+
     (new Extend\Settings())
         ->default('masquerade.force-profile-completion', false)
         ->serializeToForum('masquerade.force-profile-completion', 'masquerade.force-profile-completion')
