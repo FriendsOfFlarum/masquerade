@@ -6,6 +6,10 @@ export default class AnswerGambit extends KeyValueGambit {
     return app.translator.trans('fof-masquerade.lib.gambits.answer.key', {}, true);
   }
 
+  canonicalKey() {
+    return 'answer';
+  }
+
   hint() {
     return app.translator.trans('fof-masquerade.lib.gambits.answer.hint', {}, true);
   }

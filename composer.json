@@ -23,13 +23,13 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^2.0.0"
+        "flarum/core": "^2.1.0-beta.1"
     },
     "require-dev": {
-        "flarum/phpstan": "^2.0.0",
-        "flarum/gdpr": "^2.0",
-        "flarum/audit": "^2.0",
-        "flarum/testing": "^2.0"
+        "flarum/phpstan": "^2.1.0-beta.1",
+        "flarum/gdpr": "^2.1.0-beta.1",
+        "flarum/audit": "^2.1.0-beta.1",
+        "flarum/testing": "^2.1.0-beta.1"
     },
     "extra": {
         "flarum-extension": {
@@ -51,6 +51,9 @@
             "modules": {
                 "githubActions": true
             }
+        },
+        "branch-alias": {
+            "dev-2.x": "2.x-dev"
         }
     },
     "autoload": {
