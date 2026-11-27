@@ -23,7 +23,7 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "2.x-dev"
+        "flarum/core": "^2.1.0-beta.1"
     },
     "require-dev": {
         "flarum/phpstan": "^2.1.0-beta.1",
@@ -66,7 +66,7 @@
             "FoF\\Masquerade\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "beta",
     "prefer-stable": true,
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
